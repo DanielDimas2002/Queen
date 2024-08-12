@@ -1,0 +1,127 @@
+/* Reset CSS com Seletores Universais */
+
+/* Zera margens, preenchimentos e define a caixa de modelagem de borda */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Remove estilos padrão da lista */
+ul, ol {
+    list-style: none;
+}
+
+/* Corrige estilos de links */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+/* Define fonte e tamanho padrão */
+body {
+    font-family: "Ruda", "Roboto";
+    font-size: 16px;
+    line-height: 1.5;
+    background-color: #FFFDE6;
+}
+
+/* Remove sublinhado de links quando hover */
+a:hover {
+    text-decoration: none;
+}
+
+/* Reseta margens para todos os elementos de bloco */
+body, h1, h2, h3, h4, h5, h6, p, blockquote, pre, dl, dd, ol, ul, figure, fieldset, form, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, details, figcaption, footer, header, hgroup, menu, nav, section {
+    margin: 0;
+}
+
+main{
+    padding-left: 2%;
+    margin-top: 2%;
+}
+
+#Config_Midia{
+    display: flex;
+    margin-top: 2%;
+}   
+
+h1{
+    text-align: center;
+    color: #f7dd46;
+    text-shadow: 1.5px 1.5px 1.5px black;
+    font-size: 60px;
+}
+
+.camposEntrada{
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    background-color: #FFFDE6;
+}
+
+#RecebeNomeAluno{
+    max-width: 100px;
+}
+
+#AlunoExcluido{
+    max-width: 100px;
+}
+
+.btnEnvio{
+    padding-left: 1%;
+    padding-right: 1%;
+    padding-top: 0.25%;
+    padding-bottom: 0.25%;
+    font-family: "Ruda", "Roboto";
+    border: 1px solid black;
+    background-color: #FFFDE6;
+    font-weight: bold;
+}
+
+.btnEnvio:hover{
+    background-color: #f7dd468b;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#Midia{
+    width: 700px; /* Defina a largura desejada para a div */
+    height: 400px; /* Defina a altura desejada para a div */
+    overflow: hidden; /* Para evitar que a imagem ultrapasse os limites da div */
+    position: relative; /* Importante para alinhar a imagem */
+    display: flex;
+    margin-left: 15%;
+}
+
+#Midia img{
+    width: 100%; /* Faz a imagem ocupar 100% da largura da div */
+    height: auto; /* Mantém a proporção da imagem */
+    display: block; /* Para corrigir qualquer espaçamento extra */
+    position: absolute; /* Permite que a imagem cubra toda a área da div */
+    top: 0; /* Alinha a imagem ao topo da div */
+    left: 0; /* Alinha a imagem à esquerda da div */
+}
+
+#Tabela{
+    margin-top: 2%;
+    padding-right: 2%;
+    margin-bottom: 2%;
+}
+
+table {
+    border-collapse: collapse; /* Define como as bordas das células da tabela devem ser colapsadas */
+    width: 100%; /* Define a largura da tabela como 100% da largura do contêiner pai */
+  }
+  th, td {
+    border: 1px solid black; /* Define uma borda de 1px sólida preta para todas as células da tabela */
+    padding: 8px; /* Define o preenchimento interno de 8 pixels para todas as células */
+    text-align: left; /* Alinha o texto das células à esquerda */
+  }
+  th {
+    background-color:#f7dd468b; /* Define uma cor de fundo cinza claro para as células do cabeçalho */
+  }

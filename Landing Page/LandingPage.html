@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="cabecalho.css">
+    <link rel="stylesheet" href="LandingPage.css">
+    <link rel="stylesheet" href="rodape.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ruda:wght@400..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Ruda:wght@400..900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <header class="cabecalho">
+        <div class="controle-logo">
+            <img id="separa-logo-principal" class="logo-titulo" src="Midia/Logo_Queen.png"
+                alt="Logo do Plataforma Queen">
+        </div>
+        <nav id="home" class="menu">
+            <a id="home" class="item-menu" href="#home">Home</a>
+
+            <a class="item-menu" href="#Sobre">Sobre</a>
+
+            <a class="item-menu" href="#Funcionalidades">Funcionalidades</a>
+
+            <a class="item-menu" href="Painel de Controle/versao17.html">Painel de Controle</a>
+        </nav>
+        <nav class="menu">
+            <a id="home" class="item-menu" href="#Login_Registro">Entrar</a>
+            <a class="item-menu" href="#Login_Registro" id="btnRegistro">Cadastro</a>
+        </nav>
+    </header>
+    <main>
+        <section class="conteudo-principal">
+            <section class="conteudo-principal-escrito">
+                <h1 class="conteudo-principal-titulo" id="Sobre">Queen</h1>
+                <h2 class="conteudo-principal-subtitulo">Uma plataforma pensada em você, <span>professor(a)!</span></h2>
+                <p class="conteudo-principal-paragrafo">O <span>Queen</span> é uma plataforma web que
+                    <strong>simplifica</strong> a
+                    distribuição de notas para docentes! Com funcionalidades <strong>intuitivas</strong> e automação de
+                    processos, otimiza a gestão acadêmica, poupando tempo e garantindo precisão.
+                    <strong>Otimize</strong> sua rotina educacional com uma ferramenta pensada em <strong>você</strong>!
+                </p>
+                <br>
+                <a href="#Funcionalidades" class="conteudo-principal-link">Confira as funcionalidades!</a>
+            </section>
+
+            <section class="conteudo-principal-lado-direito">
+                <img src="Midia/Coisa de Site.gif"
+                    alt="Vídeo Tema da Plataforma Queen. Contêmm professores dando aula para suas turmas.">
+            </section>
+        </section>
+        <section class="conteudo-secundario">
+            <div class="container-conteudo-secundario">
+                <h2 id="Funcionalidades">Funcionalidades</h2>
+                <div class="conteudo-secundario-geral">
+                    <div class="conteudo-secundario-imagem">
+                        <img src="Midia/Funcionalidades.gif" alt="Pessoas usando computadores">
+                    </div>
+                    <div class="conteudo-secundario-escrito">
+                        <h3>Com poucos passos você consegue:</h3>
+                        <ul>
+                            <li>Criar Turmas &#10004;</li>
+                            <li>Adicionar alunos &#10004;</li>
+                            <li>Atribuir notas &#10004;</li>
+                            <li>Calcular médias automaticamente &#10004;</li>
+                            <li>Gerar Boletins &#10004;</li>
+                        </ul>
+                        <br>
+                        <a href="#Login_Registro" class="conteudo-secundario-link">Experimente!</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="conteudo-terceario" id="Login_Registro">
+            <div class="conteudo-terciario-escrito">
+                <div class="conteudo-terceario-login">
+                    <h2>Possui conta? Faça login!</h2>
+                    <form>
+                        <label>E-mail:</label>
+                        <input type="email" value="@email.com">
+                        <label>Senha:</label>
+                        <input type="password" value="*******">
+                        <input type="submit" value="Fazer Login" class="conteudo-terceario-login-enviar">
+                    </form>
+                </div>
+                <div class="conteudo-terceario-cadastro">
+                    <h2>Não é cadastrado? Crie sua conta!</h2>
+                    <form>
+                        <label>E-mail:</label>
+                        <input type="email" value="@email.com">
+                        <label>Defina sua senha:</label>
+                        <input type="password" value="*******">
+                        <label>Confirme sua senha:</label>
+                        <input type="password" value="*******">
+                        <label>Telefone</label>
+                        <input type="tel" value="+55 (00) 0 0000 0000">
+                        <label>Site da instituição de ensino</label>
+                        <input type="text" value="Site ou Portal da instituição de ensino">
+                        <input type="submit" value="Finalizar Cadastro" class="conteudo-terceario-cadastro-enviar">
+                    </form>
+                </div>
+            </div>
+            <div class="conteudo-terceario-midia">
+                <img src="Midia/MidiaLoginRegistro.gif" alt="">
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="logo-rodape">
+            <img src="Midia/Logo_Queen.png" alt="Logo do Plataforma Queen">
+        </div>
+        <h2>Transforme complexidade em eficiencia com o Queen!</h2>
+    </footer>
+</body>
+
+</html>

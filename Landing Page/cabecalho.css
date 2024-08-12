@@ -1,0 +1,94 @@
+.cabecalho{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    padding: 1%;
+    background-color: #f7dd468b;
+    border-bottom: black solid 2px;
+}
+
+.controle-logo{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.logo-titulo{
+    width:100px;
+    padding-left: -10%;
+    margin: 0%;
+}
+
+.logo{
+    width:100px;
+    padding-left: -10px;
+    margin: 0%;
+}
+
+.menu{
+    display: flex;
+    gap: 32px;
+    list-style: none;
+}
+
+.item-menu{
+    font-family: 'Ruda', 'Roboto';
+    color: rgba(0, 0, 0, 0.788);
+    font-weight: 400;
+    font-size: 22px;
+    display: grid;
+    place-content: center;
+}
+
+.item-menu#home{
+     color: rgba(0, 0, 0, 0.788);
+    font-weight: 500;
+    font-size: 24px;
+    text-decoration: underline;
+}
+
+#btnRegistro{
+    border: 1px solid black;
+    padding-left: 10%;
+    padding-right: 10%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    border-radius: 20px;
+    font-weight: bold;
+    text-shadow: 1.5px 1.5px 1.5px white;
+}
+
+#btnRegistro:hover{
+    background-color:#FFFDE6;
+    color:#f7dd46;
+    text-shadow: 1.5px 1.5px 1.5px black;
+}
+
+.titulo{
+    padding-left: -20%;
+    margin-right: -18%;
+    color: #fff2e7;
+    text-shadow: 4px 5px 4px rgba(0,0,0,0.25);
+    font-weight: 400;
+    font-size: 64px;
+}
+
+
+.botao{
+    background-color: rgb(255, 166, 0);
+    width: 110px;
+    height: 35px;
+    border:none;
+    box-shadow: 4px 5px 4px rgba(0,0,0,0.25);
+    border-radius: 20px;
+    font-family: 'Sarala', sans-serif;
+    font-weight: 200;
+    font-size: 23px;
+    color:#FFF2E7;
+}
+
+.botao:hover{
+    background-color: rgba(235,214,196,0.53);
+}
