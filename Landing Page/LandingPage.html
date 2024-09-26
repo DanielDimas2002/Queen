@@ -94,17 +94,17 @@
                 </div>
                 <div class="conteudo-terceario-cadastro">
                     <h2>Não é cadastrado? Crie sua conta!</h2>
-                    <form>
+                    <form id="formCadastro">
+                        <label>Nome:</label>
+                        <input type="string" placeholder="Apelido" id="nome">
                         <label>E-mail:</label>
-                        <input type="email" value="@email.com">
+                        <input type="email" placeholder="@email.com" id="email" required>
                         <label>Defina sua senha:</label>
-                        <input type="password" value="*******">
+                        <input type="password" placeholder="*******" id="senha" required>
                         <label>Confirme sua senha:</label>
-                        <input type="password" value="*******">
-                        <label>Telefone</label>
-                        <input type="tel" value="+55 (00) 0 0000 0000">
+                        <input type="password" placeholder="*******" id="confirmSenha" required>
                         <label>Site da instituição de ensino</label>
-                        <input type="text" value="Site ou Portal da instituição de ensino">
+                        <input type="text" placeholder="Site ou Portal da instituição de ensino" id="site" required>
                         <input type="submit" value="Finalizar Cadastro" class="conteudo-terceario-cadastro-enviar">
                     </form>
                 </div>
