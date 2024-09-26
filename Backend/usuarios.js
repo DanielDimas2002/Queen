@@ -1,22 +1,22 @@
-const sequelize = require('sequelize');
-const database = require('./db');
+const { DataTypes } = require('sequelize'); // Corrigido: Importa DataTypes corretamente
+const database = require('./db'); // Certifique-se de que está importando a conexão correta com o banco
 
 const Usuario = database.define('usuario', {
     nome: {
-        Type: sequelize.STRING,
+        type: DataTypes.STRING, // Corrigido: 'type' com "t" minúsculo
         allowNull: false
     },
     email: {
-        Type: sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
         unique: true
     },
     senha: {
-        Type: sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false
     },
     site: {
-        Type: sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false
     },
 });

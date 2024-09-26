@@ -1,10 +1,10 @@
-const sequelize = require('sequelize');
+const { DataTypes } = require('sequelize');
 const database = require('./db');
 const Turma = require('./turmas');
 
 const Aluno = database.define('aluno', {
     nome: {
-        type: sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
     },
 });

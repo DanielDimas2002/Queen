@@ -1,13 +1,20 @@
 (async () => {
-
-    const database = require('./db');
-    const Usuario = require('./usuarios');
-    const Turma = require('./turmas');
-    const Aluno = require('./alunos');
-    const Boletim = require('./boletim');
     const express = require('express');
     const app = express();
-    const port = 3001;
+    const sequelize = require('./db');
+    const Usuario = require('./usuarios');
+
+    try{
+        await sequelize.sync({ force: false });
+        console.log('Tabelas Criadas');
+    }catch{
+        console.error('Erro ao criar tabelas')
+    }
+
+    app.get('/usuarios', (req, res) => {
+        console.log('GET USUARIOS');
+        res.json('kk');
+    })
 
     app.use(express.json());
 
@@ -26,8 +33,6 @@
         }
     })
 
-    app.listen(port, () => {
-        console.log(`Servidor rodando na porta ${port}`);
-    })
+        app.listen(3000, () => console.log('Servidor rodando na porta 3000'));
 
-})
+})();

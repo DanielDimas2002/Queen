@@ -1,11 +1,11 @@
 const { error } = require("console");
 
-const API_URL = 'http://localhost:3000/usuario'
+const API_URL = 'http://localhost:3001/usuarios'
 
 document.getElementById('formCadastro').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const nome = document.getElementById('nome').ariaValueMax;
+    const nome = document.getElementById('nome').value;
     const email = document.getElementById('email').value;
     const senha = document.getElementById('senha').value;
     const confirmSenha = document.getElementById('confirmSenha').value;
