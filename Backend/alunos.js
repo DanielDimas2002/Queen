@@ -8,7 +8,8 @@ const Aluno = database.define('aluno', {
         allowNull: false,
     },
 });
-Alunos.belongsTo(Turma, { foreignKey: 'turma_id'});
+Aluno.belongsToMany(Turma, { through: 'AlunoTurma', foreignKey: 'aluno_id'});
+Turma.belongsToMany(Aluno, { through: 'AlunoTurma', foreignKey: 'turma_id'})
 
 
 module.exports = Aluno;

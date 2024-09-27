@@ -1,27 +1,29 @@
-const sequelize = require('sequelize');
+const {DataTypes} = require('sequelize');
 const database = require ('./db');
+const Usuario = require('./usuarios');
 
 const Turma = database.define('turma', {
     disciplina: {
-        type: sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
       },
       turma: {
-        type: sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
       },
       turno: {
-        type: sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
       },
       data_inicial: {
-        type: sequelize.DATE,
+        type: DataTypes.DATE,
         allowNull: false,
       },
       data_final: {
-        type: sequelize.DATE,
+        type: DataTypes.DATE,
         allowNull: false,
       },
 });
+Turma.belongsTo(Usuario, { foreignKey: 'usuario_id'})
 
 module.exports = Turma;

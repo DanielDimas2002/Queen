@@ -1,7 +1,5 @@
 const { error } = require("console");
 
-const API_URL = 'http://localhost:3001/usuarios'
-
 document.getElementById('formCadastro').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -18,7 +16,7 @@ document.getElementById('formCadastro').addEventListener('submit', async (e) => 
     }
 
     try{
-        const createUser = await fetch(API_URL, {
+        const createUser = await fetch('http://localhost:3000/cadastro/usuario', {
             method: 'POST',
             headers: {
                 'content-Type': 'application/json'
@@ -27,7 +25,6 @@ document.getElementById('formCadastro').addEventListener('submit', async (e) => 
                 nome,
                 email,
                 senha,
-                telefone,
                 site
             })
         });
