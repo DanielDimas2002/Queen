@@ -1,40 +1,31 @@
-.cabecalho{
+/* Estilos base */
+.cabecalho {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
     padding: 1%;
     background-color: #f7dd468b;
     border-bottom: black solid 2px;
 }
 
-.controle-logo{
+.controle-logo {
     display: flex;
-    flex-direction: row;
     align-items: center;
-    justify-content: space-around;
 }
 
-.logo-titulo{
-    width:100px;
-    padding-left: -10%;
-    margin: 0%;
+.logo-titulo {
+    width: 100px;
+    margin: 0;
 }
 
-.logo{
-    width:100px;
-    padding-left: -10px;
-    margin: 0%;
-}
-
-.menu{
+.menu {
     display: flex;
     gap: 32px;
-    list-style: none;
 }
 
-.item-menu{
-    font-family: 'Ruda', 'Roboto';
+.item-menu {
+    font-family: 'Ruda', 'Roboto', sans-serif;
     color: rgba(0, 0, 0, 0.788);
     font-weight: 400;
     font-size: 22px;
@@ -42,53 +33,179 @@
     place-content: center;
 }
 
-.item-menu#home{
-     color: rgba(0, 0, 0, 0.788);
+.item-menu#home {
     font-weight: 500;
     font-size: 24px;
     text-decoration: underline;
 }
 
-#btnRegistro{
+#btnRegistro {
     border: 1px solid black;
-    padding-left: 10%;
-    padding-right: 10%;
-    padding-top: 1%;
-    padding-bottom: 1%;
+    padding: 5px 20px;
     border-radius: 20px;
     font-weight: bold;
     text-shadow: 1.5px 1.5px 1.5px white;
 }
 
-#btnRegistro:hover{
-    background-color:#FFFDE6;
-    color:#f7dd46;
+#btnRegistro:hover {
+    background-color: #FFFDE6;
+    color: #f7dd46;
     text-shadow: 1.5px 1.5px 1.5px black;
 }
 
-.titulo{
-    padding-left: -20%;
-    margin-right: -18%;
-    color: #fff2e7;
-    text-shadow: 4px 5px 4px rgba(0,0,0,0.25);
-    font-weight: 400;
-    font-size: 64px;
+/* Ajustes responsivos */
+@media screen and (max-width: 768px) {
+    .cabecalho {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .menu {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .logo-titulo {
+        width: 80px;
+    }
+
+    .item-menu {
+        font-size: 18px;
+    }
+
+    #btnRegistro {
+        padding: 10px 30px;
+    }
 }
 
+@media screen and (max-width: 480px) {
+    .logo-titulo {
+        width: 60px;
+    }
 
-.botao{
+    .item-menu {
+        font-size: 16px;
+    }
+
+    #btnRegistro {
+        padding: 8px 20px;
+        font-size: 16px;
+    }
+
+    .cabecalho {
+        padding: 2%;
+    }
+
+    h1, h2 {
+        font-size: 22px;
+        text-align: center;
+    }
+
+    .btnEnvio {
+        width: 100%;
+    }
+}
+
+/* Botões */
+.botao {
     background-color: rgb(255, 166, 0);
     width: 110px;
     height: 35px;
-    border:none;
-    box-shadow: 4px 5px 4px rgba(0,0,0,0.25);
+    border: none;
+    box-shadow: 4px 5px 4px rgba(0, 0, 0, 0.25);
     border-radius: 20px;
     font-family: 'Sarala', sans-serif;
     font-weight: 200;
     font-size: 23px;
-    color:#FFF2E7;
+    color: #FFF2E7;
 }
 
-.botao:hover{
-    background-color: rgba(235,214,196,0.53);
+.botao:hover {
+    background-color: rgba(235, 214, 196, 0.53);
+}
+
+/* Outros ajustes de layout */
+.camposEntrada {
+    width: 100%;
+    max-width: 300px;
+}
+
+#Config_Midia {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+#Config, #Midia {
+    flex: 1;
+    min-width: 300px;
+    margin: 10px;
+}
+
+#Tabela table {
+    width: 100%;
+    max-width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+}
+
+#Tabela th, #Tabela td {
+    padding: 10px;
+    border: 1px solid #000;
+    text-align: left;
+}
+
+/* Estilos do menu hamburguer */
+.menu-hamburguer {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.menu-hamburguer span {
+    display: block;
+    width: 100%;
+    height: 4px;
+    background-color: black;
+    border-radius: 2px;
+}
+
+@media screen and (max-width: 768px) {
+    .menu {
+        display: none; /* Esconder o menu normal em telas pequenas */
+        flex-direction: column;
+        position: absolute;
+        top: 80px;
+        left: 0;
+        width: 100%;
+        background-color: #f7dd46;
+        padding: 20px 0;
+        gap: 15px;
+    }
+
+    .menu.item-menu {
+        text-align: center;
+        padding: 10px;
+    }
+
+    .menu-hamburguer {
+        display: flex;
+    }
+
+    .menu-ativo {
+        display: flex; /* Exibe o menu ao clicar no ícone */
+    }
+}
+
+/* Ajuste no layout do cabeçalho */
+.cabecalho {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between; /* Adiciona espaço entre a logo e o menu */
+    padding: 1%;
+
 }
