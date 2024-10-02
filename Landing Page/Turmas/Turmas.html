@@ -4,7 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Google Sala de Aula Clone</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="Turmas.css">
+    <style>
+        /* Estilos para o pop-up */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            border-radius: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -12,10 +49,11 @@
         <div class="header-links">
             <a href="#">Dispensar</a>
             <a href="#">Saiba mais</a>
+            <button id="openFormButton">Criar Nova Turma</button> <!-- Botão para abrir o formulário -->
         </div>
     </header>
     
-    <section class="card-container">
+    <section class="card-container" id="cardContainer">
         <div class="card">
             <div class="card-header blue">
                 <h3>Implementação de Proj...</h3>
@@ -57,5 +95,112 @@
 
         <!-- Adicione outros cards aqui, conforme necessário -->
     </section>
+
+    <!-- Modal (pop-up) para o formulário -->
+    <div id="turmaModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Criar Nova Turma</h2>
+            <form id="createClassForm">
+                <label for="disciplina">Disciplina:</label>
+                <input type="text" id="disciplina" name="disciplina" required><br><br>
+
+                <label for="turma">Turma:</label>
+                <input type="text" id="turma" name="turma" required><br><br>
+
+                <label for="turno">Turno:</label>
+                <input type="text" id="turno" name="turno" required><br><br>
+
+                <label for="data_inicial">Data Inicial:</label>
+                <input type="date" id="data_inicial" name="data_inicial" required><br><br>
+
+                <label for="data_final">Data Final:</label>
+                <input type="date" id="data_final" name="data_final" required><br><br>
+
+                <button type="submit">Criar Turma</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript para abrir e fechar o pop-up
+        const modal = document.getElementById("turmaModal");
+        const btn = document.getElementById("openFormButton");
+        const span = document.getElementsByClassName("close")[0];
+        const form = document.getElementById("createClassForm");
+        const cardContainer = document.getElementById("cardContainer");
+
+        // Abrir o pop-up quando o botão for clicado
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        // Fechar o pop-up quando o "X" for clicado
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // Fechar o pop-up clicando fora da janela modal
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Função para criar um card de turma
+        function addClassCard(disciplina, turma, turno, professor = "Novo Professor") {
+            const card = document.createElement("div");
+            card.classList.add("card");
+
+            const cardHeader = document.createElement("div");
+            cardHeader.classList.add("card-header", "blue"); // Usei "blue", mas você pode alternar conforme necessário
+            const h3 = document.createElement("h3");
+            h3.textContent = disciplina;
+            const p = document.createElement("p");
+            p.textContent = turma;
+
+            cardHeader.appendChild(h3);
+            cardHeader.appendChild(p);
+
+            const cardBody = document.createElement("div");
+            cardBody.classList.add("card-body");
+            const avatarDiv = document.createElement("div");
+            avatarDiv.classList.add("avatar");
+            const img = document.createElement("img");
+            img.src = "profile-placeholder.jpg"; // Imagem de avatar padrão
+            img.alt = "Avatar";
+
+            const professorP = document.createElement("p");
+            professorP.textContent = professor;
+
+            avatarDiv.appendChild(img);
+            cardBody.appendChild(avatarDiv);
+            cardBody.appendChild(professorP);
+
+            card.appendChild(cardHeader);
+            card.appendChild(cardBody);
+
+            cardContainer.appendChild(card);
+        }
+
+        // Interceptar o envio do formulário
+        form.onsubmit = function(event) {
+            event.preventDefault(); // Evitar o recarregamento da página
+
+            // Pegar os dados do formulário
+            const disciplina = document.getElementById("disciplina").value;
+            const turma = document.getElementById("turma").value;
+            const turno = document.getElementById("turno").value;
+
+            // Chamar a função para adicionar o card da nova turma
+            addClassCard(disciplina, turma, turno);
+
+            // Limpar o formulário
+            form.reset();
+
+            // Fechar o modal
+            modal.style.display = "none";
+        }
+    </script>
 </body>
 </html>
