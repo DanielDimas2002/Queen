@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Queen - Painel de Controle</title>
-    <link rel="stylesheet" href="versao17.css"> <!-- Inclui o arquivo CSS para estilização -->
+    <link rel="stylesheet" href="Painel.css"> <!-- Inclui o arquivo CSS para estilização -->
     <link rel="stylesheet" href="cabecalho.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,7 +26,13 @@
             <a id="home" class="item-menu" href="../LandingPage.html">Home</a>
             <a id="home" class="item-menu" href="../LandingPage.html#Login_Registro">Entrar</a>
             <a class="item-menu" href="../LandingPage.html#Login_Registro" id="btnRegistro">Cadastro</a>
+
         </nav>
+        <div class="menu-hamburguer" id="menuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
     </header>
     <main>
             <h1>Painel de Controle</h1>
@@ -98,6 +104,17 @@
 
     <!--<script src="versao17.js"></script>Inclui o arquivo JavaScript -->
     <script src="PainelDeControle.js"></script>
+
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const menu = document.querySelector('.menu');
+
+        // Adiciona um evento de clique no botão de menu hamburguer
+        menuToggle.addEventListener('click', () => {
+        menu.classList.toggle('menu-ativo'); // Alterna entre mostrar e esconder o menu
+});
+    </script>
+    
 </body>
 
 </html>

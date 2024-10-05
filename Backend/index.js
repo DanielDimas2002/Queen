@@ -1,5 +1,3 @@
-const Aluno = require('./alunos');
-const Turma = require('./turmas');
 
 (async () => {
     const express = require('express');
@@ -8,13 +6,15 @@ const Turma = require('./turmas');
     const Turma = require('./turmas');
     const Aluno = require('./alunos');
     const Boletim = require('./boletim');
+    const cors = require('cors')
     await sequelize.sync(); //cria as tabelas dos models
 
     const app = express();
 
     app.use(express.json());
+    app.use(cors());
 
-    app.post('/cladastro/usuario', async (req, res) => {
+    app.post('/cadastro/usuario', async (req, res) => {
         const {nome, email, senha, site} = req.body;
          try{
             const newUser = await Usuario.create({
@@ -24,10 +24,10 @@ const Turma = require('./turmas');
                 site
             });
 
-            res.status(201).json(newUser);
+            res.status(201).json({ message: 'Usuário Cadastrado com sucesso!' });
          }catch (error){
             console.error('Erro ao cadastrar usuario:', error);
-            res.status(400).send('Erro ao cadastrar usuario');
+            res.status(400).json('Erro ao cadastrar usuario');
          }
     });
 

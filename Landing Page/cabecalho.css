@@ -1,47 +1,61 @@
-/* Estilos base */
+/* Estilo geral do cabeçalho */
 .cabecalho {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center; /* Centraliza o conteúdo do cabeçalho */
     padding: 1%;
     background-color: #f7dd468b;
     border-bottom: black solid 2px;
 }
 
+/* Estilo do logo */
 .controle-logo {
     display: flex;
+    flex-direction: row;
     align-items: center;
+    margin-right: 20px; /* Espaço entre o logo e o menu */
 }
 
-.logo-titulo {
-    width: 100px;
-    margin: 0;
+.controle-logo img {
+    max-width: 100px; /* Ajuste o tamanho máximo da imagem conforme necessário */
+    height: auto; /* Mantém a proporção da imagem */
 }
 
+/* Estilo do menu */
 .menu {
     display: flex;
     gap: 32px;
+    list-style: none;
+    margin: 0; /* Remove margens indesejadas */
+    align-items: center; /* Alinha os itens do menu no centro verticalmente */
 }
 
+/* Estilo dos itens do menu */
 .item-menu {
-    font-family: 'Ruda', 'Roboto', sans-serif;
+    font-family: 'Ruda', 'Roboto';
     color: rgba(0, 0, 0, 0.788);
     font-weight: 400;
     font-size: 22px;
     display: grid;
     place-content: center;
+    text-decoration: none; /* Remove sublinhado dos links */
 }
 
 .item-menu#home {
+    color: rgba(0, 0, 0, 0.788);
     font-weight: 500;
     font-size: 24px;
     text-decoration: underline;
 }
 
+/* Estilo do botão de cadastro */
 #btnRegistro {
     border: 1px solid black;
-    padding: 5px 20px;
+    padding-left: 7%; /* Ajuste o padding conforme necessário */
+    padding-right: 7%; /* Ajuste o padding conforme necessário */
+    padding-top: 0.4%;
+    padding-bottom: 0.4%;
     border-radius: 20px;
     font-weight: bold;
     text-shadow: 1.5px 1.5px 1.5px white;
@@ -53,104 +67,103 @@
     text-shadow: 1.5px 1.5px 1.5px black;
 }
 
-/* Ajustes responsivos */
-@media screen and (max-width: 768px) {
-    .cabecalho {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .menu {
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .logo-titulo {
-        width: 80px;
-    }
-
-    .item-menu {
-        font-size: 18px;
-    }
-
-    #btnRegistro {
-        padding: 10px 30px;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .logo-titulo {
-        width: 60px;
-    }
-
-    .item-menu {
-        font-size: 16px;
-    }
-
-    #btnRegistro {
-        padding: 8px 20px;
-        font-size: 16px;
-    }
-
-    .cabecalho {
-        padding: 2%;
-    }
-
-    h1, h2 {
-        font-size: 22px;
-        text-align: center;
-    }
-
-    .btnEnvio {
-        width: 100%;
-    }
-}
-
-/* Botões */
-.botao {
-    background-color: rgb(255, 166, 0);
-    width: 110px;
-    height: 35px;
-    border: none;
-    box-shadow: 4px 5px 4px rgba(0, 0, 0, 0.25);
+/* Estilo do botão Painel de Controle */
+#painelControle {
+    border: 1px solid black;
+    padding-left: 10%; /* Ajuste o padding conforme necessário */
+    padding-right: 10%; /* Ajuste o padding conforme necessário */
+    padding-top: 0.5%;
+    padding-bottom: 0.5%;
     border-radius: 20px;
-    font-family: 'Sarala', sans-serif;
-    font-weight: 200;
-    font-size: 23px;
-    color: #FFF2E7;
+    font-weight: bold;
+    text-shadow: 1.5px 1.5px 1.5px white;
 }
 
-.botao:hover {
-    background-color: rgba(235, 214, 196, 0.53);
+#painelControle:hover {
+    background-color: #FFFDE6;
+    color: #f7dd46;
+    text-shadow: 1.5px 1.5px 1.5px black;
 }
 
-/* Outros ajustes de layout */
-.camposEntrada {
-    width: 100%;
-    max-width: 300px;
+/* Estilos do botão do menu hambúrguer */
+.menu-toggle {
+    display: none; /* Inicialmente escondido em dispositivos maiores */
+    cursor: pointer;
+    margin-left: auto; /* Move o botão para o canto direito */
+    margin-right: 20px; /* Ajuste conforme necessário */
+    z-index: 2; /* Garante que o botão fique sobre outros elementos */
 }
 
-#Config_Midia {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+.menu-toggle .bar {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: black;
+    margin: 5px 0;
 }
 
-#Config, #Midia {
-    flex: 1;
-    min-width: 300px;
-    margin: 10px;
-}
-
-#Tabela table {
-    width: 100%;
-    max-width: 100%;
-    margin: 20px 0;
-    border-collapse: collapse;
-}
-
-#Tabela th, #Tabela td {
+/* Estilos do botão de fechar */
+.menu-close {
+    display: none; /* Inicialmente escondido */
+    background: transparent; /* Fundo transparente */
+    border: none;
+    font-size: 24px; /* Tamanho do ícone de fechar */
+    color: black; /* Cor do ícone de fechar */
     padding: 10px;
-    border: 1px solid #000;
-    text-align: left;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 3; /* Garante que o botão fique sobre o menu */
+}
+
+/* Menu hambúrguer - visível em dispositivos móveis */
+#menu {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* Espaço entre os itens do menu */
+    position: fixed; /* Fixa o menu na tela */
+    top: 0;
+    right: 0;
+    width: 250px; /* Largura do menu */
+    height: 100%; /* Altura total da tela */
+    background-color: #f7dd468b; /* Cor de fundo quando o menu está aberto */
+    transform: translateX(100%); /* Inicialmente escondido fora da tela */
+    transition: transform 0.3s ease-in-out; /* Transição suave */
+    padding: 1rem;
+    z-index: 1; /* Garante que o menu fique sobre outros elementos */
+}
+
+#menu.show {
+    transform: translateX(0); /* Mostra o menu quando a classe 'show' é adicionada */
+}
+
+/* Estilos para os links do menu quando o menu está visível */
+#menu a.item-menu {
+    display: block;
+    font-size: 22px;
+    color: black; /* Cor do texto */
+    text-decoration: none; /* Remove o sublinhado dos links */
+    padding: 10px;
+}
+
+/* Mostrar o botão do menu hambúrguer em dispositivos móveis */
+@media (max-width: 1020px) {
+    .menu-toggle {
+        display: block;
+    }
+
+    .menu-close {
+        display: block; /* Exibe o botão de fechar */
+    }
+
+    /* Esconde o menu original em dispositivos móveis */
+    .menu {
+        display: none;
+    }
+
+    /* Mostra o menu hambúrguer em dispositivos móveis */
+    #menu {
+        display: flex;
+    }
 }

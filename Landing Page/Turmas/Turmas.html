@@ -4,18 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Google Sala de Aula Clone</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="Turmas.css">
+    <link rel="stylesheet" href="PopUp.css"> <!-- Referência ao novo arquivo de CSS -->
 </head>
 <body>
     <header class="header">
-        <p>Aniversário de 10 anos do Google Sala de Aula! Confira o que aprendemos até agora e nossos planos para o futuro.</p>
+        <img id="separa-logo-principal" class="logo-titulo" src="Midia/Logo_Queen.png" alt="Logo do Plataforma Queen">
+        <h2 class="Titulo-pagina">Bem vindo ao gerenciador de Turmas Queen!</h2>
         <div class="header-links">
-            <a href="#">Dispensar</a>
-            <a href="#">Saiba mais</a>
+            <button id="btn-home">Home</button>
+            <button id="openFormButton">Criar Nova Turma</button> <!-- Botão para abrir o formulário -->
         </div>
     </header>
     
-    <section class="card-container">
+    <section class="card-container" id="cardContainer">
+        <!-- Cards de exemplo -->
         <div class="card">
             <div class="card-header blue">
                 <h3>Implementação de Proj...</h3>
@@ -23,39 +26,46 @@
             </div>
             <div class="card-body">
                 <div class="avatar">
-                    <img src="profile1.jpg" alt="Avatar">
+                   <!-- <img src="profile1.jpg" alt="Avatar">-->
                 </div>
                 <p>Marcio Oliveira da Costa Silva</p>
             </div>
         </div>
-
-        <div class="card">
-            <div class="card-header gray">
-                <h3>Introdução à Indústr...</h3>
-                <p>G85634</p>
-            </div>
-            <div class="card-body">
-                <div class="avatar">
-                    <img src="profile2.jpg" alt="Avatar">
-                </div>
-                <p>Juliana Vieira Santos Pereira</p>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header purple">
-                <h3>Interface Homem-Co...</h3>
-                <p>G85634</p>
-            </div>
-            <div class="card-body">
-                <div class="avatar">
-                    <img src="profile3.jpg" alt="Avatar">
-                </div>
-                <p>Fábio Costa Alves</p>
-            </div>
-        </div>
-
-        <!-- Adicione outros cards aqui, conforme necessário -->
+        <!-- Outros cards podem ser adicionados aqui -->
     </section>
+
+    <!-- Modal (pop-up) para o formulário -->
+    <div id="turmaModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Criar Nova Turma</h2>
+            <form id="createClassForm">
+                <label for="disciplina">Disciplina:</label>
+                <input type="text" id="disciplina" name="disciplina" required><br><br>
+
+                <label for="turma">Turma:</label>
+                <input type="text" id="turma" name="turma" required><br><br>
+
+                <label for="turno">Turno:</label>
+                <select id="turno" name="turno" required>
+                    <option value="" disabled selected>Selecione o turno</option>
+                    <option value="Manhã">Manhã</option>
+                    <option value="Tarde">Tarde</option>
+                    <option value="Noite">Noite</option>
+                </select><br><br>
+
+                <label for="data_inicial">Data Inicial:</label>
+                <input type="date" id="data_inicial" name="data_inicial" required><br><br>
+
+                <label for="data_final">Data Final:</label>
+                <input type="date" id="data_final" name="data_final" required><br><br>
+
+                <button type="submit">Criar Turma</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Inclua o arquivo externo de JavaScript -->
+    <script src="Turmas.js"></script>
 </body>
 </html>
