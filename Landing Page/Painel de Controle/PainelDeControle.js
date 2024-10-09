@@ -19,19 +19,35 @@ let MediaDefinida = 0
 let ListaDeAlunos = [];
 
 // Função para tratar os dados dos alunos
+
 function TratamentoDeDados(nomes) {
+    if (!nomes) {
+        alert("A lista de nomes está vazia.");
+        return [];
+    }
+
     // Separa os nomes por vírgula e remove espaços extras
     const nomesTratados = nomes.split(",").map(nome => nome.trim());
-    // Filtra os nomes que têm pelo menos um sobrenome
-    const nomesValidos = nomesTratados.filter(nome => nome.split(" ").length > 1);
-    if (nomesValidos.length !== nomesTratados.length) {
-        // Se algum nome não tiver pelo menos um sobrenome, exibe um alerta
-        alert("Por favor, informe o nome completo de todos os alunos.");
+
+    // Função para converter a primeira letra de cada palavra em maiúscula
+    const capitalizarNome = nome => 
+        nome.split(" ").map(parte => parte.charAt(0).toUpperCase() + parte.slice(1).toLowerCase()).join(" ");
+
+    // Encontra os nomes sem sobrenome
+    const nomesIncompletos = nomesTratados.filter(nome => nome.split(" ").length === 1);
+
+    if (nomesIncompletos.length > 0) {
+        // Lista quais nomes estão incompletos
+        alert(`Por favor, informe o nome completo dos seguintes alunos: ${nomesIncompletos.join(", ")}`);
         return []; // Retorna uma lista vazia se houver algum problema com os nomes
     }
-    // Retorna os nomes válidos
+
+    // Capitaliza e retorna os nomes válidos
+    const nomesValidos = nomesTratados.map(capitalizarNome);
     return nomesValidos;
 }
+
+
 
 defMedia.addEventListener("submit", (e) =>{
     e.preventDefault()
@@ -111,7 +127,7 @@ FormGroup.addEventListener("submit", (e) => {
         const aluno = ListaDeAlunos.find(aluno => aluno.Nome === nomeAluno);
 
         if (!aluno) {
-            alert(`Aluno '${nomeAluno}' não encontrado.`);
+            alert(`Aluno ${nomeAluno} não encontrado.`);
             return;
         }
 

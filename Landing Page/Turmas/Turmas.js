@@ -32,8 +32,15 @@ function formatDate(date) {
     });
 }
 
-// Função para criar um card de turma
+// Função para criar um card de turma com link
 function addClassCard(disciplina, turma, turno, dataInicial, dataFinal) {
+    // Criar o link que envolverá o card
+    const cardLink = document.createElement("a");
+    cardLink.href = "../Painel de Controle/Painel.html"; // Caminho relativo para o arquivo Painel.html
+    cardLink.classList.add("card-link");
+    cardLink.style.textDecoration = "none"; // Remover a decoração padrão de links
+
+    // Criar o card
     const card = document.createElement("div");
     card.classList.add("card");
 
@@ -53,45 +60,26 @@ function addClassCard(disciplina, turma, turno, dataInicial, dataFinal) {
     const turnoP = document.createElement("p");
     turnoP.textContent = `Turno: ${turno}`;
 
-    // Formatar as datas
     const dataInicialP = document.createElement("p");
     dataInicialP.textContent = `Data Inicial: ${formatDate(dataInicial)}`;
 
     const dataFinalP = document.createElement("p");
     dataFinalP.textContent = `Data Final: ${formatDate(dataFinal)}`;
 
-    // Botão de edição
-    const editButton = document.createElement("button");
-    editButton.textContent = "Editar";
-    editButton.classList.add("edit-button");
-
-    // Adicionar evento ao botão de edição
-    editButton.onclick = function() {
-        openEditModal(card, disciplina, turma, turno, dataInicial, dataFinal);
-    };
-
-    // Botão de exclusão
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = "Excluir";
-    deleteButton.classList.add("delete-button");
-
-    // Adicionar evento ao botão de exclusão
-    deleteButton.onclick = function() {
-        cardContainer.removeChild(card); // Remove o card do container
-    };
-
-    // Anexar elementos ao card
     cardBody.appendChild(turnoP);
     cardBody.appendChild(dataInicialP);
     cardBody.appendChild(dataFinalP);
-    cardBody.appendChild(editButton); // Adicionar o botão de edição
-    cardBody.appendChild(deleteButton); // Adicionar o botão de exclusão
 
     card.appendChild(cardHeader);
     card.appendChild(cardBody);
 
-    cardContainer.appendChild(card);
+    // Anexar o card dentro do link
+    cardLink.appendChild(card);
+
+    // Adicionar o card linkado no container
+    cardContainer.appendChild(cardLink);
 }
+
 
 // Função para reabrir o pop-up com as informações da turma para edição
 function openEditModal(card, disciplina, turma, turno, dataInicial, dataFinal) {
