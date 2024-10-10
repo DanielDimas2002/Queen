@@ -14,8 +14,8 @@ body {
     padding: 20px;
     display: flex;
     align-items: center;
-    justify-content:space-between;
-    border-bottom: 1px solid #ddd;
+    justify-content: space-between;
+    border-bottom: 2px solid black;
 }
 
 
@@ -24,10 +24,74 @@ body {
     font-size: 14px;
 }
 
-.header-links a {
+.header-links  {
     margin-left: 15px;
     color: #1a73e8;
     text-decoration: none;
+}
+
+/* possivel futura responsividade
+
+    font-family: 'Ruda', 'Roboto';
+    color: rgba(0, 0, 0, 0.788);
+    font-weight: 400;
+    font-size: 22px;
+    display: grid;
+    place-content: center;
+    text-decoration: none;  Remove sublinhado dos links 
+*/
+
+.logo_control{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-right: 20px;
+    gap: 30px;
+}
+
+.logo_control img {
+    max-width: 100px; 
+    height: auto;
+}
+
+#controle_div{
+    display: flex;
+    align-items: center;
+    
+}
+
+#openFormButton{
+    background-color: #f7dd468b;
+    color: black;
+    padding: 12px 20px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    margin: 8px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    border-color: #333;
+    transition: background-color 0.2s ease;
+}
+
+#openFormButton:hover{
+    background-color: #FFFDE6;
+}
+
+#btn_home{
+    background-color: #f7dd468b;
+    color: black;
+    padding: 12px 20px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    margin: 8px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    border-color: #333;
+    transition: background-color 0.2s ease;
 }
 
 .card-container {
@@ -53,7 +117,7 @@ body {
 }
 
 .blue {
-    background-color: #c1fb11;
+    background-color: rgba(143, 44, 44, 0.732);
 }
 
 .gray {
@@ -81,21 +145,3 @@ body {
     color: #333;
 }
 
-#openFormButton{
-    background-color: #f7dd468b;
-    color: black;
-    padding: 12px 20px;
-    text-align: center;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 16px;
-    margin: 8px 2px;
-    cursor: pointer;
-    border-radius: 5px;
-    border-color: #333;
-    transition: background-color 0.2s ease;
-}
-
-#openFormButton:hover{
-    background-color: #FFFDE6;
-}
