@@ -228,6 +228,7 @@ main {
 
 .conteudo-secundario-escrito{
     padding-top: 10%;
+    text-align: center;
 }
 
 .container-conteudo-secundario h3{
@@ -378,34 +379,29 @@ main {
     cursor: pointer;
 }
 
-.conteudo-terceario-midia{
+.conteudo-terceario-midia {
     flex: 1;
-    width: 700px;
-    /* Defina a largura desejada para a div */
-    height:700px;
-    /* Defina a altura desejada para a div */
+    width: 100%;
+    /* Use 100% para que a div se ajuste ao tamanho da tela */
+    max-width: 700px;
+    /* Limita a largura máxima da div */
+    height: 700px;
+    /* Define a altura fixa */
     overflow: hidden;
-    /* Para evitar que a imagem ultrapasse os limites da div */
     position: relative;
-    /* Importante para alinhar a imagem */
     display: flex;
     margin-top: 1%;
     margin-bottom: 1%;
 }
 
-.conteudo-terceario-midia img{
+.conteudo-terceario-midia img {
     width: 100%;
-    /* Faz a imagem ocupar 100% da largura da div */
-    height: auto;
-    /* Mantém a proporção da imagem */
+    height: 100%;
+    /* Ocupa a altura total da div */
+    object-fit: contain;
+    /* Garante que a imagem inteira seja exibida sem cortes */
     display: block;
-    /* Para corrigir qualquer espaçamento extra */
-    position: absolute;
-    /* Permite que a imagem cubra toda a área da div */
-    top: 0;
-    /* Alinha a imagem ao topo da div */
-    left: 0;
-    /* Alinha a imagem à esquerda da div */
+    position: relative;
     border-radius: 20px;
     padding-left: 3%;
 }
@@ -499,3 +495,5 @@ main {
         display: none !important;
     }
 }
+
+
