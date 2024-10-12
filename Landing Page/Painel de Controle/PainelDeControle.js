@@ -1,19 +1,21 @@
 // Definição da classe Estudante com seu construtor
 class Estudante {
-    constructor(nomeAluno, Av1, Av2, Av3, Media, Situacao) {
+    constructor(nomeAluno, Av1 = 0, Av2 = 0, Av3 = 0, Media = 0, Recuperacao = 0, Situacao = "Reprovado") {
         this.Nome = nomeAluno; // Nome do aluno
         this.Avaliacao1 = Av1; // Nota da Avaliação 1
         this.Avaliacao2 = Av2; // Nota da Avaliação 2
         this.Avaliacao3 = Av3; // Nota da Avaliação 3
         this.Media = Media; // Média do aluno
+        this.Recuperacao = Recuperacao; // Nota da recuperação
         this.Situacao = Situacao; // Situação do aluno (Aprovado ou Reprovado)
     }
 }
 
+
 // Seleciona os elementos do formulário e inicializa a lista de alunos
 const NovoAlunoForm = document.getElementById("CadastrarAlunos");
-const FormIndividual = document.getElementById("FormIndividual");
 const FormGroup = document.getElementById("FormGrupo");
+const FormRecuperacao = document.getElementById("FormRecuperacao");
 const defMedia = document.querySelector("#Predefinição")
 let MediaDefinida = 0
 let ListaDeAlunos = [];
@@ -180,6 +182,7 @@ function gerarTabelaAlunos() {
         <th>Avaliação 2</th>
         <th>Avaliação 3</th>
         <th>Média</th>
+        <th>Recuperação</th>
         <th>Situação</th>
         <th>Ações</th> <!-- Nova coluna para ações -->
     `;
@@ -197,6 +200,7 @@ function gerarTabelaAlunos() {
             <td>${aluno.Avaliacao2}</td>
             <td>${aluno.Avaliacao3}</td>
             <td>${aluno.Media}</td>
+            <td>${aluno.Recuperacao}</td>
             <td>${aluno.Situacao}</td>
             <td>
                 <button class="btn-editar" data-index="${index}">Editar</button>
@@ -233,12 +237,18 @@ function editarNomeAluno(index) {
         // Verifica se o novo nome não está vazio
         if (novoNome !== '') {
             aluno.Nome = novoNome;
-
-            // Atualiza a tabela com o novo nome
-            gerarTabelaAlunos();
+            gerarTabelaAlunos(); // Atualiza a tabela com o novo nome
         } else {
-            alert("O nome do aluno não pode ser vazio.");
-            gerarTabelaAlunos(); // Reverte a edição se o nome estiver vazio
+            // Pergunta ao professor se deseja excluir o aluno
+            const confirmarExclusao = confirm("O nome do aluno não pode ser vazio. Deseja excluir o aluno " + aluno.Nome + "?");
+            if (confirmarExclusao) {
+                // Remove o aluno da lista
+                ListaDeAlunos.splice(index, 1);
+                gerarTabelaAlunos(); // Atualiza a tabela
+            } else {
+                // Reverte a edição, se o professor não confirmar a exclusão
+                gerarTabelaAlunos(); 
+            }
         }
     });
 
@@ -246,8 +256,65 @@ function editarNomeAluno(index) {
     input.focus();
 }
 
+FormRecuperacao.addEventListener("submit", (e) => {
+    e.preventDefault();
 
+    const nomesAlunos = FormRecuperacao.NomesAlunosRecup.value;
+    const notaRecuperacao = parseFloat(FormRecuperacao.NotaAlunoRecup.value);
+    const mediaRecu = parseFloat(FormRecuperacao.valorMediaRecup.value);
 
-document.getElementById("login-btn").addEventListener("click", function() {
-    window.location.href = "Painel.html";
+    // Validação da nota de recuperação
+    if (isNaN(notaRecuperacao)) {
+        alert("Por favor, insira uma nota de recuperação válida.");
+        return;
+    }
+
+    if (isNaN(mediaRecu)) {
+        alert("Por favor, insira uma média de recuperação válida.");
+        return;
+    }
+
+    // Trata os dados dos alunos
+    const nomesTratados = TratamentoDeDados(nomesAlunos);
+
+    if (nomesTratados.length === 0) {
+        alert("Por favor, informe pelo menos um nome de aluno.");
+        return;
+    }
+
+    // Itera sobre cada nome de aluno informado
+    nomesTratados.forEach(nomeAluno => {
+        const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
+
+        if (!aluno) {
+            alert(`Aluno ${nomeAluno} não encontrado.`);
+            return;
+        }
+
+        // Atualiza a nota de recuperação do aluno
+        aluno.Recuperacao = notaRecuperacao;
+
+        // Verifica se a nota de recuperação é suficiente para aprovação
+        if (notaRecuperacao >= mediaRecu) {
+            aluno.Situacao = "Aprovado"; // Aluno é aprovado se a nota de recuperação for igual ou maior que a média
+        } else {
+            // Mantenha a situação anterior se o aluno já estiver aprovado
+            if (aluno.Situacao !== "Aprovado") {
+                aluno.Situacao = "Reprovado"; // Caso contrário, continua reprovado
+            }
+        }
+    });
+
+    // Atualiza a tabela de alunos
+    gerarTabelaAlunos();
+
+    // Limpa os campos do formulário
+    FormRecuperacao.reset();
 });
+
+
+
+
+//document.getElementById("login-btn").addEventListener("click", function() {
+  //  window.location.href = "versao17.html";
+//});

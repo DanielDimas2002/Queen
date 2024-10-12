@@ -20,7 +20,8 @@
 <body>
     <header class="cabecalho">
         <div class="controle-logo">
-            <img id="separa-logo-principal" class="logo-titulo" src="Midia/Logo_Queen.png" alt="Logo do Plataforma Queen">
+            <img id="separa-logo-principal" class="logo-titulo" src="Midia/Logo_Queen.png"
+                alt="Logo do Plataforma Queen">
         </div>
         <nav class="menu">
             <a id="home" class="item-menu" href="../LandingPage.html">Home</a>
@@ -35,7 +36,7 @@
         </div>
     </header>
     <main>
-            <h1>Painel de Controle</h1>
+        <h1>Painel de Controle</h1>
         <section id="Config_Midia">
             <section id="Config">
                 <h2>Criar Turma</h2>
@@ -68,12 +69,15 @@
                             value="Avaliação3" id="Av3" name="LocalAv" required> <label for="Avaliação3">Avaliação
                             3</label> <input type="submit" value="Pontuar Atividade" class="btnEnvio"></p>
                 </form>
-                <form id="excluirAluno">
-                    <h2>Excluir Aluno</h2>
-                    <p><label>Deseja Excluir um(a) aluno(a)?</label>
-                        <input type="text" class="camposEntrada" id="AlunoExcluido" >
-                        <input type="submit" value="Excluir" class="btnEnvio">
+                <!-- Seção para Pontuar Alunos em Recuperação -->
+                <form id="FormRecuperacao">
+                    <h2>Pontuar Alunos em Recuperação</h2>
+                    <p>Nome dos Alunos: <input type="text" id="NomesAlunosRecup" class="camposEntrada" required></p>
+                    <p>Nota de Recuperação: <input type="number" id="NotaAlunoRecup" class="camposEntrada" required></p>
+                    <p>Defina a nota mínima para aprovação na recuperação:
+                        <input type="number" max="10" min="0" id="valorMediaRecup" required class="camposEntrada">
                     </p>
+                    <input type="submit" value="Pontuar Recuperação" class="btnEnvio">
                 </form>
                 <form>
                     <h2>Baixar Tabela</h2>
@@ -96,6 +100,7 @@
                     <th>Av2</th>
                     <th>Av3</th>
                     <th>Média</th>
+                    <th>Recuperação</th>
                     <th>Situação</th>
                 </tr>
             </table>
@@ -111,10 +116,10 @@
 
         // Adiciona um evento de clique no botão de menu hamburguer
         menuToggle.addEventListener('click', () => {
-        menu.classList.toggle('menu-ativo'); // Alterna entre mostrar e esconder o menu
-});
+            menu.classList.toggle('menu-ativo'); // Alterna entre mostrar e esconder o menu
+        });
     </script>
-    
+
 </body>
 
 </html>
