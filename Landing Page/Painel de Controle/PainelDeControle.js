@@ -181,6 +181,7 @@ function gerarTabelaAlunos() {
         <th>Avaliação 3</th>
         <th>Média</th>
         <th>Situação</th>
+        <th>Ações</th> <!-- Nova coluna para ações -->
     `;
     tabela.appendChild(cabecalho);
 
@@ -188,20 +189,65 @@ function gerarTabelaAlunos() {
     ListaDeAlunos.sort((a, b) => a.Nome.localeCompare(b.Nome));
 
     // Adiciona cada aluno na tabela
-    ListaDeAlunos.forEach(aluno => {
+    ListaDeAlunos.forEach((aluno, index) => {
         const linha = document.createElement("tr");
         linha.innerHTML = `
-            <td>${aluno.Nome}</td>
+            <td><span class="nome-aluno">${aluno.Nome}</span></td> <!-- Nome do aluno -->
             <td>${aluno.Avaliacao1}</td>
             <td>${aluno.Avaliacao2}</td>
             <td>${aluno.Avaliacao3}</td>
             <td>${aluno.Media}</td>
             <td>${aluno.Situacao}</td>
+            <td>
+                <button class="btn-editar" data-index="${index}">Editar</button>
+            </td> <!-- Botão de editar -->
         `;
         tabela.appendChild(linha);
     });
+
+    // Adiciona evento de clique para editar o nome do aluno
+    document.querySelectorAll('.btn-editar').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const index = e.target.getAttribute('data-index');
+            editarNomeAluno(index);
+        });
+    });
 }
 
+function editarNomeAluno(index) {
+    const aluno = ListaDeAlunos[index];
+    const nomeSpan = document.querySelectorAll('.nome-aluno')[index];
+
+    // Cria um campo de input para editar o nome
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = aluno.Nome;
+
+    // Substitui o nome atual pelo campo de input
+    nomeSpan.replaceWith(input);
+
+    // Adiciona evento de 'blur' (perda de foco) para salvar a edição
+    input.addEventListener('blur', () => {
+        const novoNome = input.value.trim();
+
+        // Verifica se o novo nome não está vazio
+        if (novoNome !== '') {
+            aluno.Nome = novoNome;
+
+            // Atualiza a tabela com o novo nome
+            gerarTabelaAlunos();
+        } else {
+            alert("O nome do aluno não pode ser vazio.");
+            gerarTabelaAlunos(); // Reverte a edição se o nome estiver vazio
+        }
+    });
+
+    // Automaticamente foca no campo de input
+    input.focus();
+}
+
+
+
 document.getElementById("login-btn").addEventListener("click", function() {
-    window.location.href = "versao17.html";
+    window.location.href = "Painel.html";
 });
