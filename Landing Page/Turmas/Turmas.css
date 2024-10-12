@@ -16,9 +16,14 @@ body {
     align-items: center;
     justify-content: space-between;
     border-bottom: 2px solid black;
+    
+
 }
 
+.link_home{
+    text-decoration: none; /* Remove o sublinhado dos links */
 
+}
 
 .header p {
     font-size: 14px;
@@ -27,19 +32,8 @@ body {
 .header-links  {
     margin-left: 15px;
     color: #1a73e8;
-    text-decoration: none;
+    
 }
-
-/* possivel futura responsividade
-
-    font-family: 'Ruda', 'Roboto';
-    color: rgba(0, 0, 0, 0.788);
-    font-weight: 400;
-    font-size: 22px;
-    display: grid;
-    place-content: center;
-    text-decoration: none;  Remove sublinhado dos links 
-*/
 
 .logo_control{
     display: flex;
@@ -61,8 +55,8 @@ body {
 }
 
 #openFormButton{
+    font-family: 'Ruda', 'Roboto';
     background-color: #f7dd468b;
-    color: black;
     padding: 12px 20px;
     text-align: center;
     text-decoration: none;
@@ -80,8 +74,8 @@ body {
 }
 
 #btn_home{
+    font-family: 'Ruda', 'Roboto';
     background-color: #f7dd468b;
-    color: black;
     padding: 12px 20px;
     text-align: center;
     text-decoration: none;
@@ -92,6 +86,16 @@ body {
     border-radius: 5px;
     border-color: #333;
     transition: background-color 0.2s ease;
+}
+
+#btn_home:hover{
+    background-color: #FFFDE6;
+}
+
+.botao{
+    font-size: 22px;
+    text-decoration: none; /* Remove o sublinhado dos links */
+    padding: 10px;
 }
 
 .card-container {
@@ -117,7 +121,7 @@ body {
 }
 
 .blue {
-    background-color: rgba(143, 44, 44, 0.732);
+    background-color: #9e5540;
 }
 
 .gray {
@@ -143,5 +147,32 @@ body {
     margin-top: 10px;
     font-size: 14px;
     color: #333;
+}
+
+/* Responsividade */
+
+@media screen and (max-width: 1020px) {
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        
+    }
+
+    .header-links {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .botao {
+        margin: 5px 0;
+        width: 100%; /* Botões ocupam toda a largura */
+    }
+
+    
+
+    .modal-content {
+        width: 90%; /* Modal ocupa 90% da largura */
+    }
 }
 

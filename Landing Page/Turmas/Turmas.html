@@ -6,22 +6,25 @@
     <title>Google Sala de Aula Clone</title>
     <link rel="stylesheet" href="Turmas.css">
     <link rel="stylesheet" href="PopUp.css"> <!-- Referência ao novo arquivo de CSS -->
+    <link rel="stylesheet" href="rodapeTurma.css">
 </head>
 <body>
     <header class="header">
         <div class="logo_control">
         <img id="separa-logo-principal" class="logo-titulo" src="Midia/Logo_Queen.png"
             alt="Logo do Plataforma Queen">
-    <h2 class="Titulo-pagina">Bem vindo ao gerenciador de Turmas Queen!</h2>
+    <h2 class="Titulo-pagina">Bem vindo ao gerenciador de Turmas!</h2>
     </div>
 
     <div class="header-links">
-        <a href="../LandingPage.html">
-        <button id="btn_home">Home</button>
-    </a>
-        <button id="openFormButton">Criar Nova Turma</button> <!-- Botão para abrir o formulário -->
+        <a href="../LandingPage.html" class="link_home">
+        <button class="botao" id="btn_home">Home</button>
+        </a>
+        <button class="botao" id="openFormButton">Criar Nova Turma</button> <!-- Botão para abrir o formulário -->
     </div>
     </header>
+
+    
     
     <section class="card-container" id="cardContainer">
         <!-- Cards de exemplo -->
@@ -40,6 +43,7 @@
         <!-- Outros cards podem ser adicionados aqui -->
     </section>
 
+    
     <!-- Modal (pop-up) para o formulário -->
     <div id="turmaModal" class="modal">
         <div class="modal-content">
@@ -70,6 +74,13 @@
             </form>
         </div>
     </div>
+
+    <footer>
+        <div class="logo-rodape-turma">
+          <img src="Midia/Logo_Queen.png" alt="Logo do Plataforma Queen" />
+        </div>
+        <h2>Transforme complexidade em eficiencia com o Queen!</h2>
+    </footer>
 
     <!-- Inclua o arquivo externo de JavaScript -->
     <script src="Turmas.js"></script>
