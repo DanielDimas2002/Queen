@@ -12,17 +12,18 @@
     const app = express();
 
     app.use(express.json());
-    app.use(cors());
+    app.use(cors()); // Para permitir que o backend seja acessado pelo frontend
 
+    // Cadastro dos Usuários
     app.post('/cadastro/usuario', async (req, res) => {
         console.log(req.body); // Depurando o corpo da requisição
         const { nome, email, senha, site } = req.body;
     
-        if (!nome || !email || !senha || !site) {
+        if (!nome || !email || !senha || !site) { //Verifica se todos os campos estão preenchidos
             return res.status(400).json({ message: 'Preencha todos os campos obrigatórios!' });
         }
     
-        const usuarioExistente = await Usuario.findOne({ where: { email } });
+        const usuarioExistente = await Usuario.findOne({ where: { email } }); // Analisa se o email já está cadastrado
         if (usuarioExistente) {
             return res.status(400).json({ message: 'Email já está em uso.' });
         }
@@ -42,20 +43,21 @@
         }
     });
 
+    // Login dos Usuários
     app.post('/login', async (req, res) => {
         const { email, senha } = req.body;
 
-        if(!email || !senha){
+        if(!email || !senha){ // Verifica se todos os campos estão preenchidos
             return res.status(400).json({ message: 'Preencha todos os campos!' });
         }
 
         try{
-            const usuario = await Usuario.findOne({ where: {email} });
+            const usuario = await Usuario.findOne({ where: {email} }); // Verifica se o email é válido
             if(!usuario){
                 return res.status(401).json({ message: 'Email ou senha inválidos.' });
             }
             
-            if(senha !== usuario.senha){
+            if(senha !== usuario.senha){ //Verifica se  a senha é válida
                 return res.status(401).json({ message: 'Email ou senha inválidos.' });
             }
 
