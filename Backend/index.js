@@ -15,20 +15,57 @@
     app.use(cors());
 
     app.post('/cadastro/usuario', async (req, res) => {
-        const {nome, email, senha, site} = req.body;
-         try{
+        console.log(req.body); // Depurando o corpo da requisição
+        const { nome, email, senha, site } = req.body;
+    
+        if (!nome || !email || !senha || !site) {
+            return res.status(400).json({ message: 'Preencha todos os campos obrigatórios!' });
+        }
+    
+        const usuarioExistente = await Usuario.findOne({ where: { email } });
+        if (usuarioExistente) {
+            return res.status(400).json({ message: 'Email já está em uso.' });
+        }
+    
+        try {
             const newUser = await Usuario.create({
                 nome,
                 email,
                 senha,
                 site
             });
-
+    
             res.status(201).json({ message: 'Usuário Cadastrado com sucesso!' });
-         }catch (error){
-            console.error('Erro ao cadastrar usuario:', error);
-            res.status(400).json('Erro ao cadastrar usuario');
-         }
+        } catch (error) {
+            console.error('Erro ao cadastrar usuário:', error);
+            res.status(400).json({ message: 'Erro ao cadastrar usuário', error: error.message });
+        }
+    });
+
+    app.post('/login', async (req, res) => {
+        const { email, senha } = req.body;
+
+        if(!email || !senha){
+            return res.status(400).json({ message: 'Preencha todos os campos!' });
+        }
+
+        try{
+            const usuario = await Usuario.findOne({ where: {email} });
+            if(!usuario){
+                return res.status(401).json({ message: 'Email ou senha inválidos.' });
+            }
+            
+            if(senha !== usuario.senha){
+                return res.status(401).json({ message: 'Email ou senha inválidos.' });
+            }
+
+            res.status(200).json({ message: 'Login realizado com sucesso!', usuario: { nome: usuario.nome, email: usuario.email } });
+        }catch (error){
+            console.error('Erro ao fazer login', error);
+            res.status(500).json({ message: 'Erro ao fazer login.' })
+
+        }
+        
     });
 
     app.post('/criar/turma', async (req, res) => {
@@ -51,19 +88,6 @@
         }
     });
 
-    app.post('/aluno', async (req, res) => {
-        const {nome} = req.body;
-        try{
-            const NovoAluno = await Aluno.create({
-                nome
-            });
-            res.status(201).json(NovoAluno);
-        }catch (error){
-            console.error(error);
-            res.status(400).send('Erro ao adicionar aluno');
-        }
-
-    })
 
 
     app.get('/alunos', async (req, res) => {
