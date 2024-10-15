@@ -44,3 +44,17 @@ footer h2{
     left: 0;
     /* Alinha a imagem à esquerda da div */
 }
+
+/* Responsividade */
+
+@media screen and (max-width: 1020px) {
+
+    footer{
+        position: relative;
+    }
+
+    footer h2{
+        margin-top: 7%;
+        margin-left: 1%;
+    }
+}
