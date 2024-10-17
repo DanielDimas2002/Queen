@@ -18,19 +18,22 @@ const FormGroup = document.getElementById("FormGrupo");
 const FormRecuperacao = document.getElementById("FormRecuperacao");
 const defMedia = document.querySelector("#Predefinição")
 
-// Selecionando os botões e modais
-const btnTurma = document.getElementById('btnTurma');
-const btnPontuar = document.getElementById('btnPontuar');
-const btnRecuperacao = document.getElementById('btnRecuperacao');
+// Selecionando os botões os botões de ativação do PopUp
+const PopUpAddAluno = document.getElementById('PopUpAddAluno');
+const PopUpDefMedia = document.getElementById('PopUpDefMedia');
+const PopUpPontuar = document.getElementById('PopUpPontuar');
+const PopUpNotaRecu = document.getElementById('PopUpNotaRecu');
+const PopUpPontuarRecu = document.getElementById('PopUpPontuarRecu');
 
+// Selecionando os próprios modais
 const popupTurma = document.getElementById('popupTurma');
-const popupPontuar = document.getElementById('popupPontuar');
-const popupRecuperacao = document.getElementById('popupRecuperacao');
-
-const btnDefinirMedia = document.getElementById('btnDefinirMedia');
-const btnDefinirRecuperacao = document.getElementById('btnDefinirRecuperacao');
 const popupMedia = document.getElementById('popupMedia');
+const popupPontuar = document.getElementById('popupPontuar');
 const popupRecuperacaoNota = document.getElementById('popupRecuperacaoNota');
+const popupRecuperacao = document.getElementById('popupRecuperacao'); //Falta fazer o modal
+
+
+
 
 // Função para abrir o pop-up
 function abrirPopup(popup) {
@@ -54,9 +57,9 @@ fecharBtns.forEach(btn => {
 });
 
 // Evento de clique para abrir os pop-ups
-btnTurma.addEventListener('click', () => abrirPopup(popupTurma));
-btnPontuar.addEventListener('click', () => abrirPopup(popupPontuar));
-btnRecuperacao.addEventListener('click', () => abrirPopup(popupRecuperacao));
+PopUpAddAluno.addEventListener('click', () => abrirPopup(popupTurma));
+PopUpPontuar.addEventListener('click', () => abrirPopup(popupPontuar));
+PopUpPontuarRecu.addEventListener('click', () => abrirPopup(popupRecuperacao));
 
 // Fecha o pop-up se clicar fora do conteúdo
 window.addEventListener('click', (e) => {
@@ -83,8 +86,8 @@ document.querySelectorAll('.fechar').forEach(btn => {
 });
 
 // Abertura dos pop-ups ao clicar nos botões
-btnDefinirMedia.addEventListener('click', () => abrirPopup(popupMedia));
-btnDefinirRecuperacao.addEventListener('click', () => abrirPopup(popupRecuperacaoNota));
+PopUpDefMedia.addEventListener('click', () => abrirPopup(popupMedia));
+PopUpNotaRecu.addEventListener('click', () => abrirPopup(popupRecuperacaoNota));
 
 // Evento de submissão do formulário de média
 const formMedia = document.getElementById('formMedia');
@@ -154,7 +157,6 @@ salvarTurmaBtn.addEventListener("click", (e) => {
 });
 
 
-
 const salvarPontuacaoBtn = document.getElementById('salvarPontuacao');
 
 salvarPontuacaoBtn.addEventListener("click", (e) => {
@@ -183,30 +185,41 @@ salvarPontuacaoBtn.addEventListener("click", (e) => {
     nomesTratados.forEach(nomeAluno => {
         const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
 
-        if (aluno) {
-            switch (avaliacaoSelecionada) {
-                case "Avaliação1":
-                    aluno.Avaliacao1 = nota;
-                    break;
-                case "Avaliação2":
-                    aluno.Avaliacao2 = nota;
-                    break;
-                case "Avaliação3":
-                    aluno.Avaliacao3 = nota;
-                    break;
-            }
-            aluno.Media = ((aluno.Avaliacao1 + aluno.Avaliacao2 + aluno.Avaliacao3) / 3).toFixed(2);
-
-            aluno.Situacao = aluno.Media >= MediaDefinida ? "Aprovado" : "Reprovado";
+        if (!aluno) {
+            alert(`Aluno ${nomeAluno} não encontrado.`);
+            return;
         }
+
+        // Atribui a nota à avaliação correspondente
+        switch (avaliacaoSelecionada) {
+            case "Avaliação1":
+                aluno.Avaliacao1 = nota;
+                break;
+            case "Avaliação2":
+                aluno.Avaliacao2 = nota;
+                break;
+            case "Avaliação3":
+                aluno.Avaliacao3 = nota;
+                break;
+            default:
+                alert("Selecione uma avaliação válida.");
+                return;
+        }
+
+        // Calcula a média do aluno
+        aluno.Media = ((aluno.Avaliacao1 + aluno.Avaliacao2 + aluno.Avaliacao3) / 3).toFixed(2);
+
+        // Atualiza a situação do aluno com base na média definida
+        aluno.Situacao = aluno.Media >= MediaDefinida ? "Aprovado" : "Reprovado";
     });
 
-    // Atualiza a tabela
+    // Atualiza a tabela de alunos
     gerarTabelaAlunos();
 
     // Fecha o pop-up após o sucesso
     fecharPopup(popupPontuar);
 });
+
 
 const salvarRecuperacaoBtn = document.getElementById('salvarRecuperacao');
 

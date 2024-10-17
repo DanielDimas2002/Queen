@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Queen - Painel de Controle</title>
-    <link rel="stylesheet" href="Painel.css"> <!-- Inclui o arquivo CSS para estilização -->
+    <link rel="stylesheet" href="Painel.css"> 
     <link rel="stylesheet" href="cabecalho.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,11 +29,11 @@
             <a id="home" class="item-menu" href="../LandingPage.html">Home</a>
             <a id="home" class="item-menu" href="../LandingPage.html#Login_Registro">Entrar</a>
             <a class="item-menu" href="../LandingPage.html#Login_Registro" id="btnRegistro">Cadastro</a>
-            <button id="btnTurma" class="popup-ativar">Criar Turma</button> <!-- Botão para ativar popup de criar turma -->
-            <button id="btnPontuar" class="popup-ativar">Pontuar Atividades</button> <!-- Botão para ativar popup de pontuar atividades -->
-            <button id="btnRecuperacao" class="popup-ativar">Pontuar Recuperação</button> <!-- Botão para ativar popup de pontuar recuperação -->
-            <button id="btnDefinirMedia">Definir Média</button> <!-- Botão para ativar popup de média de média de aprovação -->
-            <button id="btnDefinirRecuperacao">Definir Nota de Recuperação</button> <!-- Botão para ativar popup de nota de recuperação -->
+            <button id="PopUpAddAluno" class="popup-ativar">Criar Turma</button> <!-- Botão para ativar popup de criar turma -->
+            <button id="PopUpDefMedia">Definir Média</button> <!-- Botão para ativar popup de média de média de aprovação -->
+            <button id="PopUpPontuar" class="popup-ativar">Pontuar Atividades</button> <!-- Botão para ativar popup de pontuar atividades -->
+            <button id="PopUpNotaRecu">Definir Nota de Recuperação</button> <!-- Botão para ativar popup de nota de recuperação -->
+            <button id="PopUpPontuarRecu" class="popup-ativar">Pontuar Recuperação</button> <!-- Botão para ativar popup de pontuar recuperação -->
         </nav>        
         <div class="menu-hamburguer" id="menuToggle">
             <span></span>
@@ -127,12 +127,24 @@
     </div>
 </div>
 
+<!-- Modal Definir Média -->
+<div id="popupMedia" class="popup">
+    <div class="popup-content">
+        <span class="fechar">&times;</span>
+        <h2>Definir Média</h2>
+        <form id="formMedia">
+            <label for="inputMedia">Informe a média necessária para aprovação:</label>
+            <input type="number" id="inputMedia" required>
+            <button type="submit">Salvar Média</button>
+        </form>
+    </div>
+</div>
+
 <!-- Modal Pontuar Atividades -->
 <div id="popupPontuar" class="popup">
     <div class="popup-content">
         <span class="close" id="closePontuar">&times;</span>
         <h2>Pontuar Atividades</h2>
-        <!-- Formulário completo -->
         <form id="FormGrupo">
             <p>Nome dos Alunos: <input type="text" id="NomesAlunosGrup" class="camposEntrada"></p>
             <p>Nota dos Alunos: <input type="text" id="NotaAlunoGrup" class="camposEntrada"></p>
@@ -150,18 +162,7 @@
     </div>
 </div>
 
-<!-- Modal Definir Média -->
-<div id="popupMedia" class="popup">
-    <div class="popup-content">
-        <span class="fechar">&times;</span>
-        <h2>Definir Média</h2>
-        <form id="formMedia">
-            <label for="inputMedia">Informe a média necessária para aprovação:</label>
-            <input type="number" id="inputMedia" required>
-            <button type="submit">Salvar Média</button>
-        </form>
-    </div>
-</div>
+
 
 <!-- Modal Definir Nota de Recuperação -->
 <div id="popupRecuperacaoNota" class="popup">
