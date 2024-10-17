@@ -11,8 +11,11 @@ class Estudante {
     }
 }
 
+//Definições iniciais
+let MediaDefinida = 0;
+let ListaDeAlunos = [];
+
 // Seleciona os elementos do formulário e inicializa a lista de alunos
-const NovoAlunoForm = document.getElementById("CadastrarAlunos");
 const FormGroup = document.getElementById("FormGrupo");
 const FormRecuperacao = document.getElementById("FormRecuperacao");
 const defMedia = document.querySelector("#Predefinição")
@@ -32,71 +35,75 @@ const popupRecuperacaoNota = document.getElementById('popupRecuperacaoNota');
 const popupRecuperacao = document.getElementById('popupRecuperacao'); //Falta fazer o modal
 
 // Selecionando os formulários de dentro dos PopUp
-const FormPopUpAddAluno = document.getElementById("CadastrarAlunos")
+const FormPopUpAddAluno = document.getElementById("CadastrarAlunos");
 const FormPopUpDefMedia = document.getElementById("formMedia")
 const FormPopUpPontuar = document.getElementById("formPontuar")
 const FormPopUpNotaRecu = document.getElementById("formNotaRecu")
 const FormPopUpPontuarRecu = document.getElementById("formPontuarRecu")// Falta criar
 
+// Funcionamento do PopUp
 
-
-
-
-
-
-// Função para abrir o pop-up
-function abrirPopup(popup) {
+function abrirPopup(popup) { // Função para abrir o pop-up
     popup.style.display = 'block';
 }
 
-// Função para fechar o pop-up
-function fecharPopup(popup) {
+// Evento de clique para abrir os pop-ups
+PopUpAddAluno.addEventListener('click', () => abrirPopup(popupTurma));
+PopUpDefMedia.addEventListener('click', () => abrirPopup(popupMedia));
+PopUpPontuar.addEventListener('click', () => abrirPopup(popupPontuar));
+PopUpNotaRecu.addEventListener('click', () => abrirPopup(popupRecuperacaoNota));
+PopUpPontuarRecu.addEventListener('click', () => abrirPopup(popupRecuperacao));
+
+function fecharPopup(popup) { // Função para fechar o pop-up
     popup.style.display = 'none';
 }
 
-// Botões de fechar dentro dos pop-ups (selecionando pelo botão "X")
-const fecharBtns = document.querySelectorAll('.fechar');
+const FecharPopUp = document.querySelectorAll('.fechar'); // Botões de fechar dentro dos pop-ups (selecionando pelo botão "X")
 
-// Adicionando evento de clique em cada botão de fechar
-fecharBtns.forEach(btn => {
+FecharPopUp.forEach(btn => { // Adicionando evento de clique em cada botão de fechar
     btn.addEventListener('click', () => {
         const popup = btn.closest('.popup');
         fecharPopup(popup);
     });
 });
 
-// Evento de clique para abrir os pop-ups
-PopUpAddAluno.addEventListener('click', () => abrirPopup(popupTurma));
-PopUpPontuar.addEventListener('click', () => abrirPopup(popupPontuar));
-PopUpPontuarRecu.addEventListener('click', () => abrirPopup(popupRecuperacao));
-
-// Fecha o pop-up se clicar fora do conteúdo
-window.addEventListener('click', (e) => {
+window.addEventListener('click', (e) => { // Fecha o pop-up se clicar fora do conteúdo
     if (e.target.classList.contains('popup')) {
         fecharPopup(e.target);
     }
 });
 
-// Função para abrir o pop-up
-function abrirPopup(popup) {
-    popup.style.display = 'block';
-}
+//Fim do Funcionamento do PopUp
 
-// Função para fechar o pop-up
-function fecharPopup(popup) {
-    popup.style.display = 'none';
-}
+FormPopUpAddAluno.addEventListener("submit", (e) => {
+    e.preventDefault(); // Impede o comportamento padrão de envio do formulário
 
-// Fechar pop-ups ao clicar no "X"
-document.querySelectorAll('.fechar').forEach(btn => {
-    btn.addEventListener('click', () => {
-        fecharPopup(btn.closest('.popup'));
-    });
+    // Obtém o valor do campo de texto do formulário de cadastro de novos alunos
+    const nomesAlunos = document.getElementById("inputNomesTurma").value;
+
+    // Trata os dados dos alunos
+    const nomesTratados = TratamentoDeDados(nomesAlunos);
+
+    if (nomesTratados.length === 0) {
+        alert("Por favor, informe pelo menos um nome de aluno.");
+        return;
+    }
+
+    // Adiciona os alunos à lista
+    for (let i = 0; i < nomesTratados.length; i++) {
+        const aluno = new Estudante(nomesTratados[i]);
+        ListaDeAlunos.push(aluno);
+    }
+
+    // Classifica o conjunto de nomes em ordem alfabética
+    ListaDeAlunos.sort((a, b) => a.Nome.localeCompare(b.Nome)); // Assumindo que a classe Estudante tem um atributo 'nome'
+
+    // Limpa o campo de texto após a submissão do formulário
+    document.getElementById("inputNomesTurma").value = ""; // Corrigido para o ID correto
+
+    // Atualiza a tabela de alunos
+    gerarTabelaAlunos();
 });
-
-// Abertura dos pop-ups ao clicar nos botões
-PopUpDefMedia.addEventListener('click', () => abrirPopup(popupMedia));
-PopUpNotaRecu.addEventListener('click', () => abrirPopup(popupRecuperacaoNota));
 
 // Evento de submissão do formulário de média
 const formMedia = document.getElementById('formMedia');
@@ -118,52 +125,9 @@ formRecuperacao.addEventListener('submit', (e) => {
     fecharPopup(popupRecuperacaoNota);
 });
 
-// Fecha o pop-up se clicar fora do conteúdo
-window.addEventListener('click', (e) => {
-    if (e.target.classList.contains('popup')) {
-        fecharPopup(e.target);
-    }
-});
 
-let MediaDefinida = 0;
-let ListaDeAlunos = [];
 
-// Evento de clique para o botão de salvar no pop-up de Turma
-const salvarTurmaBtn = document.getElementById('salvarTurma');
 
-salvarTurmaBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-
-    // Captura os valores do pop-up
-    const nomesAlunos = document.getElementById('inputNomesTurma').value.trim(); // ID do campo de nomes no pop-up
-
-    // Chama a função que já existe para processar esses dados
-    const nomesTratados = TratamentoDeDados(nomesAlunos);
-
-    if (nomesTratados.length === 0) {
-        alert("Por favor, informe pelo menos um nome de aluno.");
-        return;
-    }
-
-    // Itera sobre cada nome de aluno informado
-    nomesTratados.forEach(nome => {
-        // Cria um novo aluno e adiciona à lista
-        const aluno = new Estudante(nome);
-        ListaDeAlunos.push(aluno);
-    });
-
-    // Classifica os alunos por nome em ordem alfabética
-    ListaDeAlunos.sort((a, b) => a.Nome.localeCompare(b.Nome));
-
-    // Atualiza a tabela de alunos
-    gerarTabelaAlunos();
-
-    // Limpa o campo de texto após a submissão do formulário
-    document.getElementById('inputNomesTurma').value = '';
-
-    // Fecha o pop-up após o sucesso
-    fecharPopup(popupTurma);
-});
 
 
 const salvarPontuacaoBtn = document.getElementById('salvarPontuacao');
