@@ -37,7 +37,7 @@ const popupRecuperacao = document.getElementById('popupRecuperacao'); //Falta fa
 // Selecionando os formulários de dentro dos PopUp
 const FormPopUpAddAluno = document.getElementById("CadastrarAlunos");
 const FormPopUpDefMedia = document.getElementById("formMedia")
-const FormPopUpPontuar = document.getElementById("formPontuar")
+const FormPopUpPontuar = document.getElementById("formPontuar");
 const FormPopUpNotaRecu = document.getElementById("formNotaRecu")
 const FormPopUpPontuarRecu = document.getElementById("formPontuarRecu")// Falta criar
 
@@ -75,6 +75,8 @@ window.addEventListener('click', (e) => { // Fecha o pop-up se clicar fora do co
 
 //Fim do Funcionamento do PopUp
 
+
+//Função para adição de alunos
 FormPopUpAddAluno.addEventListener("submit", (e) => {
     e.preventDefault(); // Impede o comportamento padrão de envio do formulário
 
@@ -105,40 +107,13 @@ FormPopUpAddAluno.addEventListener("submit", (e) => {
     gerarTabelaAlunos();
 });
 
-// Evento de submissão do formulário de média
-const formMedia = document.getElementById('formMedia');
-formMedia.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const media = parseFloat(document.getElementById('inputMedia').value);
-    MediaDefinida = media; // Define a média globalmente
-    alert(`Média definida como: ${media}`);
-    fecharPopup(popupMedia);
-});
-
-// Evento de submissão do formulário de nota de recuperação
-const formRecuperacao = document.getElementById('formRecuperacao');
-formRecuperacao.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const notaRecuperacao = parseFloat(document.getElementById('inputRecuperacao').value);
-    NotaRecuperacao = notaRecuperacao; // Define a nota de recuperação globalmente
-    alert(`Nota de recuperação definida como: ${notaRecuperacao}`);
-    fecharPopup(popupRecuperacaoNota);
-});
-
-
-
-
-
-
-const salvarPontuacaoBtn = document.getElementById('salvarPontuacao');
-
-salvarPontuacaoBtn.addEventListener("click", (e) => {
+FormPopUpPontuar.addEventListener("click", (e) => {
     e.preventDefault();
 
     // Captura os valores do pop-up
-    const nomesAlunos = document.getElementById('inputNomesPontuar').value.trim(); // Campo de nomes
-    const nota = parseFloat(document.getElementById('inputNotaPontuar').value.replace(',', '.')); // Campo de nota
-    const avaliacaoSelecionada = document.querySelector('input[name="LocalAvPontuar"]:checked').value; // Radio button da avaliação
+    const nomesAlunos = document.getElementById('NomesAlunosGrup').value.trim(); // Campo de nomes
+    const nota = parseFloat(document.getElementById('NotaAlunoGrup').value.replace(',', '.')); // Campo de nota
+    const avaliacaoSelecionada = document.querySelector('input[name="LocalAv"]:checked').value; // Radio button da avaliação
 
     // Validação
     if (!nomesAlunos || isNaN(nota)) {
@@ -192,6 +167,29 @@ salvarPontuacaoBtn.addEventListener("click", (e) => {
     // Fecha o pop-up após o sucesso
     fecharPopup(popupPontuar);
 });
+
+// Evento de submissão do formulário de média
+const formMedia = document.getElementById('formMedia');
+formMedia.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const media = parseFloat(document.getElementById('inputMedia').value);
+    MediaDefinida = media; // Define a média globalmente
+    alert(`Média definida como: ${media}`);
+    fecharPopup(popupMedia);
+});
+
+// Evento de submissão do formulário de nota de recuperação
+const formRecuperacao = document.getElementById('formRecuperacao');
+formRecuperacao.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const notaRecuperacao = parseFloat(document.getElementById('inputRecuperacao').value);
+    NotaRecuperacao = notaRecuperacao; // Define a nota de recuperação globalmente
+    alert(`Nota de recuperação definida como: ${notaRecuperacao}`);
+    fecharPopup(popupRecuperacaoNota);
+});
+
+
+
 
 
 const salvarRecuperacaoBtn = document.getElementById('salvarRecuperacao');
@@ -290,35 +288,6 @@ function atualizarSituacaoDosAlunos() {
     gerarTabelaAlunos();
 }
 
-// Adiciona um evento de submissão ao formulário de cadastro de novos alunos
-NovoAlunoForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    // Obtém o valor do campo de texto do formulário de cadastro de novos alunos
-    const nomesAlunos = NovoAlunoForm.RecebeNomeAluno.value;
-
-    // Trata os dados dos alunos
-    const nomesTratados = TratamentoDeDados(nomesAlunos);
-
-    if (nomesTratados.length === 0) {
-        alert("Por favor, informe pelo menos um nome de aluno.");
-        return;
-    }
-
-    // Adiciona os alunos à lista
-    for (let i = 0; i < nomesTratados.length; i++) {
-        const aluno = new Estudante(nomesTratados[i]);
-        ListaDeAlunos.push(aluno);
-        // Classifica o conjunto de nomes em ordem alfabética
-        ListaDeAlunos.sort();
-    }
-
-    // Limpa o campo de texto após a submissão do formulário
-    NovoAlunoForm.RecebeNomeAluno.value = "";
-
-    // Atualiza a tabela de alunos
-    gerarTabelaAlunos();
-});
 
 // Função para adicionar notas em grupo aos alunos
 FormGroup.addEventListener("submit", (e) => {
