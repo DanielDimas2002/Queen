@@ -1,0 +1,32 @@
+/* Oculta os pop-ups inicialmente */
+.popup {
+    display: none; /* Pop-up escondido */
+    position: fixed;
+    z-index: 1; /* Fica sobre o conteúdo */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white; /* Fundo escuro transparente */
+}
+
+.popup-conteudo {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%; /* Largura do pop-up */
+}
+
+/* Botão de fechar o pop-up */
+.fechar {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.fechar:hover, .fechar:focus {
+    color: black;
+    cursor: pointer;
+}

@@ -17,8 +17,240 @@ const NovoAlunoForm = document.getElementById("CadastrarAlunos");
 const FormGroup = document.getElementById("FormGrupo");
 const FormRecuperacao = document.getElementById("FormRecuperacao");
 const defMedia = document.querySelector("#Predefinição")
-let MediaDefinida = 0
+
+// Selecionando os botões e modais
+const btnTurma = document.getElementById('btnTurma');
+const btnPontuar = document.getElementById('btnPontuar');
+const btnRecuperacao = document.getElementById('btnRecuperacao');
+
+const popupTurma = document.getElementById('popupTurma');
+const popupPontuar = document.getElementById('popupPontuar');
+const popupRecuperacao = document.getElementById('popupRecuperacao');
+
+const btnDefinirMedia = document.getElementById('btnDefinirMedia');
+const btnDefinirRecuperacao = document.getElementById('btnDefinirRecuperacao');
+const popupMedia = document.getElementById('popupMedia');
+const popupRecuperacaoNota = document.getElementById('popupRecuperacaoNota');
+
+// Função para abrir o pop-up
+function abrirPopup(popup) {
+    popup.style.display = 'block';
+}
+
+// Função para fechar o pop-up
+function fecharPopup(popup) {
+    popup.style.display = 'none';
+}
+
+// Botões de fechar dentro dos pop-ups (selecionando pelo botão "X")
+const fecharBtns = document.querySelectorAll('.fechar');
+
+// Adicionando evento de clique em cada botão de fechar
+fecharBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const popup = btn.closest('.popup');
+        fecharPopup(popup);
+    });
+});
+
+// Evento de clique para abrir os pop-ups
+btnTurma.addEventListener('click', () => abrirPopup(popupTurma));
+btnPontuar.addEventListener('click', () => abrirPopup(popupPontuar));
+btnRecuperacao.addEventListener('click', () => abrirPopup(popupRecuperacao));
+
+// Fecha o pop-up se clicar fora do conteúdo
+window.addEventListener('click', (e) => {
+    if (e.target.classList.contains('popup')) {
+        fecharPopup(e.target);
+    }
+});
+
+// Função para abrir o pop-up
+function abrirPopup(popup) {
+    popup.style.display = 'block';
+}
+
+// Função para fechar o pop-up
+function fecharPopup(popup) {
+    popup.style.display = 'none';
+}
+
+// Fechar pop-ups ao clicar no "X"
+document.querySelectorAll('.fechar').forEach(btn => {
+    btn.addEventListener('click', () => {
+        fecharPopup(btn.closest('.popup'));
+    });
+});
+
+// Abertura dos pop-ups ao clicar nos botões
+btnDefinirMedia.addEventListener('click', () => abrirPopup(popupMedia));
+btnDefinirRecuperacao.addEventListener('click', () => abrirPopup(popupRecuperacaoNota));
+
+// Evento de submissão do formulário de média
+const formMedia = document.getElementById('formMedia');
+formMedia.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const media = parseFloat(document.getElementById('inputMedia').value);
+    MediaDefinida = media; // Define a média globalmente
+    alert(`Média definida como: ${media}`);
+    fecharPopup(popupMedia);
+});
+
+// Evento de submissão do formulário de nota de recuperação
+const formRecuperacao = document.getElementById('formRecuperacao');
+formRecuperacao.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const notaRecuperacao = parseFloat(document.getElementById('inputRecuperacao').value);
+    NotaRecuperacao = notaRecuperacao; // Define a nota de recuperação globalmente
+    alert(`Nota de recuperação definida como: ${notaRecuperacao}`);
+    fecharPopup(popupRecuperacaoNota);
+});
+
+// Fecha o pop-up se clicar fora do conteúdo
+window.addEventListener('click', (e) => {
+    if (e.target.classList.contains('popup')) {
+        fecharPopup(e.target);
+    }
+});
+
+let MediaDefinida = 0;
 let ListaDeAlunos = [];
+
+// Evento de clique para o botão de salvar no pop-up de Turma
+const salvarTurmaBtn = document.getElementById('salvarTurma');
+
+salvarTurmaBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    // Captura os valores do pop-up
+    const nomesAlunos = document.getElementById('inputNomesTurma').value.trim(); // ID do campo de nomes no pop-up
+
+    // Chama a função que já existe para processar esses dados
+    const nomesTratados = TratamentoDeDados(nomesAlunos);
+
+    if (nomesTratados.length === 0) {
+        alert("Por favor, informe pelo menos um nome de aluno.");
+        return;
+    }
+
+    // Itera sobre cada nome de aluno informado
+    nomesTratados.forEach(nome => {
+        // Cria um novo aluno e adiciona à lista
+        const aluno = new Estudante(nome);
+        ListaDeAlunos.push(aluno);
+    });
+
+    // Classifica os alunos por nome em ordem alfabética
+    ListaDeAlunos.sort((a, b) => a.Nome.localeCompare(b.Nome));
+
+    // Atualiza a tabela de alunos
+    gerarTabelaAlunos();
+
+    // Limpa o campo de texto após a submissão do formulário
+    document.getElementById('inputNomesTurma').value = '';
+
+    // Fecha o pop-up após o sucesso
+    fecharPopup(popupTurma);
+});
+
+
+
+const salvarPontuacaoBtn = document.getElementById('salvarPontuacao');
+
+salvarPontuacaoBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    // Captura os valores do pop-up
+    const nomesAlunos = document.getElementById('inputNomesPontuar').value.trim(); // Campo de nomes
+    const nota = parseFloat(document.getElementById('inputNotaPontuar').value.replace(',', '.')); // Campo de nota
+    const avaliacaoSelecionada = document.querySelector('input[name="LocalAvPontuar"]:checked').value; // Radio button da avaliação
+
+    // Validação
+    if (!nomesAlunos || isNaN(nota)) {
+        alert("Por favor, insira os nomes e uma nota válida.");
+        return;
+    }
+
+    // Trata os dados dos alunos
+    const nomesTratados = TratamentoDeDados(nomesAlunos);
+
+    if (nomesTratados.length === 0) {
+        alert("Por favor, informe pelo menos um nome de aluno.");
+        return;
+    }
+
+    // Atualiza as notas dos alunos
+    nomesTratados.forEach(nomeAluno => {
+        const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
+
+        if (aluno) {
+            switch (avaliacaoSelecionada) {
+                case "Avaliação1":
+                    aluno.Avaliacao1 = nota;
+                    break;
+                case "Avaliação2":
+                    aluno.Avaliacao2 = nota;
+                    break;
+                case "Avaliação3":
+                    aluno.Avaliacao3 = nota;
+                    break;
+            }
+            aluno.Media = ((aluno.Avaliacao1 + aluno.Avaliacao2 + aluno.Avaliacao3) / 3).toFixed(2);
+
+            aluno.Situacao = aluno.Media >= MediaDefinida ? "Aprovado" : "Reprovado";
+        }
+    });
+
+    // Atualiza a tabela
+    gerarTabelaAlunos();
+
+    // Fecha o pop-up após o sucesso
+    fecharPopup(popupPontuar);
+});
+
+const salvarRecuperacaoBtn = document.getElementById('salvarRecuperacao');
+
+salvarRecuperacaoBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    // Captura os valores do pop-up
+    const nomesAlunos = document.getElementById('inputNomesRecuperacao').value.trim(); // Campo de nomes
+    const notaRecuperacao = parseFloat(document.getElementById('inputNotaRecuperacao').value);
+    const mediaRecu = parseFloat(document.getElementById('mediaRecuperacao').value);
+
+    // Validação
+    if (!nomesAlunos || isNaN(notaRecuperacao) || isNaN(mediaRecu)) {
+        alert("Por favor, insira os dados corretamente.");
+        return;
+    }
+
+    // Trata os dados dos alunos
+    const nomesTratados = TratamentoDeDados(nomesAlunos);
+
+    if (nomesTratados.length === 0) {
+        alert("Por favor, informe pelo menos um nome de aluno.");
+        return;
+    }
+
+    // Atualiza a recuperação dos alunos
+    nomesTratados.forEach(nomeAluno => {
+        const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
+
+        if (aluno) {
+            aluno.Recuperacao = notaRecuperacao;
+
+            aluno.Situacao = notaRecuperacao >= mediaRecu ? "Aprovado" : (aluno.Situacao === "Aprovado" ? "Aprovado" : "Reprovado");
+        }
+    });
+
+    // Atualiza a tabela
+    gerarTabelaAlunos();
+
+    // Fecha o pop-up após o sucesso
+    fecharPopup(popupRecuperacao);
+});
+
+
 
 // Função para tratar os dados dos alunos
 
