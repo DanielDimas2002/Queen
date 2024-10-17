@@ -11,14 +11,13 @@ class Estudante {
     }
 }
 
-
 // Seleciona os elementos do formulário e inicializa a lista de alunos
 const NovoAlunoForm = document.getElementById("CadastrarAlunos");
 const FormGroup = document.getElementById("FormGrupo");
 const FormRecuperacao = document.getElementById("FormRecuperacao");
 const defMedia = document.querySelector("#Predefinição")
 
-// Selecionando os botões os botões de ativação do PopUp
+// Selecionando os botões de ativação do PopUp
 const PopUpAddAluno = document.getElementById('PopUpAddAluno');
 const PopUpDefMedia = document.getElementById('PopUpDefMedia');
 const PopUpPontuar = document.getElementById('PopUpPontuar');
@@ -31,6 +30,16 @@ const popupMedia = document.getElementById('popupMedia');
 const popupPontuar = document.getElementById('popupPontuar');
 const popupRecuperacaoNota = document.getElementById('popupRecuperacaoNota');
 const popupRecuperacao = document.getElementById('popupRecuperacao'); //Falta fazer o modal
+
+// Selecionando os formulários de dentro dos PopUp
+const FormPopUpAddAluno = document.getElementById("CadastrarAlunos")
+const FormPopUpDefMedia = document.getElementById("formMedia")
+const FormPopUpPontuar = document.getElementById("formPontuar")
+const FormPopUpNotaRecu = document.getElementById("formNotaRecu")
+const FormPopUpPontuarRecu = document.getElementById("formPontuarRecu")// Falta criar
+
+
+
 
 
 
