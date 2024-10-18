@@ -200,10 +200,6 @@ formRecuperacao.addEventListener('submit', (e) => {
     fecharPopup(popupRecuperacaoNota);
 });
 
-
-
-
-
 const salvarRecuperacaoBtn = document.getElementById('salvarRecuperacao');
 
 salvarRecuperacaoBtn.addEventListener("click", (e) => {
@@ -299,72 +295,6 @@ function atualizarSituacaoDosAlunos() {
     // Atualiza a tabela de alunos
     gerarTabelaAlunos();
 }
-
-
-// Função para adicionar notas em grupo aos alunos
-FormGroup.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    // Obtém o nome dos alunos e a nota do formulário
-    const nomesAlunos = FormGroup.NomesAlunosGrup.value.trim();
-    const nota = parseFloat(FormGroup.NotaAlunoGrup.value.replace(',', '.'));
-
-    // Obtém o valor do radio button selecionado
-    const avaliacaoSelecionada = document.querySelector('input[name="LocalAv"]:checked').value;
-
-    // Trata os dados dos alunos
-    const nomesTratados = TratamentoDeDados(nomesAlunos);
-
-    if (nomesTratados.length === 0) {
-        alert("Por favor, informe pelo menos um nome de aluno.");
-        return;
-    }
-
-    // Itera sobre cada nome de aluno informado
-    for (let i = 0; i < nomesTratados.length; i++) {
-        const nomeAluno = nomesTratados[i];
-
-        // Procura o aluno correspondente na lista de alunos
-        const aluno = ListaDeAlunos.find(aluno => aluno.Nome === nomeAluno);
-
-        if (!aluno) {
-            alert(`Aluno ${nomeAluno} não encontrado.`);
-            return;
-        }
-
-        // Atribui a nota à avaliação correspondente
-        switch (avaliacaoSelecionada) {
-            case "Avaliação1":
-                aluno.Avaliacao1 = nota;
-                break;
-            case "Avaliação2":
-                aluno.Avaliacao2 = nota;
-                break;
-            case "Avaliação3":
-                aluno.Avaliacao3 = nota;
-                break;
-            default:
-                alert("Selecione uma avaliação válida.");
-                return;
-        }
-
-        // Calcula a média do aluno
-        aluno.Media = ((aluno.Avaliacao1 + aluno.Avaliacao2 + aluno.Avaliacao3) / 3).toFixed(2);
-
-        // Atualiza a situação do aluno com base na média
-        if (aluno.Media >= MediaDefinida) {
-            aluno.Situacao = "Aprovado";
-        } else {
-            aluno.Situacao = "Reprovado";
-        }
-    }
-
-    // Atualiza a tabela de alunos
-    gerarTabelaAlunos();
-
-    // Limpa os campos do formulário
-    FormGroup.reset();
-});
 
 // Função para gerar o HTML da tabela com os dados dos alunos
 function gerarTabelaAlunos() {
