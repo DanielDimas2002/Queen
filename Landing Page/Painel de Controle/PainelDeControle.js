@@ -63,7 +63,7 @@ function fecharPopup(popup) { // Função para fechar o pop-up
     popup.style.display = 'none';
 }
 
-const FecharPopUp = document.querySelectorAll('.fechar'); // Botões de fechar dentro dos pop-ups (selecionando pelo botão "X")
+const FecharPopUp = document.querySelectorAll('.close, .fechar'); // Botões de fechar dentro dos pop-ups (selecionando pelo botão "X")
 
 FecharPopUp.forEach(btn => { // Adicionando evento de clique em cada botão de fechar
     btn.addEventListener('click', () => {
@@ -110,6 +110,8 @@ FormPopUpAddAluno.addEventListener("submit", (e) => {
 
     // Atualiza a tabela de alunos
     gerarTabelaAlunos();
+
+    fecharPopup(popupTurma);
 });
 
 // Usando diretamente a variável FormPopUpPontuar que você já tem definida
@@ -181,7 +183,7 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
     gerarTabelaAlunos();
 
     // Fecha o pop-up após o sucesso
-    fecharPopup(document.getElementById('popupPontuar')); // Corrigido para fechar o pop-up correto
+    fecharPopup(popupPontuar);
 });
 
 
