@@ -48,59 +48,7 @@
     </header>
     <main>
         <h1>Painel de Controle</h1>
-        <section id="Config_Midia">
-            <section id="Config">
-                <h2>Criar Turma</h2>
-                <!-- Formulário para adicionar alunos -->
-                <form id="">
-                    <label for="NomeAluno">Informe o Nome do aluno: </label>
-                    <input type="text" id="RecebeNomeAluno" required class="camposEntrada">
-                    <!-- Campo para inserir o nome do aluno -->
-                    <input type="submit" value="Adicionar Aluno" class="btnEnvio"> <!-- Botão para adicionar o aluno -->
-                </form>
-                <form id="Predefinição">
-                    <div id="espacar">
-                        <h2>Predefinições</h2>
-                        <p>Defina a média mínima para aprovação:
-                            <input type="number" max="10" min="0" id="valorMedia" required class="camposEntrada"> <input
-                                type="submit" value="Definir" class="btnEnvio">
-                        </p>
-                    </div>
-                </form>
-                <form id="FormGrupo">
-                    <h2 class="h2">Pontuar Atividades</h2>
-                    <p>Nome dos Alunos: <input type="text" id="NomesAlunosGrup" class="camposEntrada"></p>
-                    <!-- Campo para o nome dos alunos -->
-                    <p>Nota dos Alunos: <input type="text" id="NotaAlunoGrup" class="camposEntrada"></p>
-                    <!-- Campo para a nota do aluno -->
-                    <p>Defina a avaliação:</p>
-                    <p><input type="radio" value="Avaliação1" id="Av1" name="LocalAv" required> <label
-                            for="Avaliação1">Avaliação 1</label> <input type="radio" value="Avaliação2" id="Av2"
-                            name="LocalAv" required> <label for="Avaliação2">Avaliação 2</label> <input type="radio"
-                            value="Avaliação3" id="Av3" name="LocalAv" required> <label for="Avaliação3">Avaliação
-                            3</label> <input type="submit" value="Pontuar Atividade" class="btnEnvio"></p>
-                </form>
-                <!-- Seção para Pontuar Alunos em Recuperação -->
-                <form id="FormRecuperacao">
-                    <h2>Pontuar Alunos em Recuperação</h2>
-                    <p>Nome dos Alunos: <input type="text" id="NomesAlunosRecup" class="camposEntrada" required></p>
-                    <p>Nota de Recuperação: <input type="number" id="NotaAlunoRecup" class="camposEntrada" required></p>
-                    <p>Defina a nota mínima para aprovação na recuperação:
-                        <input type="number" max="10" min="0" id="valorMediaRecup" required class="camposEntrada">
-                    </p>
-                    <input type="submit" value="Pontuar Recuperação" class="btnEnvio">
-                </form>
-                <form>
-                    <h2>Baixar Tabela</h2>
-                    <p><input type="button" value="Baixar arquivo PDF" class="btnEnvio" id="btnPDF"> <input
-                            type="button" value="Baixar arquivo Excel" class="btnEnvio" id="btnExcel"> <input
-                            type="button" value="Baixar arquivo Word" class="btnEnvio" id="btnWord"></p>
-                </form>
-            </section>
-            <section id="Midia">
-                <img src="Midia/Gif_Painel.gif" alt="Animação da logo do Queen">
-            </section>
-        </section>
+        <!--<section id="Config_Midia">-->
         <section id="Tabela">
             <h2 id="Rascunho">Tabela de Alunos</h2>
             <!-- Tabela para exibir o relatório -->
