@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Queen - Painel de Controle</title>
-    <link rel="stylesheet" href="Painel.css"> 
+    <link rel="stylesheet" href="Painel.css">
     <link rel="stylesheet" href="cabecalho.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,12 +29,17 @@
             <a id="home" class="item-menu" href="../LandingPage.html">Home</a>
             <a id="home" class="item-menu" href="../LandingPage.html#Login_Registro">Entrar</a>
             <a class="item-menu" href="../LandingPage.html#Login_Registro" id="btnRegistro">Cadastro</a>
-            <button id="PopUpAddAluno" class="popup-ativar">Criar Turma</button> <!-- Botão para ativar popup de criar turma -->
-            <button id="PopUpDefMedia">Definir Média</button> <!-- Botão para ativar popup de média de média de aprovação -->
-            <button id="PopUpPontuar" class="popup-ativar">Pontuar Atividades</button> <!-- Botão para ativar popup de pontuar atividades -->
-            <button id="PopUpNotaRecu">Definir Nota de Recuperação</button> <!-- Botão para ativar popup de nota de recuperação -->
-            <button id="PopUpPontuarRecu" class="popup-ativar">Pontuar Recuperação</button> <!-- Botão para ativar popup de pontuar recuperação -->
-        </nav>        
+            <button id="PopUpAddAluno" class="popup-ativar">Criar Turma</button>
+            <!-- Botão para ativar popup de criar turma -->
+            <button id="PopUpDefMedia">Definir Média</button>
+            <!-- Botão para ativar popup de média de média de aprovação -->
+            <button id="PopUpPontuar" class="popup-ativar">Pontuar Atividades</button>
+            <!-- Botão para ativar popup de pontuar atividades -->
+            <button id="PopUpNotaRecu">Definir Nota de Recuperação</button>
+            <!-- Botão para ativar popup de nota de recuperação -->
+            <button id="PopUpPontuarRecu" class="popup-ativar">Pontuar Recuperação</button>
+            <!-- Botão para ativar popup de pontuar recuperação -->
+        </nav>
         <div class="menu-hamburguer" id="menuToggle">
             <span></span>
             <span></span>
@@ -113,85 +118,84 @@
         </section>
     </main>
 
-<!-- Modal Criar Turma -->
-<div id="popupTurma" class="popup">
-    <div class="popup-content">
-        <span class="close" id="closeTurma">&times;</span>
-        <h2>Criar Nova Turma</h2>
-        <!-- Formulário completo -->
-        <form id="CadastrarAlunos">
-            <label for="inputNomesTurma">Informe o Nome do aluno:</label>
-            <input type="text" id="inputNomesTurma" required class="camposEntrada">
-            <input type="submit" id="salvarTurma" value="Salvar Turma" class="btnEnvio">
-        </form>
+    <!-- Modal Criar Turma -->
+    <div id="popupTurma" class="popup">
+        <div class="popup-content">
+            <span class="close" id="closeTurma">&times;</span>
+            <h2>Criar Nova Turma</h2>
+            <!-- Formulário completo -->
+            <form id="CadastrarAlunos">
+                <label for="inputNomesTurma">Informe o Nome do aluno:</label>
+                <input type="text" id="inputNomesTurma" required class="camposEntrada">
+                <input type="submit" id="salvarTurma" value="Salvar Turma" class="btnEnvio">
+            </form>
+        </div>
     </div>
-</div>
 
-<!-- Modal Definir Média -->
-<div id="popupMedia" class="popup">
-    <div class="popup-content">
-        <span class="fechar">&times;</span>
-        <h2>Definir Média</h2>
-        <form id="formMedia">
-            <label for="inputMedia">Informe a média necessária para aprovação:</label>
-            <input type="number" id="inputMedia" required>
-            <button type="submit">Salvar Média</button>
-        </form>
+    <!-- Modal Definir Média -->
+    <div id="popupMedia" class="popup">
+        <div class="popup-content">
+            <span class="fechar">&times;</span>
+            <h2>Definir Média</h2>
+            <form id="formMedia">
+                <label for="inputMedia">Informe a média necessária para aprovação:</label>
+                <input type="number" id="inputMedia" required>
+                <button type="submit">Salvar Média</button>
+            </form>
+        </div>
     </div>
-</div>
 
-<!-- Modal Pontuar Atividades -->
-<div id="popupPontuar" class="popup">
-    <div class="popup-content">
-        <span class="close" id="closePontuar">&times;</span>
-        <h2>Pontuar Atividades</h2>
-        <form id="formPontuar">
-            <p>Nome dos Alunos: <input type="text" id="NomesAlunosGrup" class="camposEntrada"></p>
-            <p>Nota dos Alunos: <input type="text" id="NotaAlunoGrup" class="camposEntrada"></p>
-            <p>Defina a avaliação:</p>
-            <p>
-                <input type="radio" value="Avaliação1" id="Av1" name="LocalAv" required> 
-                <label for="Avaliação1">Avaliação 1</label>
-                <input type="radio" value="Avaliação2" id="Av2" name="LocalAv" required> 
-                <label for="Avaliação2">Avaliação 2</label>
-                <input type="radio" value="Avaliação3" id="Av3" name="LocalAv" required> 
-                <label for="Avaliação3">Avaliação 3</label>
-                <input type="submit" value="Pontuar Atividade" class="btnEnvio">
-            </p>
-        </form>
+    <!-- Modal Pontuar Atividades -->
+    <div id="popupPontuar" class="popup">
+        <div class="popup-content">
+            <span class="close" id="closePontuar">&times;</span>
+            <h2>Pontuar Atividades</h2>
+            <form id="formPontuar">
+                <p>Nome dos Alunos: <input type="text" id="NomesAlunos" class="camposEntrada"></p>
+                <p>Nota dos Alunos: <input type="text" id="NotaAluno" class="camposEntrada"></p>
+
+                <p>Defina a avaliação:</p>
+                <p>
+                    <input type="radio" value="Avaliação1" id="Av1" name="LocalAv" required>
+                    <label for="Av1">Avaliação 1</label>
+                    <input type="radio" value="Avaliação2" id="Av2" name="LocalAv" required>
+                    <label for="Av2">Avaliação 2</label>
+                    <input type="radio" value="Avaliação3" id="Av3" name="LocalAv" required>
+                    <label for="Av3">Avaliação 3</label>
+                    <input type="submit" value="Pontuar Atividade" class="btnEnvio">
+                </p>
+            </form>
+        </div>
     </div>
-</div>
 
-
-
-<!-- Modal Definir Nota de Recuperação -->
-<div id="popupRecuperacaoNota" class="popup">
-    <div class="popup-content">
-        <span class="fechar">&times;</span>
-        <h2>Definir Nota de Recuperação</h2>
-        <form id="formNotaRecu">
-            <label for="inputRecuperacao">Informe a nota para aprovação na recuperação:</label>
-            <input type="number" id="inputRecuperacao" required>
-            <button type="submit">Salvar Nota</button>
-        </form>
+    <!-- Modal Definir Nota de Recuperação -->
+    <div id="popupRecuperacaoNota" class="popup">
+        <div class="popup-content">
+            <span class="fechar">&times;</span>
+            <h2>Definir Nota de Recuperação</h2>
+            <form id="formNotaRecu">
+                <label for="inputRecuperacao">Informe a nota para aprovação na recuperação:</label>
+                <input type="number" id="inputRecuperacao" required>
+                <button type="submit">Salvar Nota</button>
+            </form>
+        </div>
     </div>
-</div>
 
 
-<script>
-    const menuToggle = document.getElementById('menuToggle');
-    const menu = document.querySelector('.menu');
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const menu = document.querySelector('.menu');
 
-    // Adiciona um evento de clique no botão de menu hamburguer
-    menuToggle.addEventListener('click', () => {
-        menu.classList.toggle('menu-ativo'); // Alterna entre mostrar e esconder o menu
-    });
-</script>
+        // Adiciona um evento de clique no botão de menu hamburguer
+        menuToggle.addEventListener('click', () => {
+            menu.classList.toggle('menu-ativo'); // Alterna entre mostrar e esconder o menu
+        });
+    </script>
 
     <!--<script src="versao17.js"></script>Inclui o arquivo JavaScript -->
     <script src="PainelDeControle.js"></script>
 
-   
+
 
 </body>
 

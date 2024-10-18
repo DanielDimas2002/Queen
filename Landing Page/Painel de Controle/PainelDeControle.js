@@ -107,17 +107,28 @@ FormPopUpAddAluno.addEventListener("submit", (e) => {
     gerarTabelaAlunos();
 });
 
-FormPopUpPontuar.addEventListener("click", (e) => {
-    e.preventDefault();
+// Usando diretamente a variável FormPopUpPontuar que você já tem definida
+FormPopUpPontuar.addEventListener("submit", (e) => {
+    e.preventDefault(); // Evita o comportamento padrão de envio do formulário
 
     // Captura os valores do pop-up
-    const nomesAlunos = document.getElementById('NomesAlunosGrup').value.trim(); // Campo de nomes
-    const nota = parseFloat(document.getElementById('NotaAlunoGrup').value.replace(',', '.')); // Campo de nota
-    const avaliacaoSelecionada = document.querySelector('input[name="LocalAv"]:checked').value; // Radio button da avaliação
+    const nomesAlunos = document.getElementById('NomesAlunos').value.trim(); // Campo de nomes
+    const nota = document.getElementById('NotaAluno').value.trim(); // Campo de nota (ainda como string)
+    const avaliacaoSelecionada = document.querySelector('input[name="LocalAv"]:checked'); // Radio button da avaliação
 
-    // Validação
-    if (!nomesAlunos || isNaN(nota)) {
-        alert("Por favor, insira os nomes e uma nota válida.");
+    // Validação dos campos
+    if (!nomesAlunos) {
+        alert("Por favor, insira pelo menos um nome.");
+        return;
+    }
+
+    if (!nota || isNaN(nota) || parseFloat(nota) < 0 || parseFloat(nota) > 10) {
+        alert("Por favor, insira uma nota válida entre 0 e 10.");
+        return;
+    }
+
+    if (!avaliacaoSelecionada) {
+        alert("Por favor, selecione uma avaliação.");
         return;
     }
 
@@ -139,15 +150,15 @@ FormPopUpPontuar.addEventListener("click", (e) => {
         }
 
         // Atribui a nota à avaliação correspondente
-        switch (avaliacaoSelecionada) {
+        switch (avaliacaoSelecionada.value) {
             case "Avaliação1":
-                aluno.Avaliacao1 = nota;
+                aluno.Avaliacao1 = parseFloat(nota);
                 break;
             case "Avaliação2":
-                aluno.Avaliacao2 = nota;
+                aluno.Avaliacao2 = parseFloat(nota);
                 break;
             case "Avaliação3":
-                aluno.Avaliacao3 = nota;
+                aluno.Avaliacao3 = parseFloat(nota);
                 break;
             default:
                 alert("Selecione uma avaliação válida.");
@@ -165,8 +176,9 @@ FormPopUpPontuar.addEventListener("click", (e) => {
     gerarTabelaAlunos();
 
     // Fecha o pop-up após o sucesso
-    fecharPopup(popupPontuar);
+    fecharPopup(document.getElementById('popupPontuar')); // Corrigido para fechar o pop-up correto
 });
+
 
 // Evento de submissão do formulário de média
 const formMedia = document.getElementById('formMedia');
