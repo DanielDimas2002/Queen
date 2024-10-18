@@ -48,8 +48,14 @@ const FormPopUpPontuarRecu = document.getElementById("formPontuarRecu")// Falta 
 
 // Funcionamento do PopUp
 
+// Seleciona o overlay
+const overlay = document.createElement('div');
+overlay.classList.add('popup-overlay');
+document.body.appendChild(overlay);
+
 function abrirPopup(popup) { // Função para abrir o pop-up
     popup.style.display = 'block';
+    overlay.style.display = 'block'; // Exibe o overlay com o desfoque
 }
 
 // Evento de clique para abrir os pop-ups
@@ -61,6 +67,7 @@ PopUpPontuarRecu.addEventListener('click', () => abrirPopup(popupRecuperacao));
 
 function fecharPopup(popup) { // Função para fechar o pop-up
     popup.style.display = 'none';
+    overlay.style.display = 'none'; // Esconde o overlay
 }
 
 const FecharPopUp = document.querySelectorAll('.close, .fechar'); // Botões de fechar dentro dos pop-ups (selecionando pelo botão "X")
