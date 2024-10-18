@@ -326,20 +326,6 @@ defMedia.addEventListener("submit", (e) =>{
     atualizarSituacaoDosAlunos()
 })
 
-// Função para atualizar a situação dos alunos com base na nova média de aprovação
-function atualizarSituacaoDosAlunos() {
-    ListaDeAlunos.forEach(aluno => {
-        if (aluno.Media >= MediaDefinida) {
-            aluno.Situacao = "Aprovado";
-        } else {
-            aluno.Situacao = "Reprovado";
-        }
-    });
-
-    // Atualiza a tabela de alunos
-    gerarTabelaAlunos();
-}
-
 // Função para gerar o HTML da tabela com os dados dos alunos
 function gerarTabelaAlunos() {
     const tabela = document.querySelector("table");
