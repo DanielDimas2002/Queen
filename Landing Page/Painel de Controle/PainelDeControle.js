@@ -11,14 +11,11 @@ class Estudante {
     }
 }
 
-// Define o objeto aluno 
-function criarAluno(nome, av1, av2, av3) {
-    aluno = new Estudante(nome, av1, av2, av3);
-}
-
 //Definições iniciais
 let MediaDefinida = null;
 let ListaDeAlunos = [];
+let NotaRecuperacaoDefinida = null; 
+
 
 // Seleciona os elementos do formulário e inicializa a lista de alunos
 const FormGroup = document.getElementById("FormGrupo");
@@ -37,14 +34,14 @@ const popupTurma = document.getElementById('popupTurma');
 const popupMedia = document.getElementById('popupMedia');
 const popupPontuar = document.getElementById('popupPontuar');
 const popupRecuperacaoNota = document.getElementById('popupRecuperacaoNota');
-const popupRecuperacao = document.getElementById('popupRecuperacao'); //Falta fazer o modal
+const popupRecuperacao = document.getElementById('popupPontuarRecu'); //Falta fazer o modal
 
 // Selecionando os formulários de dentro dos PopUp
 const FormPopUpAddAluno = document.getElementById("CadastrarAlunos");
 const FormPopUpDefMedia = document.getElementById("formMedia");
 const FormPopUpPontuar = document.getElementById("formPontuar");
 const FormPopUpNotaRecu = document.getElementById("formNotaRecu")
-const FormPopUpPontuarRecu = document.getElementById("formPontuarRecu")// Falta criar
+const FormPopUpPontuarRecu = document.getElementById("formPontuarRecu")
 
 // Funcionamento do PopUp
 
@@ -87,6 +84,125 @@ window.addEventListener('click', (e) => { // Fecha o pop-up se clicar fora do co
 
 //Fim do Funcionamento do PopUp
 
+//Funções gerais
+
+function gerarTabelaAlunos() { // Função para gerar o HTML da tabela com os dados dos alunos
+    const tabela = document.querySelector("table");
+
+    // Limpa o conteúdo atual da tabela
+    tabela.innerHTML = "";
+
+    // Cria o cabeçalho da tabela
+    const cabecalho = document.createElement("tr");
+    cabecalho.innerHTML = `
+        <th>Nome do Aluno</th>
+        <th>Avaliação 1</th>
+        <th>Avaliação 2</th>
+        <th>Avaliação 3</th>
+        <th>Média</th>
+        <th>Recuperação</th>
+        <th>Situação</th>
+        <th>Ações</th> <!-- Nova coluna para ações -->
+    `;
+    tabela.appendChild(cabecalho);
+
+    // Ordena a lista de alunos em ordem alfabética pelo nome
+    ListaDeAlunos.sort((a, b) => a.Nome.localeCompare(b.Nome));
+
+    // Adiciona cada aluno na tabela
+    ListaDeAlunos.forEach((aluno, index) => {
+        const linha = document.createElement("tr");
+        linha.innerHTML = `
+            <td><span class="nome-aluno">${aluno.Nome}</span></td> <!-- Nome do aluno -->
+            <td>${aluno.Avaliacao1}</td>
+            <td>${aluno.Avaliacao2}</td>
+            <td>${aluno.Avaliacao3}</td>
+            <td>${aluno.Media}</td>
+            <td>${aluno.Recuperacao}</td>
+            <td>${aluno.Situacao}</td>
+            <td>
+                <button class="btn-editar" data-index="${index}">Editar</button>
+            </td> <!-- Botão de editar -->
+        `;
+        tabela.appendChild(linha);
+    });
+
+    // Adiciona evento de clique para editar o nome do aluno
+    document.querySelectorAll('.btn-editar').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const index = e.target.getAttribute('data-index');
+            editarNomeAluno(index);
+        });
+    });
+}
+
+function TratamentoDeDados(nomes) { // Função para tratar os dados dos alunos
+    if (!nomes) {
+        alert("A lista de nomes está vazia.");
+        return [];
+    }
+
+    // Separa os nomes por vírgula e remove espaços extras
+    const nomesTratados = nomes.split(",").map(nome => nome.trim());
+
+    // Função para converter a primeira letra de cada palavra em maiúscula
+    const capitalizarNome = nome => 
+        nome.split(" ").map(parte => parte.charAt(0).toUpperCase() + parte.slice(1).toLowerCase()).join(" ");
+
+    // Encontra os nomes sem sobrenome
+    const nomesIncompletos = nomesTratados.filter(nome => nome.split(" ").length === 1);
+
+    if (nomesIncompletos.length > 0) {
+        // Lista quais nomes estão incompletos
+        alert(`Por favor, informe o nome completo dos seguintes alunos: ${nomesIncompletos.join(", ")}`);
+        return []; // Retorna uma lista vazia se houver algum problema com os nomes
+    }
+
+    // Capitaliza e retorna os nomes válidos
+    const nomesValidos = nomesTratados.map(capitalizarNome);
+    return nomesValidos;
+}
+
+function editarNomeAluno(index) { //Função de edição de nomes
+    const aluno = ListaDeAlunos[index];
+    const nomeSpan = document.querySelectorAll('.nome-aluno')[index];
+
+    // Cria um campo de input para editar o nome
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = aluno.Nome;
+
+    // Substitui o nome atual pelo campo de input
+    nomeSpan.replaceWith(input);
+
+    // Adiciona evento de 'blur' (perda de foco) para salvar a edição
+    input.addEventListener('blur', () => {
+        const novoNome = input.value.trim();
+
+        // Verifica se o novo nome não está vazio
+        if (novoNome !== '') {
+            aluno.Nome = novoNome;
+            gerarTabelaAlunos(); // Atualiza a tabela com o novo nome
+        } else {
+            // Pergunta ao professor se deseja excluir o aluno
+            const confirmarExclusao = confirm("O nome do aluno não pode ser vazio. Deseja excluir o aluno " + aluno.Nome + "?");
+            if (confirmarExclusao) {
+                // Remove o aluno da lista
+                ListaDeAlunos.splice(index, 1);
+                gerarTabelaAlunos(); // Atualiza a tabela
+            } else {
+                // Reverte a edição, se o professor não confirmar a exclusão
+                gerarTabelaAlunos(); 
+            }
+        }
+    });
+
+    // Automaticamente foca no campo de input
+    input.focus();
+}
+
+//Fim das funções gerais
+
 //Função para adição de alunos
 FormPopUpAddAluno.addEventListener("submit", (e) => {
     e.preventDefault(); // Impede o comportamento padrão de envio do formulário
@@ -112,7 +228,7 @@ FormPopUpAddAluno.addEventListener("submit", (e) => {
     ListaDeAlunos.sort((a, b) => a.Nome.localeCompare(b.Nome)); // Assumindo que a classe Estudante tem um atributo 'nome'
 
     // Limpa o campo de texto após a submissão do formulário
-    document.getElementById("inputNomesTurma").value = ""; // Corrigido para o ID correto
+    document.getElementById("inputNomesTurma").value = ""; 
 
     // Atualiza a tabela de alunos
     gerarTabelaAlunos();
@@ -241,119 +357,51 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
     fecharPopup(popupMedia);
 });
 
-// Função para tratar os dados dos alunos
-function TratamentoDeDados(nomes) {
-    if (!nomes) {
-        alert("A lista de nomes está vazia.");
-        return [];
-    }
+// Função para salvar a nota de recuperação
+formNotaRecu.addEventListener('submit', (e) => {
+    e.preventDefault(); // Impede o envio padrão do formulário
 
-    // Separa os nomes por vírgula e remove espaços extras
-    const nomesTratados = nomes.split(",").map(nome => nome.trim());
+    NotaRecuperacaoDefinida = parseFloat(document.getElementById('inputRecuperacao').value); // Salva a nota na variável global
+    alert("Nota de recuperação definida: " + NotaRecuperacaoDefinida);
+    popupRecuperacaoNota.style.display = 'none'; // Fecha o pop-up
+    document.querySelector('.popup-overlay').style.display = 'none'; 
+});
 
-    // Função para converter a primeira letra de cada palavra em maiúscula
-    const capitalizarNome = nome => 
-        nome.split(" ").map(parte => parte.charAt(0).toUpperCase() + parte.slice(1).toLowerCase()).join(" ");
 
-    // Encontra os nomes sem sobrenome
-    const nomesIncompletos = nomesTratados.filter(nome => nome.split(" ").length === 1);
+// Função para pontuar a recuperação
+FormPopUpPontuarRecu.addEventListener('submit', (e) => {
+    e.preventDefault();  // Impede o envio padrão do formulário
 
-    if (nomesIncompletos.length > 0) {
-        // Lista quais nomes estão incompletos
-        alert(`Por favor, informe o nome completo dos seguintes alunos: ${nomesIncompletos.join(", ")}`);
-        return []; // Retorna uma lista vazia se houver algum problema com os nomes
-    }
+    const nomeAluno = document.getElementById('alunoRecu').value;
+    const notaRecu = parseFloat(document.getElementById('notaRecu').value);
 
-    // Capitaliza e retorna os nomes válidos
-    const nomesValidos = nomesTratados.map(capitalizarNome);
-    return nomesValidos;
-}
+    // Encontre o aluno na lista global ListaDeAlunos
+    const aluno = ListaDeAlunos.find(a => a.Nome.trim() === nomeAluno.trim());
 
-// Função para gerar o HTML da tabela com os dados dos alunos
-function gerarTabelaAlunos() {
-    const tabela = document.querySelector("table");
+    if (aluno) {
+        // Verifica se o aluno precisa de recuperação (média abaixo da MediaDefinida)
+        if (aluno.Media < MediaDefinida) {
+            // Atualiza a nota de recuperação do aluno
+            aluno.Recuperacao = notaRecu;
 
-    // Limpa o conteúdo atual da tabela
-    tabela.innerHTML = "";
-
-    // Cria o cabeçalho da tabela
-    const cabecalho = document.createElement("tr");
-    cabecalho.innerHTML = `
-        <th>Nome do Aluno</th>
-        <th>Avaliação 1</th>
-        <th>Avaliação 2</th>
-        <th>Avaliação 3</th>
-        <th>Média</th>
-        <th>Recuperação</th>
-        <th>Situação</th>
-        <th>Ações</th> <!-- Nova coluna para ações -->
-    `;
-    tabela.appendChild(cabecalho);
-
-    // Ordena a lista de alunos em ordem alfabética pelo nome
-    ListaDeAlunos.sort((a, b) => a.Nome.localeCompare(b.Nome));
-
-    // Adiciona cada aluno na tabela
-    ListaDeAlunos.forEach((aluno, index) => {
-        const linha = document.createElement("tr");
-        linha.innerHTML = `
-            <td><span class="nome-aluno">${aluno.Nome}</span></td> <!-- Nome do aluno -->
-            <td>${aluno.Avaliacao1}</td>
-            <td>${aluno.Avaliacao2}</td>
-            <td>${aluno.Avaliacao3}</td>
-            <td>${aluno.Media}</td>
-            <td>${aluno.Recuperacao}</td>
-            <td>${aluno.Situacao}</td>
-            <td>
-                <button class="btn-editar" data-index="${index}">Editar</button>
-            </td> <!-- Botão de editar -->
-        `;
-        tabela.appendChild(linha);
-    });
-
-    // Adiciona evento de clique para editar o nome do aluno
-    document.querySelectorAll('.btn-editar').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const index = e.target.getAttribute('data-index');
-            editarNomeAluno(index);
-        });
-    });
-}
-
-function editarNomeAluno(index) {
-    const aluno = ListaDeAlunos[index];
-    const nomeSpan = document.querySelectorAll('.nome-aluno')[index];
-
-    // Cria um campo de input para editar o nome
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.value = aluno.Nome;
-
-    // Substitui o nome atual pelo campo de input
-    nomeSpan.replaceWith(input);
-
-    // Adiciona evento de 'blur' (perda de foco) para salvar a edição
-    input.addEventListener('blur', () => {
-        const novoNome = input.value.trim();
-
-        // Verifica se o novo nome não está vazio
-        if (novoNome !== '') {
-            aluno.Nome = novoNome;
-            gerarTabelaAlunos(); // Atualiza a tabela com o novo nome
-        } else {
-            // Pergunta ao professor se deseja excluir o aluno
-            const confirmarExclusao = confirm("O nome do aluno não pode ser vazio. Deseja excluir o aluno " + aluno.Nome + "?");
-            if (confirmarExclusao) {
-                // Remove o aluno da lista
-                ListaDeAlunos.splice(index, 1);
-                gerarTabelaAlunos(); // Atualiza a tabela
+            // Verifica se a nota de recuperação permite a aprovação
+            if (notaRecu >= NotaRecuperacaoDefinida) { // Comparação com a nota de recuperação definida
+                aluno.Situacao = 'Aprovado';
             } else {
-                // Reverte a edição, se o professor não confirmar a exclusão
-                gerarTabelaAlunos(); 
+                aluno.Situacao = 'Reprovado';
             }
-        }
-    });
 
-    // Automaticamente foca no campo de input
-    input.focus();
-}
+            // Atualiza a tabela na interface
+            gerarTabelaAlunos();
+
+            // Fecha o pop-up após salvar
+            popupPontuarRecu.style.display = 'none';
+            document.querySelector('.popup-overlay').style.display = 'none'; 
+        } else {
+            alert("Este aluno já foi aprovado e não precisa de recuperação.");
+        }
+    } else {
+        alert("Aluno não encontrado. Verifique o nome digitado.");
+    }
+});
+

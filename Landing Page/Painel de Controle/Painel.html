@@ -127,6 +127,22 @@
     </div>
 </div>
 
+<!-- Modal Pontuar Recuperação -->
+<div id="popupPontuarRecu" class="popup">
+    <div class="popup-content">
+        <span class="close" id="closePontuarRecu">&times;</span>
+        <h2>Pontuar Recuperação</h2>
+        <form id="formPontuarRecu">
+            <label for="alunoRecu">Nome do Aluno:</label>
+            <input type="text" id="alunoRecu" required class="camposEntrada">
+            <label for="notaRecu">Nota de Recuperação:</label>
+            <input type="number" id="notaRecu" required class="camposEntrada">
+            <input type="submit" value="Salvar Nota de Recuperação" class="btnEnvio">
+        </form>
+    </div>
+</div>
+
+
     <script>
         const menuToggle = document.getElementById('menuToggle');
         const menu = document.querySelector('.menu');
