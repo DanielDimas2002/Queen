@@ -80,7 +80,6 @@ window.addEventListener('click', (e) => { // Fecha o pop-up se clicar fora do co
 
 //Fim do Funcionamento do PopUp
 
-
 //Função para adição de alunos
 FormPopUpAddAluno.addEventListener("submit", (e) => {
     e.preventDefault(); // Impede o comportamento padrão de envio do formulário
@@ -186,7 +185,6 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
     fecharPopup(popupPontuar);
 });
 
-
 // Evento de submissão do formulário de média
 FormPopUpDefMedia.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -236,64 +234,7 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
     fecharPopup(popupMedia);
 });
 
-
-
-// Evento de submissão do formulário de nota de recuperação
-const formRecuperacao = document.getElementById('formRecuperacao');
-formRecuperacao.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const notaRecuperacao = parseFloat(document.getElementById('inputRecuperacao').value);
-    NotaRecuperacao = notaRecuperacao; // Define a nota de recuperação globalmente
-    alert(`Nota de recuperação definida como: ${notaRecuperacao}`);
-    fecharPopup(popupRecuperacaoNota);
-});
-
-const salvarRecuperacaoBtn = document.getElementById('salvarRecuperacao');
-
-salvarRecuperacaoBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-
-    // Captura os valores do pop-up
-    const nomesAlunos = document.getElementById('inputNomesRecuperacao').value.trim(); // Campo de nomes
-    const notaRecuperacao = parseFloat(document.getElementById('inputNotaRecuperacao').value);
-    const mediaRecu = parseFloat(document.getElementById('mediaRecuperacao').value);
-
-    // Validação
-    if (!nomesAlunos || isNaN(notaRecuperacao) || isNaN(mediaRecu)) {
-        alert("Por favor, insira os dados corretamente.");
-        return;
-    }
-
-    // Trata os dados dos alunos
-    const nomesTratados = TratamentoDeDados(nomesAlunos);
-
-    if (nomesTratados.length === 0) {
-        alert("Por favor, informe pelo menos um nome de aluno.");
-        return;
-    }
-
-    // Atualiza a recuperação dos alunos
-    nomesTratados.forEach(nomeAluno => {
-        const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
-
-        if (aluno) {
-            aluno.Recuperacao = notaRecuperacao;
-
-            aluno.Situacao = notaRecuperacao >= mediaRecu ? "Aprovado" : (aluno.Situacao === "Aprovado" ? "Aprovado" : "Reprovado");
-        }
-    });
-
-    // Atualiza a tabela
-    gerarTabelaAlunos();
-
-    // Fecha o pop-up após o sucesso
-    fecharPopup(popupRecuperacao);
-});
-
-
-
 // Função para tratar os dados dos alunos
-
 function TratamentoDeDados(nomes) {
     if (!nomes) {
         alert("A lista de nomes está vazia.");
@@ -320,13 +261,6 @@ function TratamentoDeDados(nomes) {
     const nomesValidos = nomesTratados.map(capitalizarNome);
     return nomesValidos;
 }
-
-defMedia.addEventListener("submit", (e) =>{
-    e.preventDefault()
-    MediaDefinida = parseFloat(defMedia.valorMedia.value)
-    alert("Média " + MediaDefinida + " definida com sucesso!")
-    atualizarSituacaoDosAlunos()
-})
 
 // Função para gerar o HTML da tabela com os dados dos alunos
 function gerarTabelaAlunos() {
@@ -416,66 +350,3 @@ function editarNomeAluno(index) {
     // Automaticamente foca no campo de input
     input.focus();
 }
-
-FormRecuperacao.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const nomesAlunos = FormRecuperacao.NomesAlunosRecup.value;
-    const notaRecuperacao = parseFloat(FormRecuperacao.NotaAlunoRecup.value);
-    const mediaRecu = parseFloat(FormRecuperacao.valorMediaRecup.value);
-
-    // Validação da nota de recuperação
-    if (isNaN(notaRecuperacao)) {
-        alert("Por favor, insira uma nota de recuperação válida.");
-        return;
-    }
-
-    if (isNaN(mediaRecu)) {
-        alert("Por favor, insira uma média de recuperação válida.");
-        return;
-    }
-
-    // Trata os dados dos alunos
-    const nomesTratados = TratamentoDeDados(nomesAlunos);
-
-    if (nomesTratados.length === 0) {
-        alert("Por favor, informe pelo menos um nome de aluno.");
-        return;
-    }
-
-    // Itera sobre cada nome de aluno informado
-    nomesTratados.forEach(nomeAluno => {
-        const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
-
-        if (!aluno) {
-            alert(`Aluno ${nomeAluno} não encontrado.`);
-            return;
-        }
-
-        // Atualiza a nota de recuperação do aluno
-        aluno.Recuperacao = notaRecuperacao;
-
-        // Verifica se a nota de recuperação é suficiente para aprovação
-        if (notaRecuperacao >= mediaRecu) {
-            aluno.Situacao = "Aprovado"; // Aluno é aprovado se a nota de recuperação for igual ou maior que a média
-        } else {
-            // Mantenha a situação anterior se o aluno já estiver aprovado
-            if (aluno.Situacao !== "Aprovado") {
-                aluno.Situacao = "Reprovado"; // Caso contrário, continua reprovado
-            }
-        }
-    });
-
-    // Atualiza a tabela de alunos
-    gerarTabelaAlunos();
-
-    // Limpa os campos do formulário
-    FormRecuperacao.reset();
-});
-
-
-
-
-//document.getElementById("login-btn").addEventListener("click", function() {
-  //  window.location.href = "versao17.html";
-//});
