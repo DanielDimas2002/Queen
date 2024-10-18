@@ -11,8 +11,13 @@ class Estudante {
     }
 }
 
+// Define o objeto aluno 
+function criarAluno(nome, av1, av2, av3) {
+    aluno = new Estudante(nome, av1, av2, av3);
+}
+
 //Definições iniciais
-let MediaDefinida = 0;
+let MediaDefinida = null;
 let ListaDeAlunos = [];
 
 // Seleciona os elementos do formulário e inicializa a lista de alunos
@@ -36,7 +41,7 @@ const popupRecuperacao = document.getElementById('popupRecuperacao'); //Falta fa
 
 // Selecionando os formulários de dentro dos PopUp
 const FormPopUpAddAluno = document.getElementById("CadastrarAlunos");
-const FormPopUpDefMedia = document.getElementById("formMedia")
+const FormPopUpDefMedia = document.getElementById("formMedia");
 const FormPopUpPontuar = document.getElementById("formPontuar");
 const FormPopUpNotaRecu = document.getElementById("formNotaRecu")
 const FormPopUpPontuarRecu = document.getElementById("formPontuarRecu")// Falta criar
@@ -181,14 +186,55 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
 
 
 // Evento de submissão do formulário de média
-const formMedia = document.getElementById('formMedia');
-formMedia.addEventListener('submit', (e) => {
+FormPopUpDefMedia.addEventListener('submit', (e) => {
     e.preventDefault();
-    const media = parseFloat(document.getElementById('inputMedia').value);
-    MediaDefinida = media; // Define a média globalmente
-    alert(`Média definida como: ${media}`);
+
+    // Pega a nova média definida pelo professor
+    const novaMediaDefinida = parseFloat(document.getElementById('inputMedia').value);
+
+    // Verifica se já há uma média definida e se o valor foi alterado
+    if (MediaDefinida !== null && novaMediaDefinida !== MediaDefinida) {
+        const confirmacao = confirm(`A média atual é ${MediaDefinida}. Deseja alterar para ${novaMediaDefinida}?`);
+        
+        if (!confirmacao) {
+            // Se o professor não confirmar, mantém a média atual
+            document.getElementById('inputMedia').value = MediaDefinida;
+            return;
+        }
+    }
+
+    // Atualiza a média definida
+    MediaDefinida = novaMediaDefinida;
+
+    // Atualiza o status de todos os alunos
+    for (let aluno of ListaDeAlunos) {
+        // Verifica se as avaliações estão definidas
+        if (aluno.Avaliacao1 || aluno.Avaliacao2 || aluno.Avaliacao3) {
+            // Calcula a média do aluno
+            const mediaCalculada = ((aluno.Avaliacao1 + aluno.Avaliacao2 + aluno.Avaliacao3) / 3).toFixed(2);
+            
+            // Atualiza a situação do aluno com base na média definida
+            aluno.Situacao = mediaCalculada >= MediaDefinida ? "Aprovado" : "Reprovado";
+        } else {
+            // Se não há avaliações, pode definir como "Reprovado" ou outra lógica
+            aluno.Situacao = "Reprovado"; // ou outra lógica se necessário
+        }
+    }
+
+    // Exibe um alerta informando que a média foi definida com sucesso
+    alert(`A média foi definida com sucesso: ${MediaDefinida}.`);
+
+    // Atualiza o campo de entrada para mostrar a média definida
+    document.getElementById('inputMedia').value = MediaDefinida;
+
+    // Atualiza a tabela
+    gerarTabelaAlunos();
+
+    // Fecha o pop-up de média
     fecharPopup(popupMedia);
 });
+
+
 
 // Evento de submissão do formulário de nota de recuperação
 const formRecuperacao = document.getElementById('formRecuperacao');
@@ -272,8 +318,6 @@ function TratamentoDeDados(nomes) {
     const nomesValidos = nomesTratados.map(capitalizarNome);
     return nomesValidos;
 }
-
-
 
 defMedia.addEventListener("submit", (e) =>{
     e.preventDefault()
