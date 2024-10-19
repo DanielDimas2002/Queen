@@ -27,7 +27,6 @@ document.getElementById('formCadastro').addEventListener('submit', async (e) => 
         if (createUser.ok) {
             const responseData = await createUser.json(); // Obter resposta em JSON
             alert('Cadastro realizado com sucesso!');
-            window.location.href = '/Landing Page/Turmas/Turmas.html'
             console.log(responseData);
         } else {
             const errorData = await createUser.json(); // Obter mensagem de erro do backend
@@ -59,6 +58,9 @@ document.getElementById('formLogin').addEventListener('submit', async (e) => {
         if(loginUser.ok){
             const responseData = await loginUser.json(); // Obter resposta em JSON
             console.log(responseData);
+
+            localStorage.setItem('token', responseData.token);
+
             alert('Login realizado com sucesso! Redirecionando...');
             window.location.href = '/Landing Page/Turmas/Turmas.html';
         }else{
