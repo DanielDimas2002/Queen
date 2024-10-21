@@ -86,7 +86,7 @@ window.addEventListener('click', (e) => { // Fecha o pop-up se clicar fora do co
 
 //Funções gerais
 
-function gerarTabelaAlunos() { // Função para gerar o HTML da tabela com os dados dos alunos
+function gerarTabelaAlunos() { // Gerar a tabela HTML 
     const tabela = document.querySelector("table");
 
     // Limpa o conteúdo atual da tabela
@@ -113,7 +113,7 @@ function gerarTabelaAlunos() { // Função para gerar o HTML da tabela com os da
     ListaDeAlunos.forEach((aluno, index) => {
         const linha = document.createElement("tr");
         linha.innerHTML = `
-            <td><span class="nome-aluno">${aluno.Nome}</span></td> <!-- Nome do aluno -->
+            <td><span class="nome-aluno">${aluno.Nome}</span></td>
             <td>${aluno.Avaliacao1}</td>
             <td>${aluno.Avaliacao2}</td>
             <td>${aluno.Avaliacao3}</td>
@@ -121,8 +121,13 @@ function gerarTabelaAlunos() { // Função para gerar o HTML da tabela com os da
             <td>${aluno.Recuperacao}</td>
             <td>${aluno.Situacao}</td>
             <td>
-                <button class="btn-editar" data-index="${index}">Editar</button>
-            </td> <!-- Botão de editar -->
+                <button class="btn-editar" data-index="${index}" title="Editar">
+                    <i class="fas fa-pen"></i> <!-- Ícone de caneta -->
+                </button>
+                <button class="btn-excluir" data-index="${index}" title="Excluir">
+                    <i class="fas fa-trash-alt"></i> <!-- Ícone de lixeira -->
+                </button>
+            </td> <!-- Botões de editar e excluir -->
         `;
         tabela.appendChild(linha);
     });
@@ -130,10 +135,28 @@ function gerarTabelaAlunos() { // Função para gerar o HTML da tabela com os da
     // Adiciona evento de clique para editar o nome do aluno
     document.querySelectorAll('.btn-editar').forEach(button => {
         button.addEventListener('click', (e) => {
-            const index = e.target.getAttribute('data-index');
+            const index = e.target.closest('button').getAttribute('data-index');
             editarNomeAluno(index);
         });
     });
+
+    // Adiciona evento de clique para excluir o aluno
+    document.querySelectorAll('.btn-excluir').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const index = e.target.closest('button').getAttribute('data-index');
+            excluirAluno(index);
+        });
+    });
+}
+
+// Função para excluir aluno da lista
+function excluirAluno(index) {
+    const aluno = ListaDeAlunos[index];
+    if (confirm(`Tem certeza que deseja excluir o aluno ${aluno.Nome}?`)) {
+        ListaDeAlunos.splice(index, 1); // Remove o aluno da lista
+        gerarTabelaAlunos(); // Atualiza a tabela após a exclusão
+        alert(`Aluno ${aluno.Nome} excluído com sucesso.`);
+    }
 }
 
 function TratamentoDeDados(nomes) { // Função para tratar os dados dos alunos
