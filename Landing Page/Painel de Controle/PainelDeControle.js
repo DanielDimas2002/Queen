@@ -34,7 +34,7 @@ const popupTurma = document.getElementById('popupTurma');
 const popupMedia = document.getElementById('popupMedia');
 const popupPontuar = document.getElementById('popupPontuar');
 const popupRecuperacaoNota = document.getElementById('popupRecuperacaoNota');
-const popupRecuperacao = document.getElementById('popupPontuarRecu'); //Falta fazer o modal
+const popupRecuperacao = document.getElementById('popupPontuarRecu'); 
 
 // Selecionando os formulários de dentro dos PopUp
 const FormPopUpAddAluno = document.getElementById("CadastrarAlunos");
@@ -212,11 +212,6 @@ FormPopUpAddAluno.addEventListener("submit", (e) => {
 
     // Trata os dados dos alunos
     const nomesTratados = TratamentoDeDados(nomesAlunos);
-
-    if (nomesTratados.length === 0) {
-        alert("Por favor, informe pelo menos um nome de aluno.");
-        return;
-    }
 
     // Adiciona os alunos à lista
     for (let i = 0; i < nomesTratados.length; i++) {
