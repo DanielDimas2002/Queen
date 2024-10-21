@@ -203,7 +203,7 @@ function editarNomeAluno(index) { //Função de edição de nomes
 
 //Fim das funções gerais
 
-//Função para adição de alunos
+// Função para adição de alunos
 FormPopUpAddAluno.addEventListener("submit", (e) => {
     e.preventDefault(); // Impede o comportamento padrão de envio do formulário
 
@@ -231,7 +231,7 @@ FormPopUpAddAluno.addEventListener("submit", (e) => {
     fecharPopup(popupTurma);
 });
 
-// Usando diretamente a variável FormPopUpPontuar que você já tem definida
+// Função para pontuação de alunos
 FormPopUpPontuar.addEventListener("submit", (e) => {
     e.preventDefault(); // Evita o comportamento padrão de envio do formulário
 
@@ -264,6 +264,8 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
         return;
     }
 
+    let alteracaoConfirmada = true; // Variável para controle de sobrescrição de notas
+
     // Atualiza as notas dos alunos
     nomesTratados.forEach(nomeAluno => {
         const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
@@ -272,6 +274,26 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
             alert(`Aluno ${nomeAluno} não encontrado.`);
             return;
         }
+
+        // Verifica se a nota já foi lançada e pede confirmação
+        let notaExistente;
+        switch (avaliacaoSelecionada.value) {
+            case "Avaliação1":
+                notaExistente = aluno.Avaliacao1;
+                break;
+            case "Avaliação2":
+                notaExistente = aluno.Avaliacao2;
+                break;
+            case "Avaliação3":
+                notaExistente = aluno.Avaliacao3;
+                break;
+        }
+
+        if (notaExistente !== null && notaExistente !== undefined) {
+            alteracaoConfirmada = confirm(`O aluno ${nomeAluno} já possui uma nota para ${avaliacaoSelecionada.value} (${notaExistente}). Deseja sobrescrevê-la?`);
+        }
+
+        if (!alteracaoConfirmada) return; // Caso o professor cancele a confirmação, interrompe o processo
 
         // Atribui a nota à avaliação correspondente
         switch (avaliacaoSelecionada.value) {
@@ -299,9 +321,13 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
     // Atualiza a tabela de alunos
     gerarTabelaAlunos();
 
+    // Exibe o alerta de sucesso
+    alert("As notas foram distribuídas com sucesso!");
+
     // Fecha o pop-up após o sucesso
     fecharPopup(popupPontuar);
 });
+
 
 // Evento de submissão do formulário de média
 FormPopUpDefMedia.addEventListener('submit', (e) => {
