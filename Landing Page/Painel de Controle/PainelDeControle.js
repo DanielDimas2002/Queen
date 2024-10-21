@@ -1,6 +1,6 @@
 // Definição da classe Estudante com seu construtor
 class Estudante {
-    constructor(nomeAluno, Av1 = 0, Av2 = 0, Av3 = 0, Media = 0, Recuperacao = 0, Situacao = "Reprovado") {
+    constructor(nomeAluno, Av1 = "", Av2 = "", Av3 = "", Media = "", Recuperacao = "", Situacao = "") {
         this.Nome = nomeAluno; // Nome do aluno
         this.Avaliacao1 = Av1; // Nota da Avaliação 1
         this.Avaliacao2 = Av2; // Nota da Avaliação 2
@@ -14,7 +14,7 @@ class Estudante {
 //Definições iniciais
 let MediaDefinida = null;
 let ListaDeAlunos = [];
-let NotaRecuperacaoDefinida = null; 
+let NotaRecuperacaoDefinida = null;
 
 
 // Seleciona os elementos do formulário e inicializa a lista de alunos
@@ -34,7 +34,7 @@ const popupTurma = document.getElementById('popupTurma');
 const popupMedia = document.getElementById('popupMedia');
 const popupPontuar = document.getElementById('popupPontuar');
 const popupRecuperacaoNota = document.getElementById('popupRecuperacaoNota');
-const popupRecuperacao = document.getElementById('popupPontuarRecu'); 
+const popupRecuperacao = document.getElementById('popupPontuarRecu');
 
 // Selecionando os formulários de dentro dos PopUp
 const FormPopUpAddAluno = document.getElementById("CadastrarAlunos");
@@ -146,7 +146,7 @@ function TratamentoDeDados(nomes) { // Função para tratar os dados dos alunos
     const nomesTratados = nomes.split(",").map(nome => nome.trim());
 
     // Função para converter a primeira letra de cada palavra em maiúscula
-    const capitalizarNome = nome => 
+    const capitalizarNome = nome =>
         nome.split(" ").map(parte => parte.charAt(0).toUpperCase() + parte.slice(1).toLowerCase()).join(" ");
 
     // Encontra os nomes sem sobrenome
@@ -192,7 +192,7 @@ function editarNomeAluno(index) { //Função de edição de nomes
                 gerarTabelaAlunos(); // Atualiza a tabela
             } else {
                 // Reverte a edição, se o professor não confirmar a exclusão
-                gerarTabelaAlunos(); 
+                gerarTabelaAlunos();
             }
         }
     });
@@ -223,7 +223,7 @@ FormPopUpAddAluno.addEventListener("submit", (e) => {
     ListaDeAlunos.sort((a, b) => a.Nome.localeCompare(b.Nome)); // Assumindo que a classe Estudante tem um atributo 'nome'
 
     // Limpa o campo de texto após a submissão do formulário
-    document.getElementById("inputNomesTurma").value = ""; 
+    document.getElementById("inputNomesTurma").value = "";
 
     // Atualiza a tabela de alunos
     gerarTabelaAlunos();
@@ -289,11 +289,13 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
                 break;
         }
 
-        if (notaExistente !== null && notaExistente !== undefined) {
+        // Modificação: Verifica se a nota existente é uma string vazia, null ou undefined
+        if (notaExistente !== "" && notaExistente !== null && notaExistente !== undefined) {
             alteracaoConfirmada = confirm(`O aluno ${nomeAluno} já possui uma nota para ${avaliacaoSelecionada.value} (${notaExistente}). Deseja sobrescrevê-la?`);
         }
 
         if (!alteracaoConfirmada) return; // Caso o professor cancele a confirmação, interrompe o processo
+
 
         // Atribui a nota à avaliação correspondente
         switch (avaliacaoSelecionada.value) {
@@ -339,7 +341,7 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
     // Verifica se já há uma média definida e se o valor foi alterado
     if (MediaDefinida !== null && novaMediaDefinida !== MediaDefinida) {
         const confirmacao = confirm(`A média atual é ${MediaDefinida}. Deseja alterar para ${novaMediaDefinida}?`);
-        
+
         if (!confirmacao) {
             // Se o professor não confirmar, mantém a média atual
             document.getElementById('inputMedia').value = MediaDefinida;
@@ -356,7 +358,7 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
         if (aluno.Avaliacao1 || aluno.Avaliacao2 || aluno.Avaliacao3) {
             // Calcula a média do aluno
             const mediaCalculada = ((aluno.Avaliacao1 + aluno.Avaliacao2 + aluno.Avaliacao3) / 3).toFixed(2);
-            
+
             // Atualiza a situação do aluno com base na média definida
             aluno.Situacao = mediaCalculada >= MediaDefinida ? "Aprovado" : "Reprovado";
         } else {
@@ -385,7 +387,7 @@ formNotaRecu.addEventListener('submit', (e) => {
     NotaRecuperacaoDefinida = parseFloat(document.getElementById('inputRecuperacao').value); // Salva a nota na variável global
     alert("Nota de recuperação definida: " + NotaRecuperacaoDefinida);
     popupRecuperacaoNota.style.display = 'none'; // Fecha o pop-up
-    document.querySelector('.popup-overlay').style.display = 'none'; 
+    document.querySelector('.popup-overlay').style.display = 'none';
 });
 
 
@@ -417,7 +419,7 @@ FormPopUpPontuarRecu.addEventListener('submit', (e) => {
 
             // Fecha o pop-up após salvar
             popupPontuarRecu.style.display = 'none';
-            document.querySelector('.popup-overlay').style.display = 'none'; 
+            document.querySelector('.popup-overlay').style.display = 'none';
         } else {
             alert("Este aluno já foi aprovado e não precisa de recuperação.");
         }
