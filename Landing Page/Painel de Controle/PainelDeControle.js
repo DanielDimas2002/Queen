@@ -1,6 +1,6 @@
 // Definição da classe Estudante com seu construtor
 class Estudante {
-    constructor(nomeAluno, Av1 = 0, Av2 = 0, Av3 = 0, Media = 0, Recuperacao = 0, Situacao = "Reprovado") {
+    constructor(nomeAluno, Av1 = "", Av2 = "", Av3 = "", Media = "", Recuperacao = "", Situacao = "") {
         this.Nome = nomeAluno; // Nome do aluno
         this.Avaliacao1 = Av1; // Nota da Avaliação 1
         this.Avaliacao2 = Av2; // Nota da Avaliação 2
@@ -14,7 +14,45 @@ class Estudante {
 //Definições iniciais
 let MediaDefinida = null;
 let ListaDeAlunos = [];
-let NotaRecuperacaoDefinida = null; 
+let NotaRecuperacaoDefinida = null;
+
+ // Funções para gerar e baixar a tabela em PDF e Excel
+ function baixarTabelaPDF() {
+    const { jsPDF } = window.jspdf; // Acesse jsPDF
+    const doc = new jsPDF();
+    doc.text("Tabela de Alunos", 10, 10);
+
+    // Obtém a tabela HTML
+    const tabela = document.querySelector('table');
+    // Converte a tabela HTML para PDF
+    doc.autoTable({ html: tabela }); // Gera o PDF com base na tabela
+
+    doc.save('Tabela_de_Alunos.pdf'); // Salva o PDF
+    popupDownload.style.display = 'none'; // Fecha o pop-up de download
+}
+
+
+function baixarTabelaExcel() {
+    const table = document.querySelector('table');
+let csvContent = '';
+
+table.querySelectorAll('tr').forEach(row => {
+    const rowData = Array.from(row.querySelectorAll('th, td'))
+                        .map(cell => cell.innerText)
+                        .join(',');
+    csvContent += rowData + '\n';
+});
+
+const blob = new Blob([csvContent], { type: 'text/csv' });
+const url = URL.createObjectURL(blob);
+const downloadLink = document.createElement('a');
+downloadLink.href = url;
+downloadLink.download = 'Tabela_de_Alunos.csv';
+downloadLink.click();
+
+URL.revokeObjectURL(url); // Libera o objeto URL criado
+popupDownload.style.display = 'none';
+}
 
 
 // Seleciona os elementos do formulário e inicializa a lista de alunos
@@ -28,13 +66,15 @@ const PopUpDefMedia = document.getElementById('PopUpDefMedia');
 const PopUpPontuar = document.getElementById('PopUpPontuar');
 const PopUpNotaRecu = document.getElementById('PopUpNotaRecu');
 const PopUpPontuarRecu = document.getElementById('PopUpPontuarRecu');
+const btnDownloadTabela = document.getElementById('PopUpDownloadTabela');
 
 // Selecionando os próprios modais
 const popupTurma = document.getElementById('popupTurma');
 const popupMedia = document.getElementById('popupMedia');
 const popupPontuar = document.getElementById('popupPontuar');
 const popupRecuperacaoNota = document.getElementById('popupRecuperacaoNota');
-const popupRecuperacao = document.getElementById('popupPontuarRecu'); //Falta fazer o modal
+const popupRecuperacao = document.getElementById('popupPontuarRecu');
+const btnCloseDownload = document.getElementById('closeDownload');
 
 // Selecionando os formulários de dentro dos PopUp
 const FormPopUpAddAluno = document.getElementById("CadastrarAlunos");
@@ -42,6 +82,8 @@ const FormPopUpDefMedia = document.getElementById("formMedia");
 const FormPopUpPontuar = document.getElementById("formPontuar");
 const FormPopUpNotaRecu = document.getElementById("formNotaRecu")
 const FormPopUpPontuarRecu = document.getElementById("formPontuarRecu")
+const btnDownloadPDF = document.getElementById('downloadPDF');
+const btnDownloadExcel = document.getElementById('downloadExcel');
 
 // Funcionamento do PopUp
 
@@ -61,6 +103,9 @@ PopUpDefMedia.addEventListener('click', () => abrirPopup(popupMedia));
 PopUpPontuar.addEventListener('click', () => abrirPopup(popupPontuar));
 PopUpNotaRecu.addEventListener('click', () => abrirPopup(popupRecuperacaoNota));
 PopUpPontuarRecu.addEventListener('click', () => abrirPopup(popupRecuperacao));
+btnDownloadTabela.addEventListener('click', () => {
+    popupDownload.style.display = 'block';
+});
 
 function fecharPopup(popup) { // Função para fechar o pop-up
     popup.style.display = 'none';
@@ -82,11 +127,26 @@ window.addEventListener('click', (e) => { // Fecha o pop-up se clicar fora do co
     }
 });
 
+// Função para fechar o pop-up de download
+btnCloseDownload.addEventListener('click', () => {
+    fecharPopup(popupDownload);
+});
+
+// Função para baixar a tabela em PDF
+btnDownloadPDF.addEventListener('click', () => {
+    baixarTabelaPDF();
+});
+
+// Função para baixar a tabela em Excel
+btnDownloadExcel.addEventListener('click', () => {
+    baixarTabelaExcel();
+});
+
 //Fim do Funcionamento do PopUp
 
 //Funções gerais
 
-function gerarTabelaAlunos() { // Função para gerar o HTML da tabela com os dados dos alunos
+function gerarTabelaAlunos() { // Gerar a tabela HTML 
     const tabela = document.querySelector("table");
 
     // Limpa o conteúdo atual da tabela
@@ -113,7 +173,7 @@ function gerarTabelaAlunos() { // Função para gerar o HTML da tabela com os da
     ListaDeAlunos.forEach((aluno, index) => {
         const linha = document.createElement("tr");
         linha.innerHTML = `
-            <td><span class="nome-aluno">${aluno.Nome}</span></td> <!-- Nome do aluno -->
+            <td><span class="nome-aluno">${aluno.Nome}</span></td>
             <td>${aluno.Avaliacao1}</td>
             <td>${aluno.Avaliacao2}</td>
             <td>${aluno.Avaliacao3}</td>
@@ -121,19 +181,44 @@ function gerarTabelaAlunos() { // Função para gerar o HTML da tabela com os da
             <td>${aluno.Recuperacao}</td>
             <td>${aluno.Situacao}</td>
             <td>
-                <button class="btn-editar" data-index="${index}">Editar</button>
-            </td> <!-- Botão de editar -->
+                <button class="btn-editar" data-index="${index}" title="Editar">
+                    <i class="fas fa-pen"></i> <!-- Ícone de caneta -->
+                </button>
+                <button class="btn-excluir" data-index="${index}" title="Excluir">
+                    <i class="fas fa-trash-alt"></i> <!-- Ícone de lixeira -->
+                </button>
+            </td> <!-- Botões de editar e excluir -->
         `;
         tabela.appendChild(linha);
     });
 
+   
+
     // Adiciona evento de clique para editar o nome do aluno
     document.querySelectorAll('.btn-editar').forEach(button => {
         button.addEventListener('click', (e) => {
-            const index = e.target.getAttribute('data-index');
+            const index = e.target.closest('button').getAttribute('data-index');
             editarNomeAluno(index);
         });
     });
+
+    // Adiciona evento de clique para excluir o aluno
+    document.querySelectorAll('.btn-excluir').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const index = e.target.closest('button').getAttribute('data-index');
+            excluirAluno(index);
+        });
+    });
+}
+
+// Função para excluir aluno da lista
+function excluirAluno(index) {
+    const aluno = ListaDeAlunos[index];
+    if (confirm(`Tem certeza que deseja excluir o aluno ${aluno.Nome}?`)) {
+        ListaDeAlunos.splice(index, 1); // Remove o aluno da lista
+        gerarTabelaAlunos(); // Atualiza a tabela após a exclusão
+        alert(`Aluno ${aluno.Nome} excluído com sucesso.`);
+    }
 }
 
 function TratamentoDeDados(nomes) { // Função para tratar os dados dos alunos
@@ -146,7 +231,7 @@ function TratamentoDeDados(nomes) { // Função para tratar os dados dos alunos
     const nomesTratados = nomes.split(",").map(nome => nome.trim());
 
     // Função para converter a primeira letra de cada palavra em maiúscula
-    const capitalizarNome = nome => 
+    const capitalizarNome = nome =>
         nome.split(" ").map(parte => parte.charAt(0).toUpperCase() + parte.slice(1).toLowerCase()).join(" ");
 
     // Encontra os nomes sem sobrenome
@@ -192,7 +277,7 @@ function editarNomeAluno(index) { //Função de edição de nomes
                 gerarTabelaAlunos(); // Atualiza a tabela
             } else {
                 // Reverte a edição, se o professor não confirmar a exclusão
-                gerarTabelaAlunos(); 
+                gerarTabelaAlunos();
             }
         }
     });
@@ -203,7 +288,7 @@ function editarNomeAluno(index) { //Função de edição de nomes
 
 //Fim das funções gerais
 
-//Função para adição de alunos
+// Função para adição de alunos
 FormPopUpAddAluno.addEventListener("submit", (e) => {
     e.preventDefault(); // Impede o comportamento padrão de envio do formulário
 
@@ -212,11 +297,6 @@ FormPopUpAddAluno.addEventListener("submit", (e) => {
 
     // Trata os dados dos alunos
     const nomesTratados = TratamentoDeDados(nomesAlunos);
-
-    if (nomesTratados.length === 0) {
-        alert("Por favor, informe pelo menos um nome de aluno.");
-        return;
-    }
 
     // Adiciona os alunos à lista
     for (let i = 0; i < nomesTratados.length; i++) {
@@ -228,7 +308,7 @@ FormPopUpAddAluno.addEventListener("submit", (e) => {
     ListaDeAlunos.sort((a, b) => a.Nome.localeCompare(b.Nome)); // Assumindo que a classe Estudante tem um atributo 'nome'
 
     // Limpa o campo de texto após a submissão do formulário
-    document.getElementById("inputNomesTurma").value = ""; 
+    document.getElementById("inputNomesTurma").value = "";
 
     // Atualiza a tabela de alunos
     gerarTabelaAlunos();
@@ -236,7 +316,7 @@ FormPopUpAddAluno.addEventListener("submit", (e) => {
     fecharPopup(popupTurma);
 });
 
-// Usando diretamente a variável FormPopUpPontuar que você já tem definida
+// Função para pontuação de alunos
 FormPopUpPontuar.addEventListener("submit", (e) => {
     e.preventDefault(); // Evita o comportamento padrão de envio do formulário
 
@@ -269,6 +349,8 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
         return;
     }
 
+    let alteracaoConfirmada = true; // Variável para controle de sobrescrição de notas
+
     // Atualiza as notas dos alunos
     nomesTratados.forEach(nomeAluno => {
         const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
@@ -277,6 +359,28 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
             alert(`Aluno ${nomeAluno} não encontrado.`);
             return;
         }
+
+        // Verifica se a nota já foi lançada e pede confirmação
+        let notaExistente;
+        switch (avaliacaoSelecionada.value) {
+            case "Avaliação1":
+                notaExistente = aluno.Avaliacao1;
+                break;
+            case "Avaliação2":
+                notaExistente = aluno.Avaliacao2;
+                break;
+            case "Avaliação3":
+                notaExistente = aluno.Avaliacao3;
+                break;
+        }
+
+        // Modificação: Verifica se a nota existente é uma string vazia, null ou undefined
+        if (notaExistente !== "" && notaExistente !== null && notaExistente !== undefined) {
+            alteracaoConfirmada = confirm(`O aluno ${nomeAluno} já possui uma nota para ${avaliacaoSelecionada.value} (${notaExistente}). Deseja sobrescrevê-la?`);
+        }
+
+        if (!alteracaoConfirmada) return; // Caso o professor cancele a confirmação, interrompe o processo
+
 
         // Atribui a nota à avaliação correspondente
         switch (avaliacaoSelecionada.value) {
@@ -304,9 +408,13 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
     // Atualiza a tabela de alunos
     gerarTabelaAlunos();
 
+    // Exibe o alerta de sucesso
+    alert("As notas foram distribuídas com sucesso!");
+
     // Fecha o pop-up após o sucesso
     fecharPopup(popupPontuar);
 });
+
 
 // Evento de submissão do formulário de média
 FormPopUpDefMedia.addEventListener('submit', (e) => {
@@ -318,7 +426,7 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
     // Verifica se já há uma média definida e se o valor foi alterado
     if (MediaDefinida !== null && novaMediaDefinida !== MediaDefinida) {
         const confirmacao = confirm(`A média atual é ${MediaDefinida}. Deseja alterar para ${novaMediaDefinida}?`);
-        
+
         if (!confirmacao) {
             // Se o professor não confirmar, mantém a média atual
             document.getElementById('inputMedia').value = MediaDefinida;
@@ -335,7 +443,7 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
         if (aluno.Avaliacao1 || aluno.Avaliacao2 || aluno.Avaliacao3) {
             // Calcula a média do aluno
             const mediaCalculada = ((aluno.Avaliacao1 + aluno.Avaliacao2 + aluno.Avaliacao3) / 3).toFixed(2);
-            
+
             // Atualiza a situação do aluno com base na média definida
             aluno.Situacao = mediaCalculada >= MediaDefinida ? "Aprovado" : "Reprovado";
         } else {
@@ -364,7 +472,7 @@ formNotaRecu.addEventListener('submit', (e) => {
     NotaRecuperacaoDefinida = parseFloat(document.getElementById('inputRecuperacao').value); // Salva a nota na variável global
     alert("Nota de recuperação definida: " + NotaRecuperacaoDefinida);
     popupRecuperacaoNota.style.display = 'none'; // Fecha o pop-up
-    document.querySelector('.popup-overlay').style.display = 'none'; 
+    document.querySelector('.popup-overlay').style.display = 'none';
 });
 
 
@@ -396,7 +504,7 @@ FormPopUpPontuarRecu.addEventListener('submit', (e) => {
 
             // Fecha o pop-up após salvar
             popupPontuarRecu.style.display = 'none';
-            document.querySelector('.popup-overlay').style.display = 'none'; 
+            document.querySelector('.popup-overlay').style.display = 'none';
         } else {
             alert("Este aluno já foi aprovado e não precisa de recuperação.");
         }
@@ -404,4 +512,3 @@ FormPopUpPontuarRecu.addEventListener('submit', (e) => {
         alert("Aluno não encontrado. Verifique o nome digitado.");
     }
 });
-
