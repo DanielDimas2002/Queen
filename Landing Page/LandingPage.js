@@ -3,6 +3,8 @@
 document.getElementById('formCadastro').addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    const form = document.getElementById('formCadastro');
+
     const nome = document.getElementById('nome').value;
     const email = document.getElementById('email').value;
     const senha = document.getElementById('senha').value;
@@ -25,19 +27,20 @@ document.getElementById('formCadastro').addEventListener('submit', async (e) => 
         });
 
         if (createUser.ok) {
-            const responseData = await createUser.json(); // Obter resposta em JSON
+            const responseData = await createUser.json();
             alert('Cadastro realizado com sucesso!');
             console.log(responseData);
+            form.reset();
         } else {
-            const errorData = await createUser.json(); // Obter mensagem de erro do backend
+            const errorData = await createUser.json();
             alert('Erro ao cadastrar usuário: ' + errorData.message);
         }
-
     } catch (error) {
         console.error('Erro ao enviar dados!', error);
         alert('Erro ao realizar cadastro, tente novamente mais tarde.');
     }
 });
+
 
 // Login do Usuário
 

@@ -118,14 +118,14 @@
         const { disciplina, turma, turno, data_inicial, data_final } = req.body;
     
         const token = req.headers.authorization?.split(' ')[1];
-        if(!token){
+        if (!token) {
             return res.status(401).json({ message: 'Token não fornecido.' });
         }
-
+    
         try {
             const decoded = jwt.verify(token, secretKey);
-            const userId = decoded.id; 
-
+            const userId = decoded.id;
+    
             const novaTurma = await Turma.create({
                 disciplina,
                 turma,
@@ -138,15 +138,40 @@
             res.status(201).json(novaTurma);
         } catch (error) {
             console.error('Erro ao cadastrar turma:', error);
-            res.status(400).send('Erro ao cadastrar turma: ' + error.message);
+            res.status(400).json({ message: 'Erro ao cadastrar turma', error: error.message });
         }
     });
+    
+
+    // Rota para buscar todas as turmas
+app.get('/turmas', async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ message: 'Token não fornecido.' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, secretKey);
+        const userId = decoded.id;
+
+        // Buscar turmas do banco de dados associadas ao usuário
+        const turmas = await Turma.findAll({
+            where: {
+                usuario_id: userId // Filtrar turmas pelo ID do usuário
+            }
+        });
+
+        res.status(200).json(turmas);
+    } catch (error) {
+        console.error('Erro ao buscar turmas:', error);
+        res.status(500).send('Erro ao buscar turmas: ' + error.message);
+    }
+});
+
 
     
 
-    
 
-
-        app.listen(3000, () => console.log('Servidor rodando na porta 3000'));
+    app.listen(3000, () => console.log('Servidor rodando na porta 3000'));
 
 })();
