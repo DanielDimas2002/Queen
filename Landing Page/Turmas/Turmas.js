@@ -137,3 +137,27 @@ form.onsubmit = function(event) {
     // Fechar o modal
     modal.style.display = "none";
 };
+// Função para acessar dados protegidos
+const fetchProtectedData = async () => {
+    const token = localStorage.getItem('token'); // Recupera o token
+
+    try {
+        const response = await fetch('http://localhost:3000/protected-route', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`, // Insere o token no cabeçalho
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Dados protegidos:', data);
+        } else {
+            console.error('Erro ao acessar dados protegidos:', response.status);
+            alert('Você não está autorizado a acessar esses dados.');
+        }
+    } catch (error) {
+        console.error('Erro na requisição:', error);
+    }
+};
