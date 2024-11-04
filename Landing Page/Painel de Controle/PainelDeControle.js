@@ -16,6 +16,44 @@ let MediaDefinida = null;
 let ListaDeAlunos = [];
 let NotaRecuperacaoDefinida = null;
 
+ // Funções para gerar e baixar a tabela em PDF e Excel
+ function baixarTabelaPDF() {
+    const { jsPDF } = window.jspdf; // Acesse jsPDF
+    const doc = new jsPDF();
+    doc.text("Tabela de Alunos", 10, 10);
+
+    // Obtém a tabela HTML
+    const tabela = document.querySelector('table');
+    // Converte a tabela HTML para PDF
+    doc.autoTable({ html: tabela }); // Gera o PDF com base na tabela
+
+    doc.save('Tabela_de_Alunos.pdf'); // Salva o PDF
+    popupDownload.style.display = 'none'; // Fecha o pop-up de download
+}
+
+
+function baixarTabelaExcel() {
+    const table = document.querySelector('table');
+let csvContent = '';
+
+table.querySelectorAll('tr').forEach(row => {
+    const rowData = Array.from(row.querySelectorAll('th, td'))
+                        .map(cell => cell.innerText)
+                        .join(',');
+    csvContent += rowData + '\n';
+});
+
+const blob = new Blob([csvContent], { type: 'text/csv' });
+const url = URL.createObjectURL(blob);
+const downloadLink = document.createElement('a');
+downloadLink.href = url;
+downloadLink.download = 'Tabela_de_Alunos.csv';
+downloadLink.click();
+
+URL.revokeObjectURL(url); // Libera o objeto URL criado
+popupDownload.style.display = 'none';
+}
+
 
 // Seleciona os elementos do formulário e inicializa a lista de alunos
 const FormGroup = document.getElementById("FormGrupo");
@@ -28,6 +66,7 @@ const PopUpDefMedia = document.getElementById('PopUpDefMedia');
 const PopUpPontuar = document.getElementById('PopUpPontuar');
 const PopUpNotaRecu = document.getElementById('PopUpNotaRecu');
 const PopUpPontuarRecu = document.getElementById('PopUpPontuarRecu');
+const btnDownloadTabela = document.getElementById('PopUpDownloadTabela');
 
 // Selecionando os próprios modais
 const popupTurma = document.getElementById('popupTurma');
@@ -35,6 +74,7 @@ const popupMedia = document.getElementById('popupMedia');
 const popupPontuar = document.getElementById('popupPontuar');
 const popupRecuperacaoNota = document.getElementById('popupRecuperacaoNota');
 const popupRecuperacao = document.getElementById('popupPontuarRecu');
+const btnCloseDownload = document.getElementById('closeDownload');
 
 // Selecionando os formulários de dentro dos PopUp
 const FormPopUpAddAluno = document.getElementById("CadastrarAlunos");
@@ -42,6 +82,8 @@ const FormPopUpDefMedia = document.getElementById("formMedia");
 const FormPopUpPontuar = document.getElementById("formPontuar");
 const FormPopUpNotaRecu = document.getElementById("formNotaRecu")
 const FormPopUpPontuarRecu = document.getElementById("formPontuarRecu")
+const btnDownloadPDF = document.getElementById('downloadPDF');
+const btnDownloadExcel = document.getElementById('downloadExcel');
 
 // Funcionamento do PopUp
 
@@ -61,6 +103,9 @@ PopUpDefMedia.addEventListener('click', () => abrirPopup(popupMedia));
 PopUpPontuar.addEventListener('click', () => abrirPopup(popupPontuar));
 PopUpNotaRecu.addEventListener('click', () => abrirPopup(popupRecuperacaoNota));
 PopUpPontuarRecu.addEventListener('click', () => abrirPopup(popupRecuperacao));
+btnDownloadTabela.addEventListener('click', () => {
+    popupDownload.style.display = 'block';
+});
 
 function fecharPopup(popup) { // Função para fechar o pop-up
     popup.style.display = 'none';
@@ -80,6 +125,21 @@ window.addEventListener('click', (e) => { // Fecha o pop-up se clicar fora do co
     if (e.target.classList.contains('popup')) {
         fecharPopup(e.target);
     }
+});
+
+// Função para fechar o pop-up de download
+btnCloseDownload.addEventListener('click', () => {
+    fecharPopup(popupDownload);
+});
+
+// Função para baixar a tabela em PDF
+btnDownloadPDF.addEventListener('click', () => {
+    baixarTabelaPDF();
+});
+
+// Função para baixar a tabela em Excel
+btnDownloadExcel.addEventListener('click', () => {
+    baixarTabelaExcel();
 });
 
 //Fim do Funcionamento do PopUp
@@ -131,6 +191,8 @@ function gerarTabelaAlunos() { // Gerar a tabela HTML
         `;
         tabela.appendChild(linha);
     });
+
+   
 
     // Adiciona evento de clique para editar o nome do aluno
     document.querySelectorAll('.btn-editar').forEach(button => {
@@ -450,4 +512,3 @@ FormPopUpPontuarRecu.addEventListener('submit', (e) => {
         alert("Aluno não encontrado. Verifique o nome digitado.");
     }
 });
-

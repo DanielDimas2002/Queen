@@ -47,39 +47,69 @@
     // Login dos Usuários
 
     const jwt = require('jsonwebtoken');
-    const secretKey = 'Salmos23';
+    const secretKey = process.env.JWT_SECRET_KEY || 'Salmos23';
     const bcrypt = require('bcrypt');
 
     app.post('/login', async (req, res) => {
         const { email, senha } = req.body;
     
-        if (!email || !senha) { // Verifica se todos os campos estão preenchidos
+        console.log('Tentando fazer login com:', email, senha); // Logando email e senha
+    
+        if (!email || !senha) {
             return res.status(400).json({ message: 'Preencha todos os campos!' });
         }
     
         try {
-            const usuario = await Usuario.findOne({ where: { email } }); // Verifica se o email é válido
+            // Buscando o usuário no banco de dados
+            const usuario = await Usuario.findOne({ where: { email } });
+            console.log('Usuário encontrado:', usuario); // Logando o usuário encontrado
+    
             if (!usuario) {
                 return res.status(401).json({ message: 'Credenciais inválidas.' });
             }
     
-            // Verifica se a senha é válida
-            const senhaValida = await bcrypt.compare(senha, usuario.senha);
-            if (!senhaValida) {
+            // Verifica se a senha é igual à senha do usuário encontrado
+            if (senha !== usuario.senha) { // Comparando diretamente as senhas em texto claro
                 return res.status(401).json({ message: 'Credenciais inválidas.' });
             }
     
+            // Gera o token após a validação bem-sucedida
             const token = jwt.sign({ id: usuario.id }, secretKey, { expiresIn: '1d' });
     
             res.status(200).json({
                 message: 'Login realizado com sucesso!',
                 usuario: { nome: usuario.nome, email: usuario.email },
-                token,
+                token
             });
         } catch (error) {
             console.error('Erro ao fazer login:', error);
             res.status(500).json({ message: 'Erro ao fazer login.' });
         }
+    });
+    
+    
+
+    // Middleware de autenticação
+    const autenticar = (req, res, next) => {
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1];
+
+        if (!token) {
+            return res.status(401).json({ message: 'Token de autenticação não fornecido.' });
+        }
+
+        jwt.verify(token, secretKey, (err, usuario) => {
+            if (err) {
+                return res.status(403).json({ message: 'Token inválido ou expirado.' });
+            }
+            req.usuario = usuario; // Salva informações do usuário no request
+            next(); // Chama a próxima função (ou rota)
+        });
+    };
+
+// Rota protegida
+    app.get('/protected-route', autenticar, (req, res) => {
+        res.json({ message: 'Bem-vindo à rota protegida!', user: req.usuario });
     });
 
     
@@ -88,14 +118,14 @@
         const { disciplina, turma, turno, data_inicial, data_final } = req.body;
     
         const token = req.headers.authorization?.split(' ')[1];
-        if(!token){
+        if (!token) {
             return res.status(401).json({ message: 'Token não fornecido.' });
         }
-
+    
         try {
             const decoded = jwt.verify(token, secretKey);
-            const userId = decoded.id; 
-
+            const userId = decoded.id;
+    
             const novaTurma = await Turma.create({
                 disciplina,
                 turma,
@@ -108,15 +138,40 @@
             res.status(201).json(novaTurma);
         } catch (error) {
             console.error('Erro ao cadastrar turma:', error);
-            res.status(400).send('Erro ao cadastrar turma: ' + error.message);
+            res.status(400).json({ message: 'Erro ao cadastrar turma', error: error.message });
         }
     });
+    
+
+    // Rota para buscar todas as turmas
+app.get('/turmas', async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ message: 'Token não fornecido.' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, secretKey);
+        const userId = decoded.id;
+
+        // Buscar turmas do banco de dados associadas ao usuário
+        const turmas = await Turma.findAll({
+            where: {
+                usuario_id: userId // Filtrar turmas pelo ID do usuário
+            }
+        });
+
+        res.status(200).json(turmas);
+    } catch (error) {
+        console.error('Erro ao buscar turmas:', error);
+        res.status(500).send('Erro ao buscar turmas: ' + error.message);
+    }
+});
+
 
     
 
-    
 
-
-        app.listen(3000, () => console.log('Servidor rodando na porta 3000'));
+    app.listen(3000, () => console.log('Servidor rodando na porta 3000'));
 
 })();

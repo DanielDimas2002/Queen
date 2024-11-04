@@ -117,23 +117,96 @@ function openEditModal(card, disciplina, turma, turno, dataInicial, dataFinal) {
     };
 }
 
-// Atualizar a lógica do formulário para criar um novo card ao enviar
-form.onsubmit = function(event) {
-    event.preventDefault(); // Evitar o recarregamento da página
+//Criando Turmas
+document.getElementById('createClassForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-    // Pegar os dados do formulário
-    const disciplina = document.getElementById("disciplina").value;
-    const turma = document.getElementById("turma").value;
-    const turno = document.getElementById("turno").value;
-    const dataInicial = document.getElementById("data_inicial").value;
-    const dataFinal = document.getElementById("data_final").value;
+    const disciplina = document.getElementById('disciplina').value;
+    const turma = document.getElementById('turma').value;
+    const turno = document.getElementById('turno').value;
+    const dataInicial = document.getElementById('data_inicial').value;
+    const dataFinal = document.getElementById('data_final').value;
 
-    // Criar um novo card
-    addClassCard(disciplina, turma, turno, dataInicial, dataFinal);
+    const token = localStorage.getItem('token'); // ou onde você estiver armazenando o token
 
-    // Limpar o formulário
-    form.reset();
 
-    // Fechar o modal
-    modal.style.display = "none";
+    try {
+        const response = await fetch('http://localhost:3000/criarTurma', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // Certifique-se de incluir o token aqui
+            },
+            body: JSON.stringify({ disciplina, turma, turno, data_inicial: dataInicial, data_final: dataFinal }),
+        });
+
+        if (response.ok) {
+            const novaTurma = await response.json();
+            alert('Turma criada com sucesso!');
+            addClassCard(disciplina, turma, turno, dataInicial, dataFinal); // Adicione o card aqui
+        } else {
+            const errorData = await response.json();
+            alert('Erro ao criar turma: ' + errorData.message);
+        }
+    } catch (error) {
+        console.error('Erro ao enviar dados!', error);
+        alert('Erro ao criar turma, tente novamente mais tarde.');
+    }
+});
+
+document.addEventListener('DOMContentLoaded', fectchAndDisplayTurmas);
+
+async function fectchAndDisplayTurmas() {
+    const token = localStorage.getItem('token');
+
+    try{
+        const response = await fetch('http://localhost:3000/turmas', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if(response.ok){
+            const turmas = await response.json();
+            turmas.forEach(turma => {
+                addClassCard(turma.disciplina, turma.turma, turma.turno, turma.dataInicial, turma.dataFinal);
+
+            });
+        }else{
+            const errorData = await response.json();
+            alert('Erro ao carregar turmas: ' + errorData.message);
+        }
+
+    }catch (error){
+        console.error('Erro ao buscar turmas!', error);
+        alert('Erro ao carregar turmas, tente novamente mais tarde.');
+    }
+
+
+}
+
+// Função para acessar dados protegidos
+const fetchProtectedData = async () => {
+    const token = localStorage.getItem('token'); // Recupera o token
+
+    try {
+        const response = await fetch('http://localhost:3000/protected-route', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`, // Insere o token no cabeçalho
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Dados protegidos:', data);
+        } else {
+            console.error('Erro ao acessar dados protegidos:', response.status);
+            alert('Você não está autorizado a acessar esses dados.');
+        }
+    } catch (error) {
+        console.error('Erro na requisição:', error);
+    }
 };

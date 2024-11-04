@@ -41,6 +41,8 @@
             <!-- Botão para ativar popup de nota de recuperação -->
             <button id="PopUpPontuarRecu" class="popup-ativar">Pontuar Recuperação</button>
             <!-- Botão para ativar popup de pontuar recuperação -->
+            <button id="PopUpDownloadTabela" class="popup-ativar">Baixar Tabela</button>
+            <!-- Botão para baixar tabela -->
         </nav>
         <div class="menu-hamburguer" id="menuToggle">
             <span></span>
@@ -144,6 +146,16 @@
     </div>
 </div>
 
+<!-- Modal Download -->
+<div id="popupDownload" class="popup">
+    <div class="popup-content">
+        <span class="close" id="closeDownload">&times;</span>
+        <h2>Opções de Download</h2>
+        <button id="downloadPDF" class="btnEnvio">Baixar em PDF</button>
+        <button id="downloadExcel" class="btnEnvio">Baixar em Excel</button>
+    </div>
+</div>
+
 
     <script>
         const menuToggle = document.getElementById('menuToggle');
@@ -157,8 +169,8 @@
 
     <!--<script src="versao17.js"></script>Inclui o arquivo JavaScript -->
     <script src="PainelDeControle.js"></script>
-
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.16/jspdf.plugin.autotable.min.js"></script>
 
 </body>
 
