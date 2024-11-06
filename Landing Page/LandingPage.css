@@ -15,13 +15,51 @@ a {
     color: inherit;
 }
 
-/* Define fonte e tamanho padrão */
 body {
     font-family: "Ruda", "Roboto";
     font-size: 16px;
     line-height: 1.5;
-    background-color: #FFFDE6;
+    background-image: url('Midia/wallpaperNR.gif');
+    background-size: cover; 
+    background-attachment: fixed; 
+    height: 100vh; 
+    position: relative; 
 }
+
+html, body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+main {
+    flex: 1;
+}
+ 
+.margem-login{
+    margin-top: 130px;
+}
+
+.centraliza-titulo{
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    color: #94b9ff;
+    padding: 30px;
+    text-align: center; 
+}
+
+input{
+margin-top: 2%;
+margin-bottom: 2%;
+border-radius: 18px;
+padding: 10px; 
+box-sizing: border-box; 
+background-color: #c0c8ff5f;
+color: white;
+}
+
 
 /* Remove sublinhado de links quando hover */
 a:hover {
@@ -72,10 +110,16 @@ main {
     margin-top: 2%;
 }
 
+section{
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
 .conteudo-principal {
+
     display: flex;
     margin-top: 5%;
-    padding-left: 2%;
+    padding: 9%;
     margin-bottom: 5%;
 }
 
@@ -87,7 +131,7 @@ main {
     margin-top: 1%;
     font-size: 80px;
     text-align: center;
-    color: #f7dd46;
+    color: #001847;
     text-shadow: 1.5px 1.5px 1.5px black;
 }
 
@@ -99,18 +143,16 @@ main {
     font-family: "Ruda", "Roboto";
     font-weight: bold;
     font-size: 20px;
-    border: 1px solid #f7dd46;
-    background-color: black;
-    color: #f7dd46;
+    background-color: rgb(255, 255, 255);
+    color: #001847;
     border-radius: 20px;
 }
 
 .conteudo-principal-link:hover{
-    background-color:#FFFDE6;
-    color:#f7dd46;
-    text-shadow: 1.5px 1.5px 1.5px black;
+    background-color:#ffffff;
+    color:#001847;
+    text-shadow: 1.5px 1.5px 1.5px rgba(17, 16, 88, 0.568);
     font-weight: bold;
-    border: 3px solid #4E5459;
     cursor: pointer;
 }
 
@@ -121,7 +163,7 @@ main {
 }
 
 .conteudo-principal-subtitulo span{
-    color: #f7dd46;
+    color: #001847;
     text-shadow: 1.5px 1.5px 1.5px black;
 }
 
@@ -131,14 +173,14 @@ main {
 }
 
 .conteudo-principal-paragrafo span {
-    color: #f7dd46;
+    color: #001847;
     text-shadow: 1.5px 1.5px 1.5px black;
 }
 
 .conteudo-principal-lado-direito {
-    width: 700px;
+    width: 800px; 
     /* Defina a largura desejada para a div */
-    height: 400px;
+    height: auto;
     /* Defina a altura desejada para a div */
     overflow: hidden;
     /* Para evitar que a imagem ultrapasse os limites da div */
@@ -146,48 +188,32 @@ main {
     /* Importante para alinhar a imagem */
     display: flex;
     margin-left: 10%;
-    margin-top: 5%;
+    margin-top: 1%;
 }
 
 .conteudo-principal-lado-direito img {
-    width: 100%;
-    /* Faz a imagem ocupar 100% da largura da div */
-    height: auto;
-    /* Mantém a proporção da imagem */
+
     display: block;
-    /* Para corrigir qualquer espaçamento extra */
-    position: absolute;
-    /* Permite que a imagem cubra toda a área da div */
-    top: 0;
-    /* Alinha a imagem ao topo da div */
-    left: 0;
-    /* Alinha a imagem à esquerda da div */
+    margin-left: 20%;
+    margin-right: auto;
+    height: auto; /* Mantém a proporção da altura */
+    max-width: none; /* Remove qualquer limitação do tamanho máximo */
 }
 
+
+
 .conteudo-secundario {
-    background-color: black;
+    background: linear-gradient(to bottom, #ffffff9b , #ffffff,#ffffff84);
     display: flex;
     align-items: center;
     justify-content: center;
-}
+    border: 2px solid rgba(255, 255, 255, 0.5); /* Borda suave */
+    border-radius: 20px; /* Borda arredondada */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Sombra para profundidade */
+    padding: 20px; /* Padding interno */
+    margin: 20px; /* Margem externa, ajuste conforme necessário */
 
-.container-conteudo-secundario {
-    display: flex;
-    align-items: center;
-    width: 70%;
-    height: auto;
-    background-color: #f7dd46;
-    flex-direction: column;
-    margin-top: 3%;
-    margin-bottom: 3%;
-    border-radius: 20px;
-}
 
-.container-conteudo-secundario h2{
-    font-size: 40px;
-    margin-top: 3%;
-    color: white;
-    text-shadow: 1.5px 1.5px 1.5px black;
 }
 
 .conteudo-secundario-geral {
@@ -228,12 +254,11 @@ main {
 
 .conteudo-secundario-escrito{
     padding-top: 10%;
-    text-align: center;
 }
 
 .container-conteudo-secundario h3{
     font-size: 30px;
-    text-shadow: 1.5px 1.5px 1.5px white;
+    text-shadow: 1.5px 1.5px 1.5px rgba(255, 255, 255, 0.801);
 }
 
 .conteudo-secundario-escrito ul{
@@ -257,30 +282,25 @@ main {
     font-family: "Ruda", "Roboto";
     font-weight: bold;
     font-size: 25px;
-    border: 3px solid white;
-    background-color: #f7dd46;
+    background: linear-gradient(to right, #000421, #012466);
+    border: 2px solid rgba(255, 255, 255, 0.5); 
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); 
     color: white;
     border-radius: 20px;
-    text-shadow: 1.5px 1.5px 1.5px black;
+    text-shadow: 1.5px 1.5px 1.5px rgba(253, 253, 253, 0.219);
 }
 
 .conteudo-secundario-link:hover{
-    background-color:#FFFDE6;
-    color:#f7dd46;
-    text-shadow: 1.5px 1.5px 1.5px black;
+    background: linear-gradient(to right, #cdffd8, #94b9ff);
+    color:#001847;
+    text-shadow: 1.5px 1.5px 1.5px rgba(0, 0, 0, 0.452);
     font-weight: bold;
-    border: 3px solid black;
-    cursor: pointer;
-}
-
-.conteudo-terceario{
-    display: flex;
-    margin-right: 2%;
+    border: 2px solid rgba(255, 255, 255, 0.5); 
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); 
+    cursor: pointer;   
 }
 
 .conteudo-terciario-escrito{
-    flex: 1;
-    background-color: white;
     padding-bottom: 2%;
 }
 
@@ -291,7 +311,7 @@ main {
 .conteudo-terceario-login h2{
     margin-top: 5%;
     font-weight: bold;
-    text-shadow: 1.5px 1.5px 1.5px #f7dd46;
+    text-shadow: 1.5px 1.5px 1.5px #f7f7f7af;
 }
 
 .conteudo-terceario-login form{
@@ -301,110 +321,97 @@ main {
     margin-right: 25%;
     margin-bottom: 3%;
     margin-top: 5%;
-    border: 1px solid black;
     padding: 2%;
+    
     border-radius: 20px;
-    background-color:#f7dd468b ;
+    background-color:#000421;
+    transition: transform 0.3s, box-shadow 0.3s; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);    
 }
 
-.conteudo-terceario-login form input{
-    margin-top: 2%;
-    margin-bottom: 2%;
-    border-radius: 5px;
+.conteudo-terceario-login form:hover {
+    transform: translateY(-30px); 
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7); 
+}
+
+.conteudo-terceario-login label{
+    color: white;
+}
+.conteudo-terceario-login a{
+    color: #94b9ff;
+}
+.conteudo-terceario-cadastro label{
+    color: white;
+}
+.conteudo-terceario-cadastro a{
+    color: #94b9ff;
 }
 
 .conteudo-terceario-login-enviar{
-    margin-left: 25%;
-    margin-right: 25%;
-    padding-top: 1%;
-    padding-bottom: 1%;
+    margin-left: 40%;
+    margin-right: 40%;
+    padding: 1%;
     font-family: "Ruda", "Roboto";
     font-weight: bold;
     font-size: 15px;
-    border: 1px solid #f7dd46;
-    background-color: black;
-    color: #f7dd46;
-    border-radius: 20px;
+    background-color:  #94b9ff;
+    color:#000421;
+    border-radius: 10px;
 }
 
 .conteudo-terceario-login-enviar:hover{
-    background-color:#FFFDE6;
-    color:black;
-    border: 1px solid #4E5459;
+    background-color:rgba(255, 255, 255, 0.466);
+    color:#001847;
     cursor: pointer;
+
 }
 
 .conteudo-terceario-cadastro h2{
     margin-top: 5%;
     font-weight: bold;
-    text-shadow: 1.5px 1.5px 1.5px #f7dd46;
+    text-shadow: 1.5px 1.5px 1.5px #001847;
 }
 
-.conteudo-terceario-cadastro form{
+.conteudo-terceario-cadastro form {
     display: flex;
     flex-direction: column;
     margin-left: 25%;
     margin-right: 25%;
     margin-top: 5%; 
-    border: 1px solid black;
     padding: 2%;
     border-radius: 20px;
-    background-color:#f7dd468b ;
+    background-color: #000421;
+    transition: transform 0.3s, box-shadow 0.3s; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); 
 }
 
-.conteudo-terceario-cadastro form input{
-    margin-top: 2%;
-    margin-bottom: 2%;
-    border-radius: 5px;
+.conteudo-terceario-cadastro form:hover {
+    transform: translateY(-30px); 
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7); 
 }
 
 .conteudo-terceario-cadastro-enviar{
-    margin-left: 25%;
-    margin-right: 25%;
-    padding-top: 1%;
-    padding-bottom: 1%;
+    margin-left: 40%;
+    margin-right: 40%;
+    padding: 1%;
     font-family: "Ruda", "Roboto";
     font-weight: bold;
     font-size: 15px;
-    border: 1px solid #f7dd46;
-    background-color: black;
-    color: #f7dd46;
-    border-radius: 20px;
+    background-color:  #94b9ff;
+    color:#000421;
+    border-radius: 10px;
 }
 
 .conteudo-terceario-cadastro-enviar:hover{
-    background-color:#FFFDE6;
-    color:black;
-    border: 1px solid #4E5459;
+    background-color:rgba(255, 255, 255, 0.466);
+    color:#001847;
     cursor: pointer;
 }
 
-.conteudo-terceario-midia {
-    flex: 1;
-    width: 100%;
-    /* Use 100% para que a div se ajuste ao tamanho da tela */
-    max-width: 700px;
-    /* Limita a largura máxima da div */
-    height: 700px;
-    /* Define a altura fixa */
-    overflow: hidden;
-    position: relative;
-    display: flex;
-    margin-top: 1%;
-    margin-bottom: 1%;
-}
 
-.conteudo-terceario-midia img {
-    width: 100%;
-    height: 100%;
-    /* Ocupa a altura total da div */
-    object-fit: contain;
-    /* Garante que a imagem inteira seja exibida sem cortes */
-    display: block;
-    position: relative;
-    border-radius: 20px;
-    padding-left: 3%;
-}
+
+
+
 
 /* Responsividade */
 
@@ -489,11 +496,11 @@ main {
   
 }
 
+
+
 @media screen and (max-width: 1020px){
     /* imagem das pessoas mexendo no computador desaparece em mobile */
     .conteudo-secundario-imagem{
         display: none !important;
     }
 }
-
-

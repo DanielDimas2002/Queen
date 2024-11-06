@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link rel="stylesheet" href="cabecalho.css" />
+  <link rel="stylesheet" href="LandingPage.css" />
+  <link rel="stylesheet" href="rodape.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Ruda:wght@400..900&display=swap" rel="stylesheet" />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Ruda:wght@400..900&display=swap"
+    rel="stylesheet" />
+  <!-- link bootstrap -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+</head>
+
+<body class="margem-login">
+  <header class="cabecalho">
+    <div class="controle-logo">
+      <img id="separa-logo-principal" class="logo-titulo" src="Midia/logoNR.png" alt="Logo NR">
+    </div>
+
+    <!-- Botão do menu hambúrguer (visível apenas em dispositivos móveis) -->
+    <div class="menu-toggle" id="menu-toggle">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </div>
+
+    <!-- Botão para fechar o menu (visível apenas quando o menu está aberto) -->
+    <button class="menu-close" id="menu-close">
+      <i class="bi bi-x"></i> <!-- Ícone de fechar -->
+    </button>
+
+    <!-- Menu de navegação (desktop) -->
+    <nav class="menu desktop-menu">
+      <a class="item-menu" href="LandingPage.html">Sobre</a>
+      <a class="item-menu" href="LandingPage.html#Login_Registro" id="btnRegistro">Cadastro</a>
+    </nav>
+
+    <!-- Menu de navegação (mobile) -->
+    <nav id="menu" class="menu mobile-menu">
+      <a class="item-menu" href="index.html">Sobre</a>
+      <a class="item-menu" href="#Login_Registro" id="btnRegistro">Cadastro</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="conteudo-terceario" id="Login_Registro">
+      <div class="conteudo-terciario-escrito">
+        <div class="conteudo-terceario-login">
+          <form id="formLogin">
+            <div class="centraliza-titulo">
+              <h1>Login</h1>
+            </div>
+            <label>E-mail:</label>
+            <input type="email" value="" placeholder="@Email.com" id="loginEmail" />
+            <label>Senha:</label>
+            <input type="password" value="" placeholder="Senha" id="loginSenha" />
+            <a href="">Esqueci minha senha</a>
+            <button type="submit" class="conteudo-terceario-login-enviar">Entrar</button>
+          </form>
+          <script src="LandingPage.js"></script>
+        </div>
+      </div>
+    </section>
+    </main>
+
+    <footer class="rodape">
+        <h2>Transforme complexidade em eficiencia com o NOTEROOM!</h2>
+      </footer>
+
+
+  <script>
+    document
+      .getElementById("menu-toggle")
+      .addEventListener("click", function () {
+        document.getElementById("menu").classList.add("show");
+        document.getElementById("menu-close").style.display = "block"; // Mostra o botão de fechar
+      });
+
+    document
+      .getElementById("menu-close")
+      .addEventListener("click", function () {
+        document.getElementById("menu").classList.remove("show");
+        document.getElementById("menu-close").style.display = "none"; // Esconde o botão de fechar
+      });
+
+    // Adiciona um evento de clique para todos os itens do menu que fecha o menu hambúrguer
+    document.querySelectorAll("#menu a.item-menu").forEach((item) => {
+      item.addEventListener("click", function () {
+        document.getElementById("menu").classList.remove("show");
+        document.getElementById("menu-close").style.display = "none"; // Esconde o botão de fechar
+      });
+    });
+
+    // Adiciona rolagem suave para links internos que começam com "#"
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+
+        window.scrollTo({
+          top: targetElement.offsetTop - 80,
+          behavior: 'smooth'
+        });
+      });
+    });
+
+  </script>
+</body>
+
+</html>

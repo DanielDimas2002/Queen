@@ -26,7 +26,7 @@ body {
     font-family: "Ruda", "Roboto";
     font-size: 16px;
     line-height: 1.5;
-    background-color: #FFFDE6;
+    background-color: #94b9ff;
 }
 
 /* Remove sublinhado de links quando hover */
@@ -49,9 +49,12 @@ main{
     margin-top: 2%;
 }   
 
+h1,h2,h3,p{
+color: #001847;
+}
+
 h1{
     text-align: center;
-    color: #f7dd46;
     text-shadow: 1.5px 1.5px 1.5px black;
     font-size: 60px;
 }
@@ -60,7 +63,7 @@ h1{
     border-top: none;
     border-left: none;
     border-right: none;
-    background-color: #FFFDE6;
+    background-color: #e7fcec;
 }
 
 #RecebeNomeAluno{
@@ -83,7 +86,6 @@ h1{
 }
 
 .btnEnvio:hover{
-    background-color: #f7dd468b;
     color: black;
     font-weight: bold;
     cursor: pointer;
@@ -116,14 +118,16 @@ h1{
 table {
     border-collapse: collapse; /* Define como as bordas das células da tabela devem ser colapsadas */
     width: 100%; /* Define a largura da tabela como 100% da largura do contêiner pai */
+    
   }
   th, td {
-    border: 1px solid black; /* Define uma borda de 1px sólida preta para todas as células da tabela */
+    border: 1px solid  #e7fcec !important;
+    background-color: #00184779; 
+    color: #e7fcec;
     padding: 8px; /* Define o preenchimento interno de 8 pixels para todas as células */
     text-align: left; /* Alinha o texto das células à esquerda */
   }
   th {
-    background-color:#f7dd468b; /* Define uma cor de fundo cinza claro para as células do cabeçalho */
+    background-color: #001847; /* Define uma cor de fundo cinza claro para as células do cabeçalho */
+    color:  #e7fcec;
   }
-
- 

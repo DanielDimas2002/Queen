@@ -3,10 +3,16 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center; /* Centraliza o conteúdo do cabeçalho */
-    padding: 1%;
-    background-color: #f7dd468b;
-    border-bottom: black solid 2px;
+    justify-content: space-around;
+    background-color:#00042158;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    position: fixed;
+    z-index: 1000;
+    padding: 20px;
+    text-align: center; 
+    top: 0;
+    left: 0;
+    right: 0;
 }
 
 /* Estilo do logo */
@@ -14,7 +20,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-right: 20px; /* Espaço entre o logo e o menu */
+    margin-right: 20px; 
 }
 
 .controle-logo img {
@@ -34,7 +40,7 @@
 /* Estilo dos itens do menu */
 .item-menu {
     font-family: 'Ruda', 'Roboto';
-    color: rgba(0, 0, 0, 0.788);
+    color: rgb(255, 255, 255);
     font-weight: 400;
     font-size: 22px;
     display: grid;
@@ -51,20 +57,19 @@
 
 /* Estilo do botão de cadastro */
 #btnRegistro {
-    border: 1px solid black;
     padding-left: 7%; /* Ajuste o padding conforme necessário */
     padding-right: 7%; /* Ajuste o padding conforme necessário */
     padding-top: 0.4%;
     padding-bottom: 0.4%;
     border-radius: 20px;
     font-weight: bold;
-    text-shadow: 1.5px 1.5px 1.5px white;
+    background-color: #86afff;
 }
 
 #btnRegistro:hover {
-    background-color: #FFFDE6;
-    color: #f7dd46;
-    text-shadow: 1.5px 1.5px 1.5px black;
+    background-color:#86afff ;
+    color: #01153d;
+    text-shadow: 1.5px 1.5px 1.5px #051d4d70;
 }
 
 /* Estilo do botão Painel de Controle */
@@ -81,7 +86,7 @@
 
 #painelControle:hover {
     background-color: #FFFDE6;
-    color: #f7dd46;
+    color: #001847;
     text-shadow: 1.5px 1.5px 1.5px black;
 }
 
@@ -98,7 +103,7 @@
     display: block;
     width: 25px;
     height: 3px;
-    background-color: black;
+    background-color: #001847;
     margin: 5px 0;
 }
 
@@ -108,7 +113,7 @@
     background: transparent; /* Fundo transparente */
     border: none;
     font-size: 24px; /* Tamanho do ícone de fechar */
-    color: black; /* Cor do ícone de fechar */
+    color: #001847; /* Cor do ícone de fechar */
     padding: 10px;
     cursor: pointer;
     position: absolute;
@@ -127,7 +132,7 @@
     right: 0;
     width: 250px; /* Largura do menu */
     height: 100%; /* Altura total da tela */
-    background-color: #f7dd468b; /* Cor de fundo quando o menu está aberto */
+    background-color: #ffffffb2; /* Cor de fundo quando o menu está aberto */
     transform: translateX(100%); /* Inicialmente escondido fora da tela */
     transition: transform 0.3s ease-in-out; /* Transição suave */
     padding: 1rem;

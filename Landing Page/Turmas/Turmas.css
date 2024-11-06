@@ -6,21 +6,33 @@
 }
 
 body {
-    background-color: #f8f9fa;
+    font-family: "Ruda", "Roboto";
+    font-size: 16px;
+    line-height: 1.5;
+    background-color: #94b9ff;
+    height: 100vh; 
+    position: relative; 
 }
 
-.header {
-    background-color: #f7dd468b;
-    padding: 20px;
+html, body {
+    height: 100%;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 2px solid black;
-    
-
+    flex-direction: column;
+    margin: 0;
 }
 
-.link_home{
+
+footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f1f1f1; /* Ajuste a cor conforme necessário */
+    text-align: center;
+    padding: 15px;
+    box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+}
+a{
     text-decoration: none; /* Remove o sublinhado dos links */
 
 }
@@ -56,7 +68,8 @@ body {
 
 #openFormButton{
     font-family: 'Ruda', 'Roboto';
-    background-color: #f7dd468b;
+    background-color: #007bff;
+    color: aliceblue;
     padding: 12px 20px;
     text-align: center;
     text-decoration: none;
@@ -65,17 +78,18 @@ body {
     margin: 8px 2px;
     cursor: pointer;
     border-radius: 5px;
-    border-color: #333;
+    border: none;
     transition: background-color 0.2s ease;
 }
 
 #openFormButton:hover{
-    background-color: #FFFDE6;
+    background-color: #0056b3;
 }
 
 #btn_home{
     font-family: 'Ruda', 'Roboto';
-    background-color: #f7dd468b;
+    background-color: #007bff;
+    color: aliceblue;
     padding: 12px 20px;
     text-align: center;
     text-decoration: none;
@@ -84,12 +98,12 @@ body {
     margin: 8px 2px;
     cursor: pointer;
     border-radius: 5px;
-    border-color: #333;
+    border: none;
     transition: background-color 0.2s ease;
 }
 
 #btn_home:hover{
-    background-color: #FFFDE6;
+    background-color: #0056b3;
 }
 
 .botao{
@@ -121,7 +135,7 @@ body {
 }
 
 .blue {
-    background-color: #9e5540;
+    background-color: #007bff
 }
 
 .gray {

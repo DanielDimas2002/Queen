@@ -4,15 +4,36 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    background-color:#e7fcec81;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     padding: 1%;
-    background-color: #f7dd468b;
-    border-bottom: black solid 2px;
+    text-align: center; 
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.fixo {
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+header {
+    padding: 10px 5%;
 }
 
 .controle-logo {
     display: flex;
+    flex-direction: row;
     align-items: center;
 }
+
+.controle-logo a {
+    margin-left: 15%;
+    color: #001847;
+    text-decoration: none !important;
+}
+
 
 .logo-titulo {
     width: 100px;
@@ -39,19 +60,6 @@
     text-decoration: underline;
 }
 
-#btnRegistro {
-    border: 1px solid black;
-    padding: 5px 20px;
-    border-radius: 20px;
-    font-weight: bold;
-    text-shadow: 1.5px 1.5px 1.5px white;
-}
-
-#btnRegistro:hover {
-    background-color: #FFFDE6;
-    color: #f7dd46;
-    text-shadow: 1.5px 1.5px 1.5px black;
-}
 
 /* Ajustes responsivos */
 @media screen and (max-width: 768px) {
@@ -73,9 +81,6 @@
         font-size: 18px;
     }
 
-    #btnRegistro {
-        padding: 10px 30px;
-    }
 }
 
 @media screen and (max-width: 480px) {
@@ -84,11 +89,6 @@
     }
 
     .item-menu {
-        font-size: 16px;
-    }
-
-    #btnRegistro {
-        padding: 8px 20px;
         font-size: 16px;
     }
 
@@ -108,7 +108,7 @@
 
 /* Botões */
 .botao {
-    background-color: rgb(255, 166, 0);
+    background-color: #e23030;
     width: 110px;
     height: 35px;
     border: none;
@@ -181,7 +181,7 @@
         top: 80px;
         left: 0;
         width: 100%;
-        background-color: #f7dd46;
+        background-color: #94b9ff;
         padding: 20px 0;
         gap: 15px;
     }
@@ -198,14 +198,4 @@
     .menu-ativo {
         display: flex; /* Exibe o menu ao clicar no ícone */
     }
-}
-
-/* Ajuste no layout do cabeçalho */
-.cabecalho {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between; /* Adiciona espaço entre a logo e o menu */
-    padding: 1%;
-
 }
