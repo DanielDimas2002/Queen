@@ -146,6 +146,46 @@ btnDownloadExcel.addEventListener('click', () => {
 
 //Funções gerais
 
+// Função que ativa a edição ao dar um duplo clique
+const ativarEdicaoNota = () => {
+    const tabela = document.querySelector('table');
+    
+    tabela.addEventListener('dblclick', (event) => {
+      const celula = event.target;
+  
+      // Verifica se a célula clicada pertence a uma das colunas de notas
+      if (celula.cellIndex >= 1 && celula.cellIndex <= 4) {
+        const valorAtual = celula.textContent.trim();
+        const novoValor = prompt('Digite a nova nota:', valorAtual);
+  
+        if (novoValor !== null) {
+          // Validação simples, apenas números
+          if (!isNaN(novoValor) && novoValor !== '') {
+            celula.textContent = novoValor;
+            // Aqui você pode atualizar o aluno no seu sistema, por exemplo:
+            atualizarAlunoNaTabela(celula);
+          } else {
+            alert('Por favor, insira uma nota válida.');
+          }
+        }
+      }
+    });
+  };
+  
+  // Função que poderia atualizar o aluno no sistema (se necessário)
+  const atualizarAlunoNaTabela = (celula) => {
+    const linha = celula.closest('tr');
+    const nomeAluno = linha.cells[0].textContent;
+    const novaNota = celula.textContent;
+    
+    // Aqui você pode usar o nomeAluno e novaNota para atualizar no sistema, se necessário
+    console.log(`Nota de ${nomeAluno} atualizada para ${novaNota}`);
+  };
+  
+  // Iniciar a funcionalidade
+  ativarEdicaoNota();
+  
+
 function gerarTabelaAlunos() { // Gerar a tabela HTML 
     const tabela = document.querySelector("table");
 
