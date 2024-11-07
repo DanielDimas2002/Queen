@@ -154,6 +154,7 @@ section{
     text-shadow: 1.5px 1.5px 1.5px rgba(17, 16, 88, 0.568);
     font-weight: bold;
     cursor: pointer;
+    background-color: #82cde6; 
 }
 
 .conteudo-principal-subtitulo {
@@ -198,6 +199,20 @@ section{
     margin-right: auto;
     height: auto; /* Mantém a proporção da altura */
     max-width: none; /* Remove qualquer limitação do tamanho máximo */
+    animation: flutuar 3s ease-in-out infinite; /* Nome, duração e tipo da animação */
+}
+
+/* Definindo a animação da foto subir e descer suave*/
+@keyframes flutuar {
+    0% {
+        transform: translateY(0px); /* Posição inicial */
+    }
+    50% {
+        transform: translateY(-20px); /* Sobe 20px */
+    }
+    100% {
+        transform: translateY(0px); /* Volta para a posição inicial */
+    }
 }
 
 

@@ -46,6 +46,12 @@
     display: grid;
     place-content: center;
     text-decoration: none; /* Remove sublinhado dos links */
+    transition: transform 0.3s, color 0.3s; /* Transição suave */
+}
+
+.item-menu:hover{
+    transform: scale(1.1); /* Aumenta o tamanho do botão */
+    color: #82cde6; /* Cor do texto ao passar o mouse (azul clarinho) */
 }
 
 .item-menu#home {

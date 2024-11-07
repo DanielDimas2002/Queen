@@ -6,6 +6,7 @@ document.getElementById('formCadastro').addEventListener('submit', async (e) => 
     const form = document.getElementById('formCadastro');
 
     const nome = document.getElementById('nome').value;
+    const usuario = document.getElementById('usuario').value;
     const email = document.getElementById('email').value;
     const senha = document.getElementById('senha').value;
     const site = document.getElementById('site').value;
@@ -23,7 +24,7 @@ document.getElementById('formCadastro').addEventListener('submit', async (e) => 
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ nome, email, senha, site }),
+            body: JSON.stringify({ nome,usuario, email, senha, site }),
         });
 
         if (createUser.ok) {
