@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,24 +10,28 @@
     <link rel="stylesheet" href="rodapeTurma.css">
     <link rel="stylesheet" href="cabacalho.css">
 </head>
+
 <body>
     <header class="cabecalho">
         <div class="logo_control">
-        <img id="separa-logo-principal" class="logo-titulo" src="Midia/logoNR.png"
-            alt="Logo">
-    <h2 class="Titulo-pagina">Bem vindo ao gerenciador de Turmas!</h2>
-    </div>
+            <a href="../LandingPage.html">
+                <img id="separa-logo-principal" class="logo-titulo" src="Midia/logoNR.png" alt="Logo">
+            </a>
+            <h2 class="Titulo-pagina">Bem vindo ao gerenciador de Turmas!</h2>
+        </div>
 
-    <div>
-        <a href="../LandingPage.html">
-        <button class="botao" id="btn_home">Home</button>
-        </a>
-        <button class="botao" id="openFormButton">Criar Nova Turma</button> <!-- Botão para abrir o formulário -->
-    </div>
+        <div>
+            <a href="../LandingPage.html">
+                <button class="botao" id="openFormButton">Criar Nova Turma</button>
+                <!-- Botão para abrir o formulário -->
+                <button class="botao" id="btn_home">Sair</button>
+            </a>
+
+        </div>
     </header>
 
-    
-    
+
+
     <section class="card-container" id="cardContainer">
         <!-- Cards de exemplo -->
         <div class="card">
@@ -36,7 +41,7 @@
             </div>
             <div class="card-body">
                 <div class="avatar">
-                   <!-- <img src="profile1.jpg" alt="Avatar">-->
+                    <!-- <img src="profile1.jpg" alt="Avatar">-->
                 </div>
                 <p>Marcio Oliveira da Costa Silva</p>
             </div>
@@ -44,7 +49,7 @@
         <!-- Outros cards podem ser adicionados aqui -->
     </section>
 
-    
+
     <!-- Modal (pop-up) para o formulário -->
     <div id="turmaModal" class="modal">
         <div class="modal-content">
@@ -83,4 +88,5 @@
     <!-- Inclua o arquivo externo de JavaScript -->
     <script src="Turmas.js"></script>
 </body>
+
 </html>
