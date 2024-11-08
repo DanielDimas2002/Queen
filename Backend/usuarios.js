@@ -15,10 +15,6 @@ const Usuario = database.define('usuario', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    site: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
 });
 
 module.exports = Usuario;

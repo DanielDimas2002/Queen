@@ -17,9 +17,9 @@
     // Cadastro dos Usuários
     app.post('/cadastro/usuario', async (req, res) => {
         console.log(req.body); // Depurando o corpo da requisição
-        const { nome, email, senha, site } = req.body;
+        const { nome, email, senha } = req.body;
     
-        if (!nome || !email || !senha || !site) { //Verifica se todos os campos estão preenchidos
+        if (!nome || !email || !senha) { //Verifica se todos os campos estão preenchidos
             return res.status(400).json({ message: 'Preencha todos os campos obrigatórios!' });
         }
     
@@ -32,8 +32,7 @@
             const newUser = await Usuario.create({
                 nome,
                 email,
-                senha,
-                site
+                senha
             });
     
             res.status(201).json({ message: 'Usuário Cadastrado com sucesso!' });

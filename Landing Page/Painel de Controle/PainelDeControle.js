@@ -100,9 +100,23 @@ function abrirPopup(popup) { // Função para abrir o pop-up
 // Evento de clique para abrir os pop-ups
 PopUpAddAluno.addEventListener('click', () => abrirPopup(popupTurma));
 PopUpDefMedia.addEventListener('click', () => abrirPopup(popupMedia));
-PopUpPontuar.addEventListener('click', () => abrirPopup(popupPontuar));
+
+PopUpPontuar.addEventListener('click', () => {
+    if(MediaDefinida === null || MediaDefinida ===0){
+        alert("É necessário definir uma média!");
+    }else{
+        abrirPopup(popupPontuar);
+    }
+});
+
 PopUpNotaRecu.addEventListener('click', () => abrirPopup(popupRecuperacaoNota));
-PopUpPontuarRecu.addEventListener('click', () => abrirPopup(popupRecuperacao));
+PopUpPontuarRecu.addEventListener('click', () => {
+    if(NotaRecuperacaoDefinida === null || NotaRecuperacaoDefinida === 0){
+        alert("É necessário definir a média da recuperação!");
+    }else{
+        abrirPopup(popupRecuperacao);
+    }
+});
 btnDownloadTabela.addEventListener('click', () => {
     popupDownload.style.display = 'block';
 });
