@@ -16,8 +16,8 @@ let MediaDefinida = null;
 let ListaDeAlunos = [];
 let NotaRecuperacaoDefinida = null;
 
- // Funções para gerar e baixar a tabela em PDF e Excel
- function baixarTabelaPDF() {
+// Funções para gerar e baixar a tabela em PDF e Excel
+function baixarTabelaPDF() {
     const { jsPDF } = window.jspdf; // Acesse jsPDF
     const doc = new jsPDF();
     doc.text("Tabela de Alunos", 10, 10);
@@ -34,24 +34,24 @@ let NotaRecuperacaoDefinida = null;
 
 function baixarTabelaExcel() {
     const table = document.querySelector('table');
-let csvContent = '';
+    let csvContent = '';
 
-table.querySelectorAll('tr').forEach(row => {
-    const rowData = Array.from(row.querySelectorAll('th, td'))
-                        .map(cell => cell.innerText)
-                        .join(',');
-    csvContent += rowData + '\n';
-});
+    table.querySelectorAll('tr').forEach(row => {
+        const rowData = Array.from(row.querySelectorAll('th, td'))
+            .map(cell => cell.innerText)
+            .join(',');
+        csvContent += rowData + '\n';
+    });
 
-const blob = new Blob([csvContent], { type: 'text/csv' });
-const url = URL.createObjectURL(blob);
-const downloadLink = document.createElement('a');
-downloadLink.href = url;
-downloadLink.download = 'Tabela_de_Alunos.csv';
-downloadLink.click();
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const downloadLink = document.createElement('a');
+    downloadLink.href = url;
+    downloadLink.download = 'Tabela_de_Alunos.csv';
+    downloadLink.click();
 
-URL.revokeObjectURL(url); // Libera o objeto URL criado
-popupDownload.style.display = 'none';
+    URL.revokeObjectURL(url); // Libera o objeto URL criado
+    popupDownload.style.display = 'none';
 }
 
 
@@ -102,18 +102,18 @@ PopUpAddAluno.addEventListener('click', () => abrirPopup(popupTurma));
 PopUpDefMedia.addEventListener('click', () => abrirPopup(popupMedia));
 
 PopUpPontuar.addEventListener('click', () => {
-    if(MediaDefinida === null || MediaDefinida ===0){
+    if (MediaDefinida === null || MediaDefinida === 0) {
         alert("É necessário definir uma média!");
-    }else{
+    } else {
         abrirPopup(popupPontuar);
     }
 });
 
 PopUpNotaRecu.addEventListener('click', () => abrirPopup(popupRecuperacaoNota));
 PopUpPontuarRecu.addEventListener('click', () => {
-    if(NotaRecuperacaoDefinida === null || NotaRecuperacaoDefinida === 0){
+    if (NotaRecuperacaoDefinida === null || NotaRecuperacaoDefinida === 0) {
         alert("É necessário definir a média da recuperação!");
-    }else{
+    } else {
         abrirPopup(popupRecuperacao);
     }
 });
@@ -163,42 +163,75 @@ btnDownloadExcel.addEventListener('click', () => {
 // Função que ativa a edição ao dar um duplo clique
 const ativarEdicaoNota = () => {
     const tabela = document.querySelector('table');
-    
+
     tabela.addEventListener('dblclick', (event) => {
-      const celula = event.target;
-  
-      // Verifica se a célula clicada pertence a uma das colunas de notas
-      if (celula.cellIndex >= 1 && celula.cellIndex <= 4) {
-        const valorAtual = celula.textContent.trim();
-        const novoValor = prompt('Digite a nova nota:', valorAtual);
-  
-        if (novoValor !== null) {
-          // Validação simples, apenas números
-          if (!isNaN(novoValor) && novoValor !== '') {
-            celula.textContent = novoValor;
-            // Aqui você pode atualizar o aluno no seu sistema, por exemplo:
-            atualizarAlunoNaTabela(celula);
-          } else {
-            alert('Por favor, insira uma nota válida.');
-          }
+        const celula = event.target;
+
+        // Verifica se a célula clicada pertence a uma das colunas de notas
+        if ([1, 2, 3, 5].includes(celula.cellIndex)) {
+            const valorAtual = celula.textContent.trim();
+
+            // Cria um campo de entrada dentro da célula
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = valorAtual;
+            input.style.width = '100%';
+
+            // Substitui o conteúdo da célula pelo campo de entrada
+            celula.textContent = '';
+            celula.appendChild(input);
+
+            // Seleciona o texto atual para facilitar a edição
+            input.select();
+
+            // Manipula o término da edição
+            input.addEventListener('blur', () => {
+                const novoValor = input.value.trim();
+
+                // Validação simples: apenas números
+                if (!isNaN(novoValor) && novoValor !== '' && novoValor >= 0 && novoValor <=10) {
+                    celula.textContent = novoValor;
+                    // Atualiza o aluno no sistema e recalcula a média
+                    atualizarAlunoNaTabela(celula);
+                } else {
+                    celula.textContent = valorAtual; // Retorna o valor anterior se inválido
+                    alert('Por favor, insira uma nota válida.');
+                }
+            });
+
+            // Confirma a edição ao pressionar Enter
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    input.blur();
+                }
+            });
         }
-      }
     });
-  };
-  
-  // Função que poderia atualizar o aluno no sistema (se necessário)
-  const atualizarAlunoNaTabela = (celula) => {
+};
+
+
+// Função que atualiza a tabela e calcula a média
+const atualizarAlunoNaTabela = (celula) => {
     const linha = celula.closest('tr');
     const nomeAluno = linha.cells[0].textContent;
-    const novaNota = celula.textContent;
-    
-    // Aqui você pode usar o nomeAluno e novaNota para atualizar no sistema, se necessário
-    console.log(`Nota de ${nomeAluno} atualizada para ${novaNota}`);
-  };
-  
-  // Iniciar a funcionalidade
-  ativarEdicaoNota();
-  
+
+    // Coleta as notas das três avaliações
+    const nota1 = parseFloat(linha.cells[1].textContent) || 0;
+    const nota2 = parseFloat(linha.cells[2].textContent) || 0;
+    const nota3 = parseFloat(linha.cells[3].textContent) || 0;
+
+    // Calcula a média e atualiza a célula de média
+    const media = ((nota1 + nota2 + nota3) / 3).toFixed(2);
+    linha.cells[4].textContent = media; // Assume que a média está na coluna 4
+
+    // Exibe uma mensagem no console para verificar
+    console.log(`Nota de ${nomeAluno} atualizada. Média recalculada: ${media}`);
+};
+
+// Iniciar a funcionalidade de edição na célula
+ativarEdicaoNota();
+
+
 
 function gerarTabelaAlunos() { // Gerar a tabela HTML 
     const tabela = document.querySelector("table");
@@ -246,7 +279,7 @@ function gerarTabelaAlunos() { // Gerar a tabela HTML
         tabela.appendChild(linha);
     });
 
-   
+
 
     // Adiciona evento de clique para editar o nome do aluno
     document.querySelectorAll('.btn-editar').forEach(button => {
