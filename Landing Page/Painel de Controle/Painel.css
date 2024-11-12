@@ -196,11 +196,5 @@ th {
     color: #001847;
 }
 
-/* Estilo para o ícone de indicação de edição */
-.selecao .material-symbols-outlined {
-    font-size: 20px; /* Tamanho do ícone */
-    vertical-align: middle;
-    margin-right: 5px; /* Espaçamento entre o ícone e o texto */
-    color: #001847; /* Cor do ícone */
-}
+
 
