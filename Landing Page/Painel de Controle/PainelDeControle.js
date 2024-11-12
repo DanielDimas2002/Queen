@@ -249,7 +249,7 @@ function gerarTabelaAlunos() { // Gerar a tabela HTML
         <th>Média</th>
         <th>Recuperação</th>
         <th>Situação</th>
-        <th>Ações</th> <!-- Nova coluna para ações -->
+        <th>Ações</th>
     `;
     tabela.appendChild(cabecalho);
 
@@ -259,20 +259,18 @@ function gerarTabelaAlunos() { // Gerar a tabela HTML
     // Adiciona cada aluno na tabela
     ListaDeAlunos.forEach((aluno, index) => {
         const linha = document.createElement("tr");
-        linha.innerHTML = `
-            <td class= "selecao"><span class="nome-aluno">${aluno.Nome}</span></td>
-            <td class= "selecao">${aluno.Avaliacao1}</td>
-            <td class= "selecao">${aluno.Avaliacao2}</td>
-            <td class= "selecao">${aluno.Avaliacao3}</td>
+        linha.innerHTML = `<td class="selecao"><span class="material-symbols-outlined">ads_click</span> <span class="nome-aluno">${aluno.Nome}</span></td>
+            <td class="selecao"><span class="material-symbols-outlined">ads_click</span> ${aluno.Avaliacao1}</td>
+            <td class="selecao"><span class="material-symbols-outlined">ads_click</span> ${aluno.Avaliacao2}</td>
+            <td class="selecao"><span class="material-symbols-outlined">ads_click</span> ${aluno.Avaliacao3}</td>
             <td>${aluno.Media}</td>
-            <td class= "selecao">${aluno.Recuperacao}</td>
+            <td class="selecao"><span class="material-symbols-outlined">ads_click</span> ${aluno.Recuperacao}</td>
             <td>${aluno.Situacao}</td>
             <td>
                 <button class="btn-excluir" data-index="${index}" title="Excluir">
-                    <i class="fas fa-trash-alt"></i> <!-- Ícone de lixeira -->
+                    <i class="fas fa-trash-alt"></i>
                 </button>
-            </td>
-        `;
+            </td>`;
         tabela.appendChild(linha);
     });
 

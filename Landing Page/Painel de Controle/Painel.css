@@ -189,20 +189,18 @@ th {
     color: #e7fcec;
 }
 
-/* Estilo para destacar a célula da tabela ao passar o mouse */
-table td.seleção,
-table th.seleção {
-    background-color: #ffcc00;
-    /* Cor de destaque (amarelo) */
-    cursor: pointer;
-    /* Muda o cursor para a mãozinha */
+/* Destaca células com a classe "selecao" ao passar o mouse */
+.selecao:hover {
+    background-color: #d0e1ff; /* Cor de fundo ao passar o mouse */
+    cursor: pointer; /* Muda o cursor para a mãozinha */
+    color: #001847;
 }
 
-/* Estilo para as células ao passar o mouse */
-table td:hover,
-table th:hover {
-    background-color: #ffcc00;
-    /* Cor de destaque (amarelo) */
-    cursor: pointer;
-    /* Muda o cursor para a mãozinha */
+/* Estilo para o ícone de indicação de edição */
+.selecao .material-symbols-outlined {
+    font-size: 20px; /* Tamanho do ícone */
+    vertical-align: middle;
+    margin-right: 5px; /* Espaçamento entre o ícone e o texto */
+    color: #001847; /* Cor do ícone */
 }
+
