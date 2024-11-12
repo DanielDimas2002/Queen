@@ -242,12 +242,12 @@ function gerarTabelaAlunos() { // Gerar a tabela HTML
     // Cria o cabeçalho da tabela
     const cabecalho = document.createElement("tr");
     cabecalho.innerHTML = `
-        <th>Nome do Aluno</th>
-        <th>Avaliação 1</th>
-        <th>Avaliação 2</th>
-        <th>Avaliação 3</th>
+        <th class= "selecao">Nome do Aluno</th>
+        <th class= "selecao">Avaliação 1</th>
+        <th class= "selecao">Avaliação 2</th>
+        <th class= "selecao"h>Avaliação 3</th>
         <th>Média</th>
-        <th>Recuperação</th>
+        <th class= "selecao">Recuperação</th>
         <th>Situação</th>
         <th>Ações</th> <!-- Nova coluna para ações -->
     `;

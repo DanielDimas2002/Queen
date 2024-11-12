@@ -10,7 +10,8 @@
 }
 
 /* Remove estilos padrão da lista */
-ul, ol {
+ul,
+ol {
     list-style: none;
 }
 
@@ -35,46 +36,84 @@ a:hover {
 }
 
 /* Reseta margens para todos os elementos de bloco */
-body, h1, h2, h3, h4, h5, h6, p, blockquote, pre, dl, dd, ol, ul, figure, fieldset, form, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, details, figcaption, footer, header, hgroup, menu, nav, section {
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+dl,
+dd,
+ol,
+ul,
+figure,
+fieldset,
+form,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+details,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
     margin: 0;
 }
 
-main{
+main {
     padding-left: 2%;
     margin-top: 2%;
 }
 
-#Config_Midia{
+#Config_Midia {
     display: flex;
     margin-top: 2%;
-}   
-
-h1,h2,h3,p{
-color: #001847;
 }
 
-h1{
+h1,
+h2,
+h3,
+p {
+    color: #001847;
+}
+
+h1 {
     text-align: center;
     text-shadow: 1.5px 1.5px 1.5px black;
     font-size: 60px;
 }
 
-.camposEntrada{
+.camposEntrada {
     border-top: none;
     border-left: none;
     border-right: none;
     background-color: #e7fcec;
 }
 
-#RecebeNomeAluno{
+#RecebeNomeAluno {
     max-width: 100px;
 }
 
-#AlunoExcluido{
+#AlunoExcluido {
     max-width: 100px;
 }
 
-.btnEnvio{
+.btnEnvio {
     padding-left: 1%;
     padding-right: 1%;
     padding-top: 0.25%;
@@ -85,49 +124,85 @@ h1{
     font-weight: bold;
 }
 
-.btnEnvio:hover{
+.btnEnvio:hover {
     color: black;
     font-weight: bold;
     cursor: pointer;
 }
 
-#Midia{
-    width: 700px; /* Defina a largura desejada para a div */
-    height: 400px; /* Defina a altura desejada para a div */
-    overflow: hidden; /* Para evitar que a imagem ultrapasse os limites da div */
-    position: relative; /* Importante para alinhar a imagem */
+#Midia {
+    width: 700px;
+    /* Defina a largura desejada para a div */
+    height: 400px;
+    /* Defina a altura desejada para a div */
+    overflow: hidden;
+    /* Para evitar que a imagem ultrapasse os limites da div */
+    position: relative;
+    /* Importante para alinhar a imagem */
     display: flex;
     margin-left: 15%;
 }
 
-#Midia img{
-    width: 100%; /* Faz a imagem ocupar 100% da largura da div */
-    height: auto; /* Mantém a proporção da imagem */
-    display: block; /* Para corrigir qualquer espaçamento extra */
-    position: absolute; /* Permite que a imagem cubra toda a área da div */
-    top: 0; /* Alinha a imagem ao topo da div */
-    left: 0; /* Alinha a imagem à esquerda da div */
+#Midia img {
+    width: 100%;
+    /* Faz a imagem ocupar 100% da largura da div */
+    height: auto;
+    /* Mantém a proporção da imagem */
+    display: block;
+    /* Para corrigir qualquer espaçamento extra */
+    position: absolute;
+    /* Permite que a imagem cubra toda a área da div */
+    top: 0;
+    /* Alinha a imagem ao topo da div */
+    left: 0;
+    /* Alinha a imagem à esquerda da div */
 }
 
-#Tabela{
+#Tabela {
     margin-top: 2%;
     padding-right: 2%;
     margin-bottom: 2%;
 }
 
 table {
-    border-collapse: collapse; /* Define como as bordas das células da tabela devem ser colapsadas */
-    width: 100%; /* Define a largura da tabela como 100% da largura do contêiner pai */
-    
-  }
-  th, td {
-    border: 1px solid  #e7fcec !important;
-    background-color: #00184779; 
+    border-collapse: collapse;
+    /* Define como as bordas das células da tabela devem ser colapsadas */
+    width: 100%;
+    /* Define a largura da tabela como 100% da largura do contêiner pai */
+
+}
+
+th,
+td {
+    border: 1px solid #e7fcec !important;
+    background-color: #00184779;
     color: #e7fcec;
-    padding: 8px; /* Define o preenchimento interno de 8 pixels para todas as células */
-    text-align: left; /* Alinha o texto das células à esquerda */
-  }
-  th {
-    background-color: #001847; /* Define uma cor de fundo cinza claro para as células do cabeçalho */
-    color:  #e7fcec;
-  }
+    padding: 8px;
+    /* Define o preenchimento interno de 8 pixels para todas as células */
+    text-align: left;
+    /* Alinha o texto das células à esquerda */
+}
+
+th {
+    background-color: #001847;
+    /* Define uma cor de fundo cinza claro para as células do cabeçalho */
+    color: #e7fcec;
+}
+
+/* Estilo para destacar a célula da tabela ao passar o mouse */
+table td.seleção,
+table th.seleção {
+    background-color: #ffcc00;
+    /* Cor de destaque (amarelo) */
+    cursor: pointer;
+    /* Muda o cursor para a mãozinha */
+}
+
+/* Estilo para as células ao passar o mouse */
+table td:hover,
+table th:hover {
+    background-color: #ffcc00;
+    /* Cor de destaque (amarelo) */
+    cursor: pointer;
+    /* Muda o cursor para a mãozinha */
+}
