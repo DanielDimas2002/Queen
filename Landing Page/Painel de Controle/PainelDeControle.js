@@ -322,44 +322,6 @@ function TratamentoDeDados(nomes) { // Função para tratar os dados dos alunos
     return nomesValidos;
 }
 
-function editarNomeAluno(index) { //Função de edição de nomes
-    const aluno = ListaDeAlunos[index];
-    const nomeSpan = document.querySelectorAll('.nome-aluno')[index];
-
-    // Cria um campo de input para editar o nome
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.value = aluno.Nome;
-
-    // Substitui o nome atual pelo campo de input
-    nomeSpan.replaceWith(input);
-
-    // Adiciona evento de 'blur' (perda de foco) para salvar a edição
-    input.addEventListener('blur', () => {
-        const novoNome = input.value.trim();
-
-        // Verifica se o novo nome não está vazio
-        if (novoNome !== '') {
-            aluno.Nome = novoNome;
-            gerarTabelaAlunos(); // Atualiza a tabela com o novo nome
-        } else {
-            // Pergunta ao professor se deseja excluir o aluno
-            const confirmarExclusao = confirm("O nome do aluno não pode ser vazio. Deseja excluir o aluno " + aluno.Nome + "?");
-            if (confirmarExclusao) {
-                // Remove o aluno da lista
-                ListaDeAlunos.splice(index, 1);
-                gerarTabelaAlunos(); // Atualiza a tabela
-            } else {
-                // Reverte a edição, se o professor não confirmar a exclusão
-                gerarTabelaAlunos();
-            }
-        }
-    });
-
-    // Automaticamente foca no campo de input
-    input.focus();
-}
-
 //Fim das funções gerais
 
 // Função para adição de alunos
