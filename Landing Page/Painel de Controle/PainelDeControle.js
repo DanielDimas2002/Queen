@@ -160,14 +160,15 @@ btnDownloadExcel.addEventListener('click', () => {
 
 //Funções gerais
 
-const ativarEdicaoNota = () => {
+const ativarEdicaoNota = () => { // Função de edição na célula com duplo click
     const tabela = document.querySelector('table');
 
     tabela.addEventListener('dblclick', (event) => {
         const celula = event.target;
+        const linha = celula.closest('tr');
 
-        // Verifica se a célula clicada pertence a uma das colunas de notas ou à coluna de nome (0 é a coluna de nome)
-        if ([0, 1, 2, 3, 5].includes(celula.cellIndex)) {
+        // Verifica se a célula clicada está na linha abaixo do cabeçalho
+        if (linha && linha.rowIndex > 0 && [0, 1, 2, 3, 5].includes(celula.cellIndex)) {
             const valorAtual = celula.textContent.trim();
 
             // Cria um campo de entrada dentro da célula
@@ -229,7 +230,6 @@ const atualizarNomeAlunoNaTabela = (celula) => {
     console.log(`Nome do aluno com ID ${idAluno} atualizado para: ${novoNome}`);
 };
 
-
 // Iniciar a funcionalidade de edição na célula
 ativarEdicaoNota();
 
@@ -244,12 +244,12 @@ function gerarTabelaAlunos() { // Gerar a tabela HTML
     // Cria o cabeçalho da tabela
     const cabecalho = document.createElement("tr");
     cabecalho.innerHTML = `
-        <th class= "selecao">Nome do Aluno</th>
-        <th class= "selecao">Avaliação 1</th>
-        <th class= "selecao">Avaliação 2</th>
-        <th class= "selecao"h>Avaliação 3</th>
+        <th>Nome do Aluno</th>
+        <th>Avaliação 1</th>
+        <th>Avaliação 2</th>
+        <th>Avaliação 3</th>
         <th>Média</th>
-        <th class= "selecao">Recuperação</th>
+        <th>Recuperação</th>
         <th>Situação</th>
         <th>Ações</th> <!-- Nova coluna para ações -->
     `;
@@ -262,12 +262,12 @@ function gerarTabelaAlunos() { // Gerar a tabela HTML
     ListaDeAlunos.forEach((aluno, index) => {
         const linha = document.createElement("tr");
         linha.innerHTML = `
-            <td><span class="nome-aluno">${aluno.Nome}</span></td>
-            <td>${aluno.Avaliacao1}</td>
-            <td>${aluno.Avaliacao2}</td>
-            <td>${aluno.Avaliacao3}</td>
+            <td class= "selecao"><span class="nome-aluno">${aluno.Nome}</span></td>
+            <td class= "selecao">${aluno.Avaliacao1}</td>
+            <td class= "selecao">${aluno.Avaliacao2}</td>
+            <td class= "selecao">${aluno.Avaliacao3}</td>
             <td>${aluno.Media}</td>
-            <td>${aluno.Recuperacao}</td>
+            <td class= "selecao">${aluno.Recuperacao}</td>
             <td>${aluno.Situacao}</td>
             <td>
                 <button class="btn-editar" data-index="${index}" title="Editar">
