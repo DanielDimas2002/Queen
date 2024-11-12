@@ -233,8 +233,6 @@ const atualizarNomeAlunoNaTabela = (celula) => {
 // Iniciar a funcionalidade de edição na célula
 ativarEdicaoNota();
 
-
-
 function gerarTabelaAlunos() { // Gerar a tabela HTML 
     const tabela = document.querySelector("table");
 
@@ -270,25 +268,12 @@ function gerarTabelaAlunos() { // Gerar a tabela HTML
             <td class= "selecao">${aluno.Recuperacao}</td>
             <td>${aluno.Situacao}</td>
             <td>
-                <button class="btn-editar" data-index="${index}" title="Editar">
-                    <i class="fas fa-pen"></i> <!-- Ícone de caneta -->
-                </button>
                 <button class="btn-excluir" data-index="${index}" title="Excluir">
                     <i class="fas fa-trash-alt"></i> <!-- Ícone de lixeira -->
                 </button>
-            </td> <!-- Botões de editar e excluir -->
+            </td>
         `;
         tabela.appendChild(linha);
-    });
-
-
-
-    // Adiciona evento de clique para editar o nome do aluno
-    document.querySelectorAll('.btn-editar').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const index = e.target.closest('button').getAttribute('data-index');
-            editarNomeAluno(index);
-        });
     });
 
     // Adiciona evento de clique para excluir o aluno
