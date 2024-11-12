@@ -160,15 +160,14 @@ btnDownloadExcel.addEventListener('click', () => {
 
 //Funções gerais
 
-// Função que ativa a edição ao dar um duplo clique
 const ativarEdicaoNota = () => {
     const tabela = document.querySelector('table');
 
     tabela.addEventListener('dblclick', (event) => {
         const celula = event.target;
 
-        // Verifica se a célula clicada pertence a uma das colunas de notas
-        if ([1, 2, 3, 5].includes(celula.cellIndex)) {
+        // Verifica se a célula clicada pertence a uma das colunas de notas ou à coluna de nome (0 é a coluna de nome)
+        if ([0, 1, 2, 3, 5].includes(celula.cellIndex)) {
             const valorAtual = celula.textContent.trim();
 
             // Cria um campo de entrada dentro da célula
@@ -188,14 +187,25 @@ const ativarEdicaoNota = () => {
             input.addEventListener('blur', () => {
                 const novoValor = input.value.trim();
 
-                // Validação simples: apenas números
-                if (!isNaN(novoValor) && novoValor !== '' && novoValor >= 0 && novoValor <=10) {
-                    celula.textContent = novoValor;
-                    // Atualiza o aluno no sistema e recalcula a média
-                    atualizarAlunoNaTabela(celula);
-                } else {
-                    celula.textContent = valorAtual; // Retorna o valor anterior se inválido
-                    alert('Por favor, insira uma nota válida.');
+                // Para as notas, valida apenas números entre 0 e 10
+                if ([1, 2, 3, 5].includes(celula.cellIndex)) {
+                    if (!isNaN(novoValor) && novoValor !== '' && novoValor >= 0 && novoValor <= 10) {
+                        celula.textContent = novoValor;
+                        // Atualiza o aluno na tabela e recalcula a média
+                        atualizarAlunoNaTabela(celula);
+                    } else {
+                        celula.textContent = valorAtual; // Retorna o valor anterior se inválido
+                        alert('Por favor, insira uma nota válida.');
+                    }
+                } else { // Para a coluna de nome (coluna 0)
+                    if (novoValor !== '') {
+                        celula.textContent = novoValor;
+                        // Atualiza o nome do aluno no sistema
+                        atualizarNomeAlunoNaTabela(celula);
+                    } else {
+                        celula.textContent = valorAtual; // Retorna o valor anterior se o nome for vazio
+                        alert('O nome não pode ser vazio.');
+                    }
                 }
             });
 
@@ -209,24 +219,16 @@ const ativarEdicaoNota = () => {
     });
 };
 
-
-// Função que atualiza a tabela e calcula a média
-const atualizarAlunoNaTabela = (celula) => {
+// Função para atualizar o nome do aluno na tabela (a ser implementada conforme sua lógica de sistema)
+const atualizarNomeAlunoNaTabela = (celula) => {
     const linha = celula.closest('tr');
-    const nomeAluno = linha.cells[0].textContent;
+    const idAluno = linha.dataset.idAluno; // Supondo que você tenha um atributo 'data-id-aluno' para identificar o aluno
 
-    // Coleta as notas das três avaliações
-    const nota1 = parseFloat(linha.cells[1].textContent) || 0;
-    const nota2 = parseFloat(linha.cells[2].textContent) || 0;
-    const nota3 = parseFloat(linha.cells[3].textContent) || 0;
-
-    // Calcula a média e atualiza a célula de média
-    const media = ((nota1 + nota2 + nota3) / 3).toFixed(2);
-    linha.cells[4].textContent = media; // Assume que a média está na coluna 4
-
-    // Exibe uma mensagem no console para verificar
-    console.log(`Nota de ${nomeAluno} atualizada. Média recalculada: ${media}`);
+    const novoNome = celula.textContent.trim();
+    // Aqui você implementaria a lógica para atualizar o nome no sistema ou banco de dados
+    console.log(`Nome do aluno com ID ${idAluno} atualizado para: ${novoNome}`);
 };
+
 
 // Iniciar a funcionalidade de edição na célula
 ativarEdicaoNota();
