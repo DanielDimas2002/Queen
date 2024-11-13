@@ -21,7 +21,7 @@ document.getElementById('formLogin').addEventListener('submit', async (e) => {
             localStorage.setItem('token', responseData.token);
 
             alert('Login realizado com sucesso! Redirecionando...');
-            window.location.href = '/Landing Page/Turmas/Turmas.html';
+            window.location.href = 'Turmas/Turmas.html';
         } else {
             const errorData = await loginUser.json();
             alert('Não foi possível realizar login: ' + errorData.message);
