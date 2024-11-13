@@ -160,57 +160,47 @@ btnDownloadExcel.addEventListener('click', () => {
 
 //Funções gerais
 
-const ativarEdicaoNota = () => { // Função de edição na célula com duplo click
+const ativarEdicaoNota = () => { // Função de adição e edição de notas na célula com duplo click
     const tabela = document.querySelector('table');
 
     tabela.addEventListener('dblclick', (event) => {
         const celula = event.target;
         const linha = celula.closest('tr');
-
-        // Verifica se a célula clicada está na linha abaixo do cabeçalho
+        
         if (linha && linha.rowIndex > 0 && [0, 1, 2, 3, 5].includes(celula.cellIndex)) {
             const valorAtual = celula.textContent.trim();
-
-            // Cria um campo de entrada dentro da célula
             const input = document.createElement('input');
             input.type = 'text';
             input.value = valorAtual;
             input.style.width = '100%';
 
-            // Substitui o conteúdo da célula pelo campo de entrada
             celula.textContent = '';
             celula.appendChild(input);
-
-            // Seleciona o texto atual para facilitar a edição
             input.select();
 
-            // Manipula o término da edição
             input.addEventListener('blur', () => {
                 const novoValor = input.value.trim();
+                const alunoIndex = linha.rowIndex - 1; // Index na `ListaDeAlunos`
 
-                // Para as notas, valida apenas números entre 0 e 10
                 if ([1, 2, 3, 5].includes(celula.cellIndex)) {
                     if (!isNaN(novoValor) && novoValor !== '' && novoValor >= 0 && novoValor <= 10) {
                         celula.textContent = novoValor;
-                        // Atualiza o aluno na tabela e recalcula a média
-                        atualizarAlunoNaTabela(celula);
+                        atualizarNotaAluno(celula, alunoIndex, parseFloat(novoValor));
                     } else {
-                        celula.textContent = valorAtual; // Retorna o valor anterior se inválido
+                        celula.textContent = valorAtual;
                         alert('Por favor, insira uma nota válida.');
                     }
-                } else { // Para a coluna de nome (coluna 0)
+                } else { 
                     if (novoValor !== '') {
                         celula.textContent = novoValor;
-                        // Atualiza o nome do aluno no sistema
                         atualizarNomeAlunoNaTabela(celula);
                     } else {
-                        celula.textContent = valorAtual; // Retorna o valor anterior se o nome for vazio
+                        celula.textContent = valorAtual;
                         alert('O nome não pode ser vazio.');
                     }
                 }
             });
 
-            // Confirma a edição ao pressionar Enter
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     input.blur();
@@ -220,14 +210,26 @@ const ativarEdicaoNota = () => { // Função de edição na célula com duplo cl
     });
 };
 
-// Função para atualizar o nome do aluno na tabela (a ser implementada conforme sua lógica de sistema)
-const atualizarNomeAlunoNaTabela = (celula) => {
-    const linha = celula.closest('tr');
-    const idAluno = linha.dataset.idAluno; // Supondo que você tenha um atributo 'data-id-aluno' para identificar o aluno
-
-    const novoNome = celula.textContent.trim();
-    // Aqui você implementaria a lógica para atualizar o nome no sistema ou banco de dados
-    console.log(`Nome do aluno com ID ${idAluno} atualizado para: ${novoNome}`);
+// Função auxiliar para atualizar a nota e recalcular média e situação
+const atualizarNotaAluno = (celula, alunoIndex, novaNota) => {
+    const aluno = ListaDeAlunos[alunoIndex];
+    switch (celula.cellIndex) {
+        case 1:
+            aluno.Avaliacao1 = novaNota;
+            break;
+        case 2:
+            aluno.Avaliacao2 = novaNota;
+            break;
+        case 3:
+            aluno.Avaliacao3 = novaNota;
+            break;
+        case 5:
+            aluno.Recuperacao = novaNota;
+            break;
+    }
+    aluno.Media = ((aluno.Avaliacao1 + aluno.Avaliacao2 + aluno.Avaliacao3) / 3).toFixed(2);
+    aluno.Situacao = aluno.Media >= MediaDefinida ? "Aprovado" : "Reprovado";
+    gerarTabelaAlunos(); // Atualiza a tabela para refletir mudanças
 };
 
 // Iniciar a funcionalidade de edição na célula
