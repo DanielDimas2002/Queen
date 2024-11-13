@@ -29,6 +29,7 @@ document.getElementById('formCadastro').addEventListener('submit', async (e) => 
             const responseData = await createUser.json();
             alert('Cadastro realizado com sucesso!');
             console.log(responseData);
+            window.location.href = "Login.html";
             form.reset();
         } else {
             const errorData = await createUser.json();
