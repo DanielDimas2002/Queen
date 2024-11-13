@@ -65,7 +65,6 @@ const PopUpAddAluno = document.getElementById('PopUpAddAluno');
 const PopUpDefMedia = document.getElementById('PopUpDefMedia');
 const PopUpPontuar = document.getElementById('PopUpPontuar');
 const PopUpNotaRecu = document.getElementById('PopUpNotaRecu');
-const PopUpPontuarRecu = document.getElementById('PopUpPontuarRecu');
 const btnDownloadTabela = document.getElementById('PopUpDownloadTabela');
 
 // Selecionando os próprios modais
@@ -73,7 +72,6 @@ const popupTurma = document.getElementById('popupTurma');
 const popupMedia = document.getElementById('popupMedia');
 const popupPontuar = document.getElementById('popupPontuar');
 const popupRecuperacaoNota = document.getElementById('popupRecuperacaoNota');
-const popupRecuperacao = document.getElementById('popupPontuarRecu');
 const btnCloseDownload = document.getElementById('closeDownload');
 
 // Selecionando os formulários de dentro dos PopUp
@@ -81,7 +79,6 @@ const FormPopUpAddAluno = document.getElementById("CadastrarAlunos");
 const FormPopUpDefMedia = document.getElementById("formMedia");
 const FormPopUpPontuar = document.getElementById("formPontuar");
 const FormPopUpNotaRecu = document.getElementById("formNotaRecu")
-const FormPopUpPontuarRecu = document.getElementById("formPontuarRecu")
 const btnDownloadPDF = document.getElementById('downloadPDF');
 const btnDownloadExcel = document.getElementById('downloadExcel');
 
@@ -110,13 +107,6 @@ PopUpPontuar.addEventListener('click', () => {
 });
 
 PopUpNotaRecu.addEventListener('click', () => abrirPopup(popupRecuperacaoNota));
-PopUpPontuarRecu.addEventListener('click', () => {
-    if (NotaRecuperacaoDefinida === null || NotaRecuperacaoDefinida === 0) {
-        alert("É necessário definir a média da recuperação!");
-    } else {
-        abrirPopup(popupRecuperacao);
-    }
-});
 btnDownloadTabela.addEventListener('click', () => {
     popupDownload.style.display = 'block';
 });
@@ -271,8 +261,6 @@ function ativarEdicaoNota() { // Função de adição e edição de notas na cé
         }
     });
 }
-
-
 
 
 // Função auxiliar para atualizar a nota e recalcular média e situação
@@ -574,42 +562,4 @@ formNotaRecu.addEventListener('submit', (e) => {
     alert("Nota de recuperação definida: " + NotaRecuperacaoDefinida);
     popupRecuperacaoNota.style.display = 'none'; // Fecha o pop-up
     document.querySelector('.popup-overlay').style.display = 'none';
-});
-
-
-// Função para pontuar a recuperação
-FormPopUpPontuarRecu.addEventListener('submit', (e) => {
-    e.preventDefault();  // Impede o envio padrão do formulário
-
-    const nomeAluno = document.getElementById('alunoRecu').value;
-    const notaRecu = parseFloat(document.getElementById('notaRecu').value);
-
-    // Encontre o aluno na lista global ListaDeAlunos
-    const aluno = ListaDeAlunos.find(a => a.Nome.trim() === nomeAluno.trim());
-
-    if (aluno) {
-        // Verifica se o aluno precisa de recuperação (média abaixo da MediaDefinida)
-        if (aluno.Media < MediaDefinida) {
-            // Atualiza a nota de recuperação do aluno
-            aluno.Recuperacao = notaRecu;
-
-            // Verifica se a nota de recuperação permite a aprovação
-            if (notaRecu >= NotaRecuperacaoDefinida) { // Comparação com a nota de recuperação definida
-                aluno.Situacao = 'Aprovado';
-            } else {
-                aluno.Situacao = 'Reprovado';
-            }
-
-            // Atualiza a tabela na interface
-            gerarTabelaAlunos();
-
-            // Fecha o pop-up após salvar
-            popupPontuarRecu.style.display = 'none';
-            document.querySelector('.popup-overlay').style.display = 'none';
-        } else {
-            alert("Este aluno já foi aprovado e não precisa de recuperação.");
-        }
-    } else {
-        alert("Aluno não encontrado. Verifique o nome digitado.");
-    }
 });
