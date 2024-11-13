@@ -65,7 +65,6 @@ const PopUpAddAluno = document.getElementById('PopUpAddAluno');
 const PopUpDefMedia = document.getElementById('PopUpDefMedia');
 const PopUpPontuar = document.getElementById('PopUpPontuar');
 const PopUpNotaRecu = document.getElementById('PopUpNotaRecu');
-const PopUpPontuarRecu = document.getElementById('PopUpPontuarRecu');
 const btnDownloadTabela = document.getElementById('PopUpDownloadTabela');
 
 // Selecionando os próprios modais
@@ -73,7 +72,6 @@ const popupTurma = document.getElementById('popupTurma');
 const popupMedia = document.getElementById('popupMedia');
 const popupPontuar = document.getElementById('popupPontuar');
 const popupRecuperacaoNota = document.getElementById('popupRecuperacaoNota');
-const popupRecuperacao = document.getElementById('popupPontuarRecu');
 const btnCloseDownload = document.getElementById('closeDownload');
 
 // Selecionando os formulários de dentro dos PopUp
@@ -81,7 +79,6 @@ const FormPopUpAddAluno = document.getElementById("CadastrarAlunos");
 const FormPopUpDefMedia = document.getElementById("formMedia");
 const FormPopUpPontuar = document.getElementById("formPontuar");
 const FormPopUpNotaRecu = document.getElementById("formNotaRecu")
-const FormPopUpPontuarRecu = document.getElementById("formPontuarRecu")
 const btnDownloadPDF = document.getElementById('downloadPDF');
 const btnDownloadExcel = document.getElementById('downloadExcel');
 
@@ -110,13 +107,6 @@ PopUpPontuar.addEventListener('click', () => {
 });
 
 PopUpNotaRecu.addEventListener('click', () => abrirPopup(popupRecuperacaoNota));
-PopUpPontuarRecu.addEventListener('click', () => {
-    if (NotaRecuperacaoDefinida === null || NotaRecuperacaoDefinida === 0) {
-        alert("É necessário definir a média da recuperação!");
-    } else {
-        abrirPopup(popupRecuperacao);
-    }
-});
 btnDownloadTabela.addEventListener('click', () => {
     popupDownload.style.display = 'block';
 });
@@ -160,47 +150,109 @@ btnDownloadExcel.addEventListener('click', () => {
 
 //Funções gerais
 
-const ativarEdicaoNota = () => { // Função de adição e edição de notas na célula com duplo click
+function ativarEdicaoNota() { // Função de adição e edição de notas na célula com duplo click
     const tabela = document.querySelector('table');
 
     tabela.addEventListener('dblclick', (event) => {
         const celula = event.target;
         const linha = celula.closest('tr');
-        
+
+        // Verifica se a célula clicada está na linha abaixo do cabeçalho
         if (linha && linha.rowIndex > 0 && [0, 1, 2, 3, 5].includes(celula.cellIndex)) {
             const valorAtual = celula.textContent.trim();
+
+            // Cria um campo de entrada dentro da célula
             const input = document.createElement('input');
             input.type = 'text';
             input.value = valorAtual;
             input.style.width = '100%';
 
+            // Substitui o conteúdo da célula pelo campo de entrada
             celula.textContent = '';
             celula.appendChild(input);
+
+            // Seleciona o texto atual para facilitar a edição
             input.select();
 
+            // Manipula o término da edição
             input.addEventListener('blur', () => {
                 const novoValor = input.value.trim();
-                const alunoIndex = linha.rowIndex - 1; // Index na `ListaDeAlunos`
 
+                // Para as notas, valida apenas números entre 0 e 10
                 if ([1, 2, 3, 5].includes(celula.cellIndex)) {
                     if (!isNaN(novoValor) && novoValor !== '' && novoValor >= 0 && novoValor <= 10) {
+                        // Verifica se a nota já existe para o aluno nesta avaliação
+                        const linhaAluno = celula.closest('tr');
+                        const nomeAluno = linhaAluno.cells[0].textContent.trim();
+                        const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
+                        let notaExistente;
+
+                        switch (celula.cellIndex) {
+                            case 1: // Avaliação 1
+                                notaExistente = aluno.Avaliacao1;
+                                break;
+                            case 2: // Avaliação 2
+                                notaExistente = aluno.Avaliacao2;
+                                break;
+                            case 3: // Avaliação 3
+                                notaExistente = aluno.Avaliacao3;
+                                break;
+                            case 5: // Recuperação
+                                notaExistente = aluno.Recuperacao;
+                                break;
+                        }
+
+                        // Exibe o alerta de confirmação de substituição de nota se a nota já existir
+                        if (notaExistente !== "" && notaExistente !== null && notaExistente !== undefined) {
+                            const confirmacao = confirm(`O aluno ${nomeAluno} já possui uma nota para essa avaliação (${notaExistente}). Deseja substituir?`);
+                            if (!confirmacao) {
+                                celula.textContent = valorAtual; // Retorna o valor anterior se o usuário cancelar
+                                return;
+                            }
+                        }
+
+                        // Atualiza a célula com a nova nota
                         celula.textContent = novoValor;
-                        atualizarNotaAluno(celula, alunoIndex, parseFloat(novoValor));
+
+                        // Atualiza a propriedade do aluno com a nova nota
+                        switch (celula.cellIndex) {
+                            case 1:
+                                aluno.Avaliacao1 = parseFloat(novoValor);
+                                break;
+                            case 2:
+                                aluno.Avaliacao2 = parseFloat(novoValor);
+                                break;
+                            case 3:
+                                aluno.Avaliacao3 = parseFloat(novoValor);
+                                break;
+                            case 5:
+                                aluno.Recuperacao = parseFloat(novoValor);
+                                break;
+                        }
+
+                        // Recalcula a média e atualiza a situação do aluno
+                        aluno.Media = ((aluno.Avaliacao1 + aluno.Avaliacao2 + aluno.Avaliacao3) / 3).toFixed(2);
+                        aluno.Situacao = aluno.Media >= MediaDefinida ? "Aprovado" : "Reprovado";
+
+                        // Atualiza a tabela com a nova média e situação
+                        gerarTabelaAlunos();
                     } else {
-                        celula.textContent = valorAtual;
+                        celula.textContent = valorAtual; // Retorna o valor anterior se inválido
                         alert('Por favor, insira uma nota válida.');
                     }
-                } else { 
+                } else { // Para a coluna de nome (coluna 0)
                     if (novoValor !== '') {
                         celula.textContent = novoValor;
+                        // Atualiza o nome do aluno no sistema
                         atualizarNomeAlunoNaTabela(celula);
                     } else {
-                        celula.textContent = valorAtual;
+                        celula.textContent = valorAtual; // Retorna o valor anterior se o nome for vazio
                         alert('O nome não pode ser vazio.');
                     }
                 }
             });
 
+            // Confirma a edição ao pressionar Enter
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     input.blur();
@@ -208,7 +260,8 @@ const ativarEdicaoNota = () => { // Função de adição e edição de notas na 
             });
         }
     });
-};
+}
+
 
 // Função auxiliar para atualizar a nota e recalcular média e situação
 const atualizarNotaAluno = (celula, alunoIndex, novaNota) => {
@@ -512,39 +565,4 @@ formNotaRecu.addEventListener('submit', (e) => {
 });
 
 
-// Função para pontuar a recuperação
-FormPopUpPontuarRecu.addEventListener('submit', (e) => {
-    e.preventDefault();  // Impede o envio padrão do formulário
 
-    const nomeAluno = document.getElementById('alunoRecu').value;
-    const notaRecu = parseFloat(document.getElementById('notaRecu').value);
-
-    // Encontre o aluno na lista global ListaDeAlunos
-    const aluno = ListaDeAlunos.find(a => a.Nome.trim() === nomeAluno.trim());
-
-    if (aluno) {
-        // Verifica se o aluno precisa de recuperação (média abaixo da MediaDefinida)
-        if (aluno.Media < MediaDefinida) {
-            // Atualiza a nota de recuperação do aluno
-            aluno.Recuperacao = notaRecu;
-
-            // Verifica se a nota de recuperação permite a aprovação
-            if (notaRecu >= NotaRecuperacaoDefinida) { // Comparação com a nota de recuperação definida
-                aluno.Situacao = 'Aprovado';
-            } else {
-                aluno.Situacao = 'Reprovado';
-            }
-
-            // Atualiza a tabela na interface
-            gerarTabelaAlunos();
-
-            // Fecha o pop-up após salvar
-            popupPontuarRecu.style.display = 'none';
-            document.querySelector('.popup-overlay').style.display = 'none';
-        } else {
-            alert("Este aluno já foi aprovado e não precisa de recuperação.");
-        }
-    } else {
-        alert("Aluno não encontrado. Verifique o nome digitado.");
-    }
-});
