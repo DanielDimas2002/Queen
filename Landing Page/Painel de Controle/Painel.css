@@ -130,34 +130,6 @@ h1 {
     cursor: pointer;
 }
 
-#Midia {
-    width: 700px;
-    /* Defina a largura desejada para a div */
-    height: 400px;
-    /* Defina a altura desejada para a div */
-    overflow: hidden;
-    /* Para evitar que a imagem ultrapasse os limites da div */
-    position: relative;
-    /* Importante para alinhar a imagem */
-    display: flex;
-    margin-left: 15%;
-}
-
-#Midia img {
-    width: 100%;
-    /* Faz a imagem ocupar 100% da largura da div */
-    height: auto;
-    /* Mantém a proporção da imagem */
-    display: block;
-    /* Para corrigir qualquer espaçamento extra */
-    position: absolute;
-    /* Permite que a imagem cubra toda a área da div */
-    top: 0;
-    /* Alinha a imagem ao topo da div */
-    left: 0;
-    /* Alinha a imagem à esquerda da div */
-}
-
 #Tabela {
     margin-top: 2%;
     padding-right: 2%;
