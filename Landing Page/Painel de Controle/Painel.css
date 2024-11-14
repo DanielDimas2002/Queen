@@ -168,5 +168,27 @@ th {
     color: #001847;
 }
 
+/* Estilo para os botões desativados */
+.menu-button:disabled {
+    background-color: #d3d3d3; /* Cor de fundo cinza */
+    color: #7d7d7d; /* Texto cinza claro */
+    cursor: not-allowed; /* Cursor indica que está desabilitado */
+    filter: grayscale(100%); /* Preto e branco */
+    pointer-events: none; /* Remove o ponteiro */
+}
 
+/* Estilo para os botões ativados */
+.menu-button {
+    color: black; /* Texto preto */
+    background-color: #FFFDE6; /* Fundo padrão */
+    font-weight: bold;
+    border: 1px solid black;
+}
 
+/* Efeito hover para botões ativados */
+.menu-button:hover:enabled {
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: #007bff;
+}

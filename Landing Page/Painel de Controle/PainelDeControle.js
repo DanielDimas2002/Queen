@@ -564,5 +564,40 @@ formNotaRecu.addEventListener('submit', (e) => {
     document.querySelector('.popup-overlay').style.display = 'none';
 });
 
+// Função para verificar se há alunos na tabela e ativar/desativar botões
+function verificarAlunosNaTabela() {
+    const tabela = document.querySelector('table');
+    const numeroDeAlunos = tabela.rows.length - 1; // Exclui o cabeçalho da contagem
 
+    // Seleciona os botões do menu que precisam ser restritos
+    const botoesRestritos = [
+        document.getElementById('PopUpDefMedia'),
+        document.getElementById('PopUpPontuar'),
+        document.getElementById('PopUpNotaRecu'),
+        document.getElementById('PopUpDownloadTabela')
+    ];
 
+    // Habilita ou desabilita os botões conforme o número de alunos
+    botoesRestritos.forEach(botao => {
+        if (numeroDeAlunos > 0) {
+            botao.disabled = false;
+            botao.classList.remove('btn-desativado'); // Remove o estilo de desativado
+        } else {
+            botao.disabled = true;
+            botao.classList.add('btn-desativado'); // Adiciona o estilo de desativado
+        }
+    });
+}
+
+// Executa a função ao carregar a página para desativar os botões inicialmente
+window.addEventListener('load', verificarAlunosNaTabela);
+
+// Atualiza a verificação toda vez que um aluno é adicionado
+document.getElementById('CadastrarAlunos').addEventListener('submit', function(event) {
+    event.preventDefault(); // Previne o comportamento padrão de envio de formulário
+
+    // Código para adicionar o aluno na tabela aqui...
+
+    // Verifica novamente se há alunos na tabela
+    verificarAlunosNaTabela();
+});

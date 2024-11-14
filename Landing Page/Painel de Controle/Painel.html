@@ -28,18 +28,25 @@
                 <img id="separa-logo-principal" class="logo-titulo" src="Midia/logoNR.png" alt="Logo">
             </a>
         </div>
+        <!-- Navegação do menu com botões de funcionalidades -->
         <nav class="menu">
-            <button id="PopUpAddAluno" class="popup-ativar">Adicionar Alunos</button>
-            <!-- Botão para ativar popup de criar turma -->
-            <button id="PopUpDefMedia">Definir Média</button>
-            <!-- Botão para ativar popup de média de média de aprovação -->
-            <button id="PopUpPontuar" class="popup-ativar">Pontuar em Grupo</button>
-            <!-- Botão para ativar popup de pontuar atividades -->
-            <button id="PopUpNotaRecu">Definir Nota de Recuperação</button>
-            <!-- Botão para ativar popup de nota de recuperação -->
-            <button id="PopUpDownloadTabela" class="popup-ativar">Baixar Tabela</button>
-            <!-- Botão para baixar tabela -->
+            <!-- Botão para adicionar novos alunos, sempre ativo -->
+            <button id="PopUpAddAluno" class="popup-ativar menu-button">Adicionar Alunos</button>
+
+            <!-- Botão para definir a média, inicialmente desativado -->
+            <button id="PopUpDefMedia" class="menu-button" disabled>Definir Média</button>
+
+            <!-- Botão para pontuar alunos em grupo, inicialmente desativado -->
+            <button id="PopUpPontuar" class="popup-ativar menu-button" disabled>Pontuar em Grupo</button>
+
+            <!-- Botão para definir a nota mínima de recuperação, inicialmente desativado -->
+            <button id="PopUpNotaRecu" class="menu-button" disabled>Definir Nota de Recuperação</button>
+
+            <!-- Botão para baixar a tabela de alunos, inicialmente desativado -->
+            <button id="PopUpDownloadTabela" class="popup-ativar menu-button" disabled>Baixar Tabela</button>
         </nav>
+
+
         <div class="dropdown">
             <a class="dropdown-toggle" href="#" role="button" id="gearDropdown" data-bs-toggle="dropdown"
                 aria-expanded="false">
@@ -60,7 +67,6 @@
     </header>
     <main>
         <h1>Painel de Controle</h1>
-        <!--<section id="Config_Midia">-->
         <section id="Tabela">
             <h2 id="Rascunho">Tabela de Alunos</h2>
             <!-- Tabela para exibir o relatório -->
