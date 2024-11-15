@@ -165,6 +165,24 @@ function ativarEdicaoNota() { // Função de adição e edição de notas na cé
                 return; // Bloqueia a edição se a média não estiver definida
             }
 
+            // Se for a segunda coluna (Avaliação 2), verifica se todos os alunos possuem a nota 1 (Avaliação 1)
+            if (celula.cellIndex === 2) { // Avaliação 2
+                const todosAvaliaram = ListaDeAlunos.every(aluno => aluno.Avaliacao1 !== "" && aluno.Avaliacao1 !== null && aluno.Avaliacao1 !== undefined);
+                if (!todosAvaliaram) {
+                    alert("Todos os alunos precisam ter a nota da Avaliação 1 preenchida antes de editar a Avaliação 2!");
+                    return; // Bloqueia a edição na Avaliação 2 se algum aluno não tiver a Avaliação 1
+                }
+            }
+
+            // Se for a terceira coluna (Avaliação 3), verifica se todos os alunos possuem a nota 2 (Avaliação 2)
+            if (celula.cellIndex === 3) { // Avaliação 3
+                const todosAvaliaram = ListaDeAlunos.every(aluno => aluno.Avaliacao2 !== "" && aluno.Avaliacao2 !== null && aluno.Avaliacao2 !== undefined);
+                if (!todosAvaliaram) {
+                    alert("Todos os alunos precisam ter a nota da Avaliação 2 preenchida antes de editar a Avaliação 3!");
+                    return; // Bloqueia a edição na Avaliação 3 se algum aluno não tiver a Avaliação 2
+                }
+            }
+
             const valorAtual = celula.textContent.trim();
 
             // Cria um campo de entrada dentro da célula
@@ -270,7 +288,7 @@ function ativarEdicaoNota() { // Função de adição e edição de notas na cé
 
 
 // Função auxiliar para atualizar a nota e recalcular média e situação
-const atualizarNotaAluno = (celula, alunoIndex, novaNota) => {
+function atualizarNotaAluno (celula, alunoIndex, novaNota) {
     const aluno = ListaDeAlunos[alunoIndex];
     switch (celula.cellIndex) {
         case 1:
