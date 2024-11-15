@@ -200,7 +200,10 @@ function ativarEdicaoNota() { // Função de adição e edição de notas na cé
 
             // Manipula o término da edição
             input.addEventListener('blur', () => {
-                const novoValor = input.value.trim();
+                let novoValor = input.value.trim();
+
+                // Substitui a vírgula por ponto, para permitir a entrada de notas com vírgula
+                novoValor = novoValor.replace(',', '.');
 
                 // Para as notas, valida apenas números entre 0 e 10
                 if ([1, 2, 3, 5].includes(celula.cellIndex)) {
@@ -285,6 +288,7 @@ function ativarEdicaoNota() { // Função de adição e edição de notas na cé
         }
     });
 }
+
 
 
 // Função auxiliar para atualizar a nota e recalcular média e situação
@@ -435,8 +439,11 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
 
     // Captura os valores do pop-up
     const nomesAlunos = document.getElementById('NomesAlunos').value.trim(); // Campo de nomes
-    const nota = document.getElementById('NotaAluno').value.trim(); // Campo de nota (ainda como string)
+    let nota = document.getElementById('NotaAluno').value.trim(); // Campo de nota (ainda como string)
     const avaliacaoSelecionada = document.querySelector('input[name="LocalAv"]:checked'); // Radio button da avaliação
+
+    // Substitui a vírgula por ponto para garantir a consistência
+    nota = nota.replace(',', '.');
 
     // Validação dos campos
     if (!nomesAlunos) {
@@ -545,7 +552,6 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
     // Fecha o pop-up após o sucesso
     fecharPopup(popupPontuar);
 });
-
 
 
 // Evento de submissão do formulário de média
