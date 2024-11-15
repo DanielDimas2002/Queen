@@ -153,7 +153,7 @@ btnDownloadExcel.addEventListener('click', () => {
 function ativarEdicaoNota() { // Função de adição e edição de notas na célula com duplo click
     const tabela = document.querySelector('table');
 
-    tabela.addEventListener('dblclick', (event) => {
+    tabela.addEventListener('click', (event) => {
         const celula = event.target;
         const linha = celula.closest('tr');
 
