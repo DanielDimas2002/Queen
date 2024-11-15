@@ -23,7 +23,7 @@ function baixarTabelaPDF() {
     doc.text("Tabela de Alunos", 10, 10);
 
     // Obtém a tabela HTML
-    const tabela = document.querySelector('table');
+    const tabela = ('table');
     // Converte a tabela HTML para PDF
     doc.autoTable({ html: tabela }); // Gera o PDF com base na tabela
 
@@ -150,7 +150,7 @@ btnDownloadExcel.addEventListener('click', () => {
 
 //Funções gerais
 
-function ativarEdicaoNota() { // Função de adição e edição de notas na célula com duplo click
+function ativarEdicaoNota() { // Função de adição e edição de notas na célula
     const tabela = document.querySelector('table');
 
     tabela.addEventListener('click', (event) => {
@@ -159,6 +159,12 @@ function ativarEdicaoNota() { // Função de adição e edição de notas na cé
 
         // Verifica se a célula clicada está na linha abaixo do cabeçalho
         if (linha && linha.rowIndex > 0 && [0, 1, 2, 3, 5].includes(celula.cellIndex)) {
+            // Verifica se a média foi definida
+            if (MediaDefinida === null || MediaDefinida === undefined) {
+                alert("Defina a média antes de adicionar notas!");
+                return; // Bloqueia a edição se a média não estiver definida
+            }
+
             const valorAtual = celula.textContent.trim();
 
             // Cria um campo de entrada dentro da célula
