@@ -464,6 +464,25 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
 
     let alteracaoConfirmada = true; // Variável para controle de sobrescrição de notas
 
+    // Verifica se todos os alunos têm a nota pontuada para a avaliação anterior
+    if (avaliacaoSelecionada.value === "Avaliação2") {
+        // Verifica se todos os alunos têm nota na Avaliação1
+        const alunosSemNota1 = ListaDeAlunos.filter(a => a.Avaliacao1 === "" || a.Avaliacao1 === null || a.Avaliacao1 === undefined);
+        if (alunosSemNota1.length > 0) {
+            alert("A segunda avaliação só pode ser pontuada depois que todos os alunos tiverem uma nota na primeira avaliação.");
+            return;
+        }
+    }
+
+    if (avaliacaoSelecionada.value === "Avaliação3") {
+        // Verifica se todos os alunos têm nota na Avaliação1 e Avaliação2
+        const alunosSemNota1e2 = ListaDeAlunos.filter(a => a.Avaliacao1 === "" || a.Avaliacao1 === null || a.Avaliacao1 === undefined || a.Avaliacao2 === "" || a.Avaliacao2 === null || a.Avaliacao2 === undefined);
+        if (alunosSemNota1e2.length > 0) {
+            alert("A terceira avaliação só pode ser pontuada depois que todos os alunos tiverem uma nota na primeira e segunda avaliações.");
+            return;
+        }
+    }
+
     // Atualiza as notas dos alunos
     nomesTratados.forEach(nomeAluno => {
         const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
@@ -493,7 +512,6 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
         }
 
         if (!alteracaoConfirmada) return; // Caso o professor cancele a confirmação, interrompe o processo
-
 
         // Atribui a nota à avaliação correspondente
         switch (avaliacaoSelecionada.value) {
@@ -527,6 +545,7 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
     // Fecha o pop-up após o sucesso
     fecharPopup(popupPontuar);
 });
+
 
 
 // Evento de submissão do formulário de média
