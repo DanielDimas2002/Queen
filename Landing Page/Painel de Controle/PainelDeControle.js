@@ -33,25 +33,44 @@ function baixarTabelaPDF() {
 
 
 function baixarTabelaExcel() {
-    const table = document.querySelector('table');
-    let csvContent = '';
+    const tabela = document.querySelector('table'); // Seleciona a tabela no DOM
+    const linhas = Array.from(tabela.rows); // Obtém as linhas da tabela
 
-    table.querySelectorAll('tr').forEach(row => {
-        const rowData = Array.from(row.querySelectorAll('th, td'))
-            .map(cell => cell.innerText)
-            .join(',');
-        csvContent += rowData + '\n';
-    });
+    // Cria um array de arrays com os dados da tabela
+    const dados = linhas.map(linha => 
+        Array.from(linha.cells).map(celula => celula.textContent)
+    );
 
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const downloadLink = document.createElement('a');
-    downloadLink.href = url;
-    downloadLink.download = 'Tabela_de_Alunos.csv';
-    downloadLink.click();
+    // Usa SheetJS para criar um arquivo XLSX
+    const ws = XLSX.utils.aoa_to_sheet(dados); // Converte o array de arrays para uma planilha
+    const wb = XLSX.utils.book_new(); // Cria um novo "livro" (workbook)
+    XLSX.utils.book_append_sheet(wb, ws, "Tabela de Alunos"); // Adiciona a planilha ao livro
 
-    URL.revokeObjectURL(url); // Libera o objeto URL criado
-    popupDownload.style.display = 'none';
+    // Gera e baixa o arquivo XLSX
+    XLSX.writeFile(wb, "tabela_alunos.xlsx");
+}
+
+
+
+function baixarTabelaCSV() {
+    const tabela = document.querySelector('table'); // Seleciona a tabela no HTML
+    const linhas = Array.from(tabela.rows); // Obtém todas as linhas da tabela
+    const dadosCSV = linhas.map(linha => {
+        // Para cada linha, mapeia o texto das células separadas por vírgula
+        return Array.from(linha.cells).map(celula => `"${celula.textContent}"`).join(',');
+    }).join('\n');
+
+    // Cria um blob com os dados CSV
+    const blob = new Blob([dadosCSV], { type: 'text/csv' });
+
+    // Cria o link para download
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'tabela_alunos.csv';
+    document.body.appendChild(link);
+
+    link.click(); // Aciona o download
+    document.body.removeChild(link); // Remove o link após o download
 }
 
 
@@ -81,6 +100,8 @@ const FormPopUpPontuar = document.getElementById("formPontuar");
 const FormPopUpNotaRecu = document.getElementById("formNotaRecu")
 const btnDownloadPDF = document.getElementById('downloadPDF');
 const btnDownloadExcel = document.getElementById('downloadExcel');
+const btnDownloadCSV = document.getElementById('downloadCSV');
+
 
 // Funcionamento do PopUp
 
@@ -144,6 +165,11 @@ btnDownloadPDF.addEventListener('click', () => {
 // Função para baixar a tabela em Excel
 btnDownloadExcel.addEventListener('click', () => {
     baixarTabelaExcel();
+});
+
+// Função para baixar a tabela em CSV
+btnDownloadCSV.addEventListener('click', () => {
+    baixarTabelaCSV();
 });
 
 //Fim do Funcionamento do PopUp
