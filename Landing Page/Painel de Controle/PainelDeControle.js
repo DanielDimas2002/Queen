@@ -200,6 +200,16 @@ function ativarEdicaoNota() { // Função de adição e edição de notas na cé
                     alert(`A recuperação não está disponível para o aluno ${nomeAluno}, pois ele foi aprovado.`);
                     return;
                 }
+
+                // Impede acesso à recuperação se nenhuma avaliação foi pontuada
+                if (
+                    (aluno.Avaliacao1 === null || aluno.Avaliacao1 === "" || aluno.Avaliacao1 === undefined) &&
+                    (aluno.Avaliacao2 === null || aluno.Avaliacao2 === "" || aluno.Avaliacao2 === undefined) &&
+                    (aluno.Avaliacao3 === null || aluno.Avaliacao3 === "" || aluno.Avaliacao3 === undefined)
+                ) {
+                    alert(`A recuperação não pode ser acessada para o aluno ${nomeAluno}, pois nenhuma avaliação foi pontuada.`);
+                    return;
+                }
             }
 
             // Lógica de liberação gradual das avaliações
@@ -293,7 +303,6 @@ function ativarEdicaoNota() { // Função de adição e edição de notas na cé
         }
     });
 }
-
 
 // Função auxiliar para atualizar a nota e recalcular média e situação
 function atualizarNotaAluno (celula, alunoIndex, novaNota) {
