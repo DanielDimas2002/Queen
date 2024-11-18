@@ -191,7 +191,18 @@ function ativarEdicaoNota() { // Função de adição e edição de notas na cé
                 return; // Bloqueia a edição se a média não estiver definida
             }
 
-            // Se for a segunda coluna (Avaliação 2), verifica se todos os alunos possuem a nota 1 (Avaliação 1)
+            const nomeAluno = linha.cells[0].textContent.trim();
+            const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
+
+            // Bloqueia a edição da coluna de recuperação para alunos aprovados
+            if (celula.cellIndex === 5) { // Coluna Recuperação
+                if (aluno.Media >= MediaDefinida) {
+                    alert(`A recuperação não está disponível para o aluno ${nomeAluno}, pois ele foi aprovado.`);
+                    return;
+                }
+            }
+
+            // Lógica de liberação gradual das avaliações
             if (celula.cellIndex === 2) { // Avaliação 2
                 const todosAvaliaram = ListaDeAlunos.every(aluno => aluno.Avaliacao1 !== "" && aluno.Avaliacao1 !== null && aluno.Avaliacao1 !== undefined);
                 if (!todosAvaliaram) {
@@ -200,7 +211,6 @@ function ativarEdicaoNota() { // Função de adição e edição de notas na cé
                 }
             }
 
-            // Se for a terceira coluna (Avaliação 3), verifica se todos os alunos possuem a nota 2 (Avaliação 2)
             if (celula.cellIndex === 3) { // Avaliação 3
                 const todosAvaliaram = ListaDeAlunos.every(aluno => aluno.Avaliacao2 !== "" && aluno.Avaliacao2 !== null && aluno.Avaliacao2 !== undefined);
                 if (!todosAvaliaram) {
@@ -231,39 +241,9 @@ function ativarEdicaoNota() { // Função de adição e edição de notas na cé
                 // Substitui a vírgula por ponto, para permitir a entrada de notas com vírgula
                 novoValor = novoValor.replace(',', '.');
 
-                // Para as notas, valida apenas números entre 0 e 10
+                // Valida a entrada de notas
                 if ([1, 2, 3, 5].includes(celula.cellIndex)) {
                     if (!isNaN(novoValor) && novoValor !== '' && novoValor >= 0 && novoValor <= 10) {
-                        // Verifica se a nota já existe para o aluno nesta avaliação
-                        const linhaAluno = celula.closest('tr');
-                        const nomeAluno = linhaAluno.cells[0].textContent.trim();
-                        const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
-                        let notaExistente;
-
-                        switch (celula.cellIndex) {
-                            case 1: // Avaliação 1
-                                notaExistente = aluno.Avaliacao1;
-                                break;
-                            case 2: // Avaliação 2
-                                notaExistente = aluno.Avaliacao2;
-                                break;
-                            case 3: // Avaliação 3
-                                notaExistente = aluno.Avaliacao3;
-                                break;
-                            case 5: // Recuperação
-                                notaExistente = aluno.Recuperacao;
-                                break;
-                        }
-
-                        // Exibe o alerta de confirmação de substituição de nota se a nota já existir
-                        if (notaExistente !== "" && notaExistente !== null && notaExistente !== undefined) {
-                            const confirmacao = confirm(`O aluno ${nomeAluno} já possui uma nota para essa avaliação (${notaExistente}). Deseja substituir?`);
-                            if (!confirmacao) {
-                                celula.textContent = valorAtual; // Retorna o valor anterior se o usuário cancelar
-                                return;
-                            }
-                        }
-
                         // Atualiza a célula com a nova nota
                         celula.textContent = novoValor;
 
@@ -296,8 +276,7 @@ function ativarEdicaoNota() { // Função de adição e edição de notas na cé
                 } else { // Para a coluna de nome (coluna 0)
                     if (novoValor !== '') {
                         celula.textContent = novoValor;
-                        // Atualiza o nome do aluno no sistema
-                        atualizarNomeAlunoNaTabela(celula);
+                        atualizarNomeAlunoNaTabela(celula); // Função que atualiza o nome do aluno no sistema
                     } else {
                         celula.textContent = valorAtual; // Retorna o valor anterior se o nome for vazio
                         alert('O nome não pode ser vazio.');
@@ -314,7 +293,6 @@ function ativarEdicaoNota() { // Função de adição e edição de notas na cé
         }
     });
 }
-
 
 
 // Função auxiliar para atualizar a nota e recalcular média e situação
