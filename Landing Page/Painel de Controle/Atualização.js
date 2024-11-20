@@ -23,11 +23,12 @@ class Estudante {
     }
 }
 
-//Definições iniciais
-let MediaDefinida = null;
-let QuantidadeAvaliacoes = 3;
-let ListaDeAlunos = [];
-let NotaRecuperacaoDefinida = null;
+    //Definições iniciais
+    let MediaDefinida = null;
+    let QuantidadeAvaliacoes = 3;
+    let ListaDeAlunos = [];
+    let NotaRecuperacaoDefinida = null;
+    let TitulosAvaliacoes = Array(QuantidadeAvaliacoes).fill('').map((_, i) => `Avaliação ${i + 1}`);
 
 // Funções para gerar e baixar a tabela em PDF e Excel
 function baixarTabelaPDF() {
@@ -192,7 +193,6 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
 
     if (MediaDefinida !== null && novaMediaDefinida !== MediaDefinida) {
         const confirmacao = confirm(`A média atual é ${MediaDefinida}. Deseja alterar para ${novaMediaDefinida}?`);
-
         if (!confirmacao) {
             document.getElementById('inputMedia').value = MediaDefinida;
             return;
@@ -202,32 +202,40 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
     // Atualiza a média definida
     MediaDefinida = novaMediaDefinida;
 
-    // Ajusta o array de avaliações para cada aluno com base no novo número de avaliações
-    ListaDeAlunos.forEach(aluno => {
-        if (numeroDeAvaliacoes > aluno.Avaliacoes.length) {
-            // Adiciona novas avaliações em branco se o número de avaliações aumentou
-            for (let i = aluno.Avaliacoes.length; i < numeroDeAvaliacoes; i++) {
-                aluno.Avaliacoes.push(""); // Valor padrão para novas avaliações
+    // Atualiza os títulos preservando os existentes
+    if (numeroDeAvaliacoes > TitulosAvaliacoes.length) {
+        // Adiciona novos títulos se o número de avaliações aumentar
+        for (let i = TitulosAvaliacoes.length; i < numeroDeAvaliacoes; i++) {
+            TitulosAvaliacoes.push(`Avaliação ${i + 1}`);
+        }
+    } else if (numeroDeAvaliacoes < TitulosAvaliacoes.length) {
+        // Remove títulos extras se o número de avaliações diminuir
+        TitulosAvaliacoes = TitulosAvaliacoes.slice(0, numeroDeAvaliacoes);
+    }
+
+    QuantidadeAvaliacoes = numeroDeAvaliacoes;
+
+    // Atualiza a situação de todos os alunos
+    for (let aluno of ListaDeAlunos) {
+        // Ajusta o array de avaliações do aluno com base no novo número de avaliações
+        if (aluno.Avaliacoes.length > QuantidadeAvaliacoes) {
+            aluno.Avaliacoes = aluno.Avaliacoes.slice(0, QuantidadeAvaliacoes);
+        } else {
+            while (aluno.Avaliacoes.length < QuantidadeAvaliacoes) {
+                aluno.Avaliacoes.push('');
             }
-        } else if (numeroDeAvaliacoes < aluno.Avaliacoes.length) {
-            // Trunca o array se o número de avaliações diminuiu
-            aluno.Avaliacoes = aluno.Avaliacoes.slice(0, numeroDeAvaliacoes);
         }
 
-        // Recalcula a média das avaliações existentes
-        const notasValidas = aluno.Avaliacoes.filter(nota => nota !== "");
-        const mediaCalculada = notasValidas.reduce((acc, val) => acc + parseFloat(val), 0) / notasValidas.length;
-
-        aluno.Media = mediaCalculada ? mediaCalculada.toFixed(2) : "0.00";
+        // Recalcula a média do aluno
+        const mediaCalculada = aluno.Avaliacoes.filter(nota => nota !== "").reduce((acc, val) => acc + parseFloat(val), 0) / aluno.Avaliacoes.length;
+        aluno.Media = mediaCalculada.toFixed(2);
 
         // Atualiza a situação do aluno
         aluno.Situacao = mediaCalculada >= MediaDefinida ? "Aprovado" : "Reprovado";
-    });
+    }
 
-    // Atualiza o número de avaliações globalmente
-    QuantidadeAvaliacoes = numeroDeAvaliacoes;
-
-    alert(`Configurações atualizadas com sucesso: Média definida em ${MediaDefinida}, com ${QuantidadeAvaliacoes} avaliações.`);
+    alert(`A média foi definida com sucesso: ${MediaDefinida}.`);
+    document.getElementById('inputMedia').value = MediaDefinida;
 
     // Gera a tabela novamente com as novas configurações
     gerarTabelaAlunos();
@@ -235,7 +243,6 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
     // Fecha o pop-up
     fecharPopup(popupMedia);
 });
-
 
 function gerarTabelaAlunos() {
     const tabela = document.querySelector("table");
@@ -247,13 +254,16 @@ function gerarTabelaAlunos() {
     const cabecalho = document.createElement("tr");
 
     // Cabeçalho fixo
-    cabecalho.innerHTML = `
-        <th>Nome do Aluno</th>
-    `;
+    cabecalho.innerHTML = `<th>Nome do Aluno</th>`;
 
-    // Cabeçalhos das avaliações dinâmicos com base no número de avaliações
+    // Cabeçalhos das avaliações dinâmicos
     for (let i = 0; i < QuantidadeAvaliacoes; i++) {
-        cabecalho.innerHTML += `<th class="selecao editavel">Avaliação ${i + 1}</th>`;
+        const titulo = TitulosAvaliacoes[i] || `Avaliação ${i + 1}`; // Usar título ou um valor padrão
+        cabecalho.innerHTML += `
+            <th class="selecao editavel" data-titulo-index="${i}">
+                ${titulo}
+            </th>
+        `;
     }
 
     // Cabeçalho fixo para Média, Recuperação e Situação
@@ -306,7 +316,6 @@ function gerarTabelaAlunos() {
         });
     });
 }
-
 
 
 function TratamentoDeDados(nomes) { // Função para tratar os dados dos alunos
@@ -455,9 +464,7 @@ function ativarEdicaoNota() {
                 if (novoTitulo !== '') {
                     celula.textContent = novoTitulo;
 
-                    // Você pode armazenar os títulos das colunas em um array ou objeto, se necessário.
-                    // Por exemplo:
-                    TituloAvaliacoes[celula.cellIndex - 1] = novoTitulo;
+                    TitulosAvaliacoes[celula.cellIndex - 1] = novoTitulo;
                 } else {
                     celula.textContent = tituloAtual; // Restaura o valor anterior se o título for vazio
                     alert('Por favor, insira um título válido.');
