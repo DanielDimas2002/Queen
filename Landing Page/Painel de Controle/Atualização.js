@@ -297,9 +297,6 @@ function gerarTabelaAlunos() {
     });
 }
 
-// Iniciar a funcionalidade de edição na célula
-ativarEdicaoNota();
-
 
 function TratamentoDeDados(nomes) { // Função para tratar os dados dos alunos
     if (!nomes) {
@@ -357,94 +354,6 @@ FormPopUpAddAluno.addEventListener("submit", (e) => {
     fecharPopup(popupTurma);
 });
 
-function ativarEdicaoNota() { // Função de adição e edição de notas na célula
-    const tabela = document.querySelector('table');
-
-    tabela.addEventListener('click', (event) => {
-        const celula = event.target;
-        const linha = celula.closest('tr');
-
-        // Verifica se a célula clicada está na linha abaixo do cabeçalho
-        if (linha && linha.rowIndex > 0 && celula.cellIndex >= 1 && celula.cellIndex <= (QuantidadeAvaliacoes)) { // Atualizado para permitir edição dinâmica
-            // Verifica se a média foi definida
-            if (MediaDefinida === null || MediaDefinida === undefined) {
-                alert("Defina a média antes de adicionar notas!");
-                return; // Bloqueia a edição se a média não estiver definida
-            }
-
-            const nomeAluno = linha.cells[0].textContent.trim();
-            const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
-
-            // Lógica de liberação gradual das avaliações
-            if (celula.cellIndex === 1) { // Avaliação 1
-                // Não há dependências para a Avaliação 1, pode ser editada diretamente
-            } else {
-                // Verifica se todas as avaliações anteriores foram preenchidas antes de permitir a edição
-                for (let i = 1; i < celula.cellIndex; i++) {
-                    const todasAvaliacoesPreenchidas = ListaDeAlunos.every(a => a[`Avaliacao${i}`] !== "" && a[`Avaliacao${i}`] !== null);
-                    if (!todasAvaliacoesPreenchidas) {
-                        alert(`Todos os alunos precisam ter a nota da Avaliação ${i} preenchida antes de editar a Avaliação ${celula.cellIndex}!`);
-                        return;
-                    }
-                }
-            }
-
-            const valorAtual = celula.textContent.trim();
-
-            // Cria um campo de entrada dentro da célula
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.value = valorAtual;
-            input.style.width = '100%';
-
-            // Substitui o conteúdo da célula pelo campo de entrada
-            celula.textContent = '';
-            celula.appendChild(input);
-
-            // Seleciona o texto atual para facilitar a edição
-            input.select();
-
-            // Manipula o término da edição
-            input.addEventListener('blur', () => {
-                let novoValor = input.value.trim();
-
-                // Substitui a vírgula por ponto, para permitir a entrada de notas com vírgula
-                novoValor = novoValor.replace(',', '.');
-
-                // Valida a entrada de notas
-                if (celula.cellIndex >= 1 && celula.cellIndex <= QuantidadeAvaliacoes) { // Atualizado para funcionar com avaliações dinâmicas
-                    if (!isNaN(novoValor) && novoValor !== '' && novoValor >= 0 && novoValor <= 10) {
-                        // Atualiza a célula com a nova nota
-                        celula.textContent = novoValor;
-
-                        // Atualiza a propriedade do aluno com a nova nota
-                        aluno[`Avaliacao${celula.cellIndex}`] = parseFloat(novoValor);
-
-                        // Recalcula a média e atualiza a situação do aluno
-                        const notasValidas = aluno.Avaliacoes.filter(nota => !isNaN(nota));
-                        aluno.Media = (notasValidas.reduce((acc, val) => acc + val, 0) / notasValidas.length).toFixed(2);
-                        aluno.Situacao = aluno.Media >= MediaDefinida ? "Aprovado" : "Reprovado";
-
-                        // Atualiza a tabela com a nova média e situação
-                        gerarTabelaAlunos();
-                    } else {
-                        celula.textContent = valorAtual; // Retorna o valor anterior se inválido
-                        alert('Por favor, insira uma nota válida.');
-                    }
-                }
-            });
-
-            // Confirma a edição ao pressionar Enter
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    input.blur();
-                }
-            });
-        }
-    });
-}
-
-
 PopUpPontuar.addEventListener('click', () => {
     if (MediaDefinida === null || MediaDefinida === 0) {
         alert("É necessário definir uma média!");
@@ -501,6 +410,101 @@ function verificarAlunosNaTabela() {
         botaoRecuperacao.classList.add('btn-desativado');
     }
 }
+
+function ativarEdicaoNota() { 
+    const tabela = document.querySelector('table');
+
+    tabela.addEventListener('click', (event) => {
+        const celula = event.target;
+        const linha = celula.closest('tr');
+
+        // Verifica se a célula clicada está na linha abaixo do cabeçalho
+        if (linha && linha.rowIndex > 0 && celula.cellIndex >= 1 && celula.cellIndex <= QuantidadeAvaliacoes) { 
+            // Verifica se a média foi definida
+            if (MediaDefinida === null || MediaDefinida === undefined) {
+                alert("Defina a média antes de adicionar notas!");
+                return;
+            }
+
+            const nomeAluno = linha.cells[0].textContent.trim();
+            const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
+
+            // Lógica de liberação gradual das avaliações
+            if (celula.cellIndex > 1) { // Avaliações a partir da segunda
+                for (let i = 1; i < celula.cellIndex; i++) {
+                    const avaliacaoAnteriorPreenchida = aluno.Avaliacoes[i - 1];
+                    if (!avaliacaoAnteriorPreenchida && avaliacaoAnteriorPreenchida !== 0) {
+                        alert(`Preencha a Avaliação ${i} antes de editar a Avaliação ${celula.cellIndex}!`);
+                        return;
+                    }
+                }
+            }
+
+            const valorAtual = celula.textContent.trim();
+
+            // Evita múltiplas edições simultâneas
+            if (celula.querySelector('input')) return;
+
+            // Cria um campo de entrada dentro da célula
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = valorAtual;
+            input.style.width = '100%';
+
+            // Substitui o conteúdo da célula pelo campo de entrada
+            celula.textContent = '';
+            celula.appendChild(input);
+
+            // Seleciona o texto atual para facilitar a edição
+            input.select();
+
+            // Manipula o término da edição
+            input.addEventListener('blur', () => {
+                let novoValor = input.value.trim();
+
+                // Substitui a vírgula por ponto para notas com vírgula
+                novoValor = novoValor.replace(',', '.');
+
+                // Valida a entrada de notas
+                if (!isNaN(novoValor) && novoValor !== '' && novoValor >= 0 && novoValor <= 10) {
+                    // Atualiza a célula com a nova nota
+                    celula.textContent = novoValor;
+
+                    // Atualiza a propriedade do aluno com a nova nota
+                    aluno.Avaliacoes[celula.cellIndex - 1] = parseFloat(novoValor); // Índice ajustado para array
+
+                    // Recalcula a média do aluno
+                    aluno.Media = calcularMedia(aluno.Avaliacoes);
+
+                    // Atualiza a situação do aluno
+                    aluno.Situacao = aluno.Media >= MediaDefinida ? "Aprovado" : "Reprovado";
+
+                    // Atualiza a tabela inteira para refletir as mudanças
+                    gerarTabelaAlunos();
+                } else {
+                    celula.textContent = valorAtual; // Restaura o valor anterior em caso de entrada inválida
+                    alert('Por favor, insira uma nota válida entre 0 e 10.');
+                }
+            });
+
+            // Confirma a edição ao pressionar Enter
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    input.blur();
+                }
+            });
+        }
+    });
+}
+
+// Função auxiliar para calcular a média de um aluno
+function calcularMedia(avaliacoes) {
+    const notasValidas = avaliacoes.filter(nota => !isNaN(nota));
+    return (notasValidas.reduce((acc, val) => acc + val, 0) / notasValidas.length).toFixed(2);
+}
+
+ativarEdicaoNota();
+
 
 // Executa a função ao carregar a página para desativar os botões inicialmente
 window.addEventListener('load', verificarAlunosNaTabela);
