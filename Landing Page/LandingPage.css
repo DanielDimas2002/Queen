@@ -195,7 +195,10 @@ section{
 .conteudo-principal-lado-direito img {
 
     display: block;
-    margin-left: 20%;
+    width: 100%; /* Garante que a largura da imagem não ultrapasse a largura do contêiner */
+    height: auto; /* Mantém a proporção da imagem */
+    margin: 0 auto; /* Centraliza a imagem horizontalmente */
+    margin-left: auto;
     margin-right: auto;
     height: auto; /* Mantém a proporção da altura */
     max-width: none; /* Remove qualquer limitação do tamanho máximo */
@@ -218,23 +221,19 @@ section{
 
 
 .conteudo-secundario {
-    background: linear-gradient(to bottom, #ffffff9b , #ffffff,#ffffff84);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid rgba(255, 255, 255, 0.5); /* Borda suave */
-    border-radius: 20px; /* Borda arredondada */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Sombra para profundidade */
-    padding: 20px; /* Padding interno */
-    margin: 20px; /* Margem externa, ajuste conforme necessário */
-
-
+    display: flex; /* Alinha o conteúdo lado a lado */
+    align-items: center; /* Centraliza verticalmente */
+    justify-content: space-between; /* Espaçamento entre imagem e texto */
+    background: linear-gradient(to bottom, #ffffff9b, #ffffff, #ffffff84);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    margin: 20px;
+    gap: 20px; /* Espaço entre imagem e texto */
+    flex-direction: row
 }
 
-.conteudo-secundario-geral {
-    display: flex;
-    flex-direction: row;
-}
 
 .conteudo-secundario-imagem {
     width: 500px;
@@ -269,8 +268,13 @@ section{
 
 .conteudo-secundario-escrito{
     padding-top: 10%;
+    width: 55%; /* Define a largura do texto */
+    padding-left: 20px; /* Espaço entre imagem e texto */
+    text-align: left; /* Texto alinhado à direita */
 }
-
+#Funcionalidades{
+    font-size: 30px;
+}
 .container-conteudo-secundario h3{
     font-size: 30px;
     text-shadow: 1.5px 1.5px 1.5px rgba(255, 255, 255, 0.801);
