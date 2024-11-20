@@ -1,0 +1,524 @@
+class Estudante {
+    constructor(nomeAluno, numAvaliacoes = 3) {
+        this.Nome = nomeAluno;
+        this.Avaliacoes = Array(numAvaliacoes).fill(""); // Inicia com avaliações vazias
+        this.Media = ""; 
+        this.Recuperacao = ""; 
+        this.Situacao = "Reprovado"; 
+    }
+
+    calcularMedia() {
+        const notasValidas = this.Avaliacoes.filter(nota => nota !== "");
+        if (notasValidas.length > 0) {
+            this.Media = (notasValidas.reduce((acc, val) => acc + parseFloat(val), 0) / notasValidas.length).toFixed(2);
+        } else {
+            this.Media = "";
+        }
+    }
+
+    atualizarSituacao(mediaAprovacao = 7) {
+        if (this.Media !== "") {
+            this.Situacao = parseFloat(this.Media) >= mediaAprovacao ? "Aprovado" : "Reprovado";
+        }
+    }
+}
+
+//Definições iniciais
+let MediaDefinida = null;
+let QuantidadeAvaliacoes = 3;
+let ListaDeAlunos = [];
+let NotaRecuperacaoDefinida = null;
+
+// Funções para gerar e baixar a tabela em PDF e Excel
+function baixarTabelaPDF() {
+    const { jsPDF } = window.jspdf; // Acesse jsPDF
+    const doc = new jsPDF();
+    doc.text("Tabela de Alunos", 10, 10);
+
+    // Obtém a tabela HTML
+    const tabela = ('table');
+    // Converte a tabela HTML para PDF
+    doc.autoTable({ html: tabela }); // Gera o PDF com base na tabela
+
+    doc.save('Tabela_de_Alunos.pdf'); // Salva o PDF
+    popupDownload.style.display = 'none'; // Fecha o pop-up de download
+}
+
+function baixarTabelaExcel() {
+    const tabela = document.querySelector('table'); // Seleciona a tabela no DOM
+    const linhas = Array.from(tabela.rows); // Obtém as linhas da tabela
+
+    // Cria um array de arrays com os dados da tabela
+    const dados = linhas.map(linha => 
+        Array.from(linha.cells).map(celula => celula.textContent)
+    );
+
+    // Usa SheetJS para criar um arquivo XLSX
+    const ws = XLSX.utils.aoa_to_sheet(dados); // Converte o array de arrays para uma planilha
+    const wb = XLSX.utils.book_new(); // Cria um novo "livro" (workbook)
+    XLSX.utils.book_append_sheet(wb, ws, "Tabela de Alunos"); // Adiciona a planilha ao livro
+
+    // Gera e baixa o arquivo XLSX
+    XLSX.writeFile(wb, "tabela_alunos.xlsx");
+}
+
+
+
+function baixarTabelaCSV() {
+    const tabela = document.querySelector('table'); // Seleciona a tabela no HTML
+    const linhas = Array.from(tabela.rows); // Obtém todas as linhas da tabela
+    const dadosCSV = linhas.map(linha => {
+        // Para cada linha, mapeia o texto das células separadas por vírgula
+        return Array.from(linha.cells).map(celula => `"${celula.textContent}"`).join(',');
+    }).join('\n');
+
+    // Cria um blob com os dados CSV
+    const blob = new Blob([dadosCSV], { type: 'text/csv' });
+
+    // Cria o link para download
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'tabela_alunos.csv';
+    document.body.appendChild(link);
+
+    link.click(); // Aciona o download
+    document.body.removeChild(link); // Remove o link após o download
+}
+
+
+// Seleciona os elementos do formulário e inicializa a lista de alunos
+const FormGroup = document.getElementById("FormGrupo");
+const FormRecuperacao = document.getElementById("FormRecuperacao");
+const defMedia = document.querySelector("#Predefinição")
+
+// Selecionando os botões de ativação do PopUp
+const PopUpAddAluno = document.getElementById('PopUpAddAluno');
+const PopUpDefMedia = document.getElementById('PopUpDefMedia');
+const PopUpPontuar = document.getElementById('PopUpPontuar');
+const PopUpNotaRecu = document.getElementById('PopUpNotaRecu');
+const btnDownloadTabela = document.getElementById('PopUpDownloadTabela');
+
+// Selecionando os próprios modais
+const popupTurma = document.getElementById('popupTurma');
+const popupMedia = document.getElementById('popupMedia');
+const popupPontuar = document.getElementById('popupPontuar');
+const popupRecuperacaoNota = document.getElementById('popupRecuperacaoNota');
+const btnCloseDownload = document.getElementById('closeDownload');
+
+// Selecionando os formulários de dentro dos PopUp
+const FormPopUpAddAluno = document.getElementById("CadastrarAlunos");
+const FormPopUpDefMedia = document.getElementById("formMedia");
+const FormPopUpPontuar = document.getElementById("formPontuar");
+const FormPopUpNotaRecu = document.getElementById("formNotaRecu")
+const btnDownloadPDF = document.getElementById('downloadPDF');
+const btnDownloadExcel = document.getElementById('downloadExcel');
+const btnDownloadCSV = document.getElementById('downloadCSV');
+
+
+// Funcionamento do PopUp
+
+// Seleciona o overlay
+const overlay = document.createElement('div');
+overlay.classList.add('popup-overlay');
+document.body.appendChild(overlay);
+
+function abrirPopup(popup) { // Função para abrir o pop-up
+    popup.style.display = 'block';
+    overlay.style.display = 'block'; // Exibe o overlay com o desfoque
+}
+
+// Evento de clique para abrir os pop-ups
+PopUpAddAluno.addEventListener('click', () => abrirPopup(popupTurma));
+PopUpDefMedia.addEventListener('click', () => abrirPopup(popupMedia));
+
+PopUpPontuar.addEventListener('click', () => {
+    if (MediaDefinida === null || MediaDefinida === 0) {
+        alert("É necessário definir uma média!");
+    } else {
+        abrirPopup(popupPontuar);
+    }
+});
+
+PopUpNotaRecu.addEventListener('click', () => abrirPopup(popupRecuperacaoNota));
+btnDownloadTabela.addEventListener('click', () => {
+    popupDownload.style.display = 'block';
+});
+
+function fecharPopup(popup) { // Função para fechar o pop-up
+    popup.style.display = 'none';
+    overlay.style.display = 'none'; // Esconde o overlay
+}
+
+const FecharPopUp = document.querySelectorAll('.close, .fechar'); // Botões de fechar dentro dos pop-ups (selecionando pelo botão "X")
+
+FecharPopUp.forEach(btn => { // Adicionando evento de clique em cada botão de fechar
+    btn.addEventListener('click', () => {
+        const popup = btn.closest('.popup');
+        fecharPopup(popup);
+    });
+});
+
+window.addEventListener('click', (e) => { // Fecha o pop-up se clicar fora do conteúdo
+    if (e.target.classList.contains('popup')) {
+        fecharPopup(e.target);
+    }
+});
+
+// Função para fechar o pop-up de download
+btnCloseDownload.addEventListener('click', () => {
+    fecharPopup(popupDownload);
+});
+
+// Função para baixar a tabela em PDF
+btnDownloadPDF.addEventListener('click', () => {
+    baixarTabelaPDF();
+});
+
+// Função para baixar a tabela em Excel
+btnDownloadExcel.addEventListener('click', () => {
+    baixarTabelaExcel();
+});
+
+// Função para baixar a tabela em CSV
+btnDownloadCSV.addEventListener('click', () => {
+    baixarTabelaCSV();
+});
+
+// Função de definição de média e quantidade de avaliações
+FormPopUpDefMedia.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const novaMediaDefinida = parseFloat(document.getElementById('inputMedia').value);
+    const numeroDeAvaliacoes = parseInt(document.getElementById('inputNumAvaliacoes').value);
+
+    if (MediaDefinida !== null && novaMediaDefinida !== MediaDefinida) {
+        const confirmacao = confirm(`A média atual é ${MediaDefinida}. Deseja alterar para ${novaMediaDefinida}?`);
+
+        if (!confirmacao) {
+            document.getElementById('inputMedia').value = MediaDefinida;
+            return;
+        }
+    }
+
+    // Atualiza a média definida
+    MediaDefinida = novaMediaDefinida;
+
+    // Atualiza o número de avaliações
+    QuantidadeAvaliacoes = numeroDeAvaliacoes;
+
+    // Atualiza a situação de todos os alunos
+    for (let aluno of ListaDeAlunos) {
+        // Calcula a média das avaliações de forma dinâmica
+        const mediaCalculada = aluno.Avaliacoes.filter(nota => nota !== "").reduce((acc, val) => acc + parseFloat(val), 0) / aluno.Avaliacoes.length;
+        
+        aluno.Media = mediaCalculada.toFixed(2);
+
+        // Atualiza a situação do aluno
+        aluno.Situacao = mediaCalculada >= MediaDefinida ? "Aprovado" : "Reprovado";
+    }
+
+    alert(`A média foi definida com sucesso: ${MediaDefinida}.`);
+    document.getElementById('inputMedia').value = MediaDefinida;
+
+    // Gera a tabela novamente com as novas configurações
+    gerarTabelaAlunos();
+
+    // Fecha o pop-up
+    fecharPopup(popupMedia);
+});
+
+function gerarTabelaAlunos() {
+    const tabela = document.querySelector("table");
+
+    // Limpa o conteúdo atual da tabela
+    tabela.innerHTML = "";
+
+    // Cria o cabeçalho da tabela
+    const cabecalho = document.createElement("tr");
+
+    // Cabeçalho fixo
+    cabecalho.innerHTML = `
+        <th>Nome do Aluno</th>
+    `;
+
+    // Cabeçalhos das avaliações dinâmicos com base no número de avaliações
+    for (let i = 0; i < QuantidadeAvaliacoes; i++) {
+        cabecalho.innerHTML += `<th>Avaliação ${i + 1}</th>`;
+    }
+
+    // Cabeçalho fixo para Média, Recuperação e Situação
+    cabecalho.innerHTML += `
+        <th>Média</th>
+        <th>Recuperação</th>
+        <th>Situação</th>
+        <th>Ações</th>
+    `;
+
+    tabela.appendChild(cabecalho);
+
+    // Ordena a lista de alunos em ordem alfabética pelo nome
+    ListaDeAlunos.sort((a, b) => a.Nome.localeCompare(b.Nome));
+
+    // Adiciona cada aluno na tabela
+    ListaDeAlunos.forEach((aluno, index) => {
+        const linha = document.createElement("tr");
+
+        // Adiciona o nome do aluno
+        linha.innerHTML = `<td class="selecao"><span class="material-symbols-outlined"></span> <span class="nome-aluno">${aluno.Nome}</span></td>`;
+
+        // Adiciona as avaliações dinâmicas, se houver avaliações suficientes
+        for (let i = 0; i < QuantidadeAvaliacoes; i++) {
+            const avaliacao = aluno.Avaliacoes[i] || ''; // Caso não haja avaliação, deixa em branco
+            linha.innerHTML += `<td class="selecao"><span class="material-symbols-outlined"></span> ${avaliacao}</td>`;
+        }
+
+        // Adiciona as colunas de Média, Recuperação e Situação
+        linha.innerHTML += `
+            <td>${aluno.Media}</td>
+            <td class="selecao"><span class="material-symbols-outlined"></span> ${aluno.Recuperacao}</td>
+            <td>${aluno.Situacao}</td>
+            <td>
+                <button class="btn-excluir" data-index="${index}" title="Excluir">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </td>
+        `;
+
+        tabela.appendChild(linha);
+    });
+
+    // Adiciona evento de clique para excluir o aluno
+    document.querySelectorAll('.btn-excluir').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const index = e.target.closest('button').getAttribute('data-index');
+            excluirAluno(index);
+        });
+    });
+}
+
+
+
+function TratamentoDeDados(nomes) { // Função para tratar os dados dos alunos
+    if (!nomes) {
+        alert("A lista de nomes está vazia.");
+        return [];
+    }
+
+    // Separa os nomes por vírgula e remove espaços extras
+    const nomesTratados = nomes.split(",").map(nome => nome.trim());
+
+    // Função para converter a primeira letra de cada palavra em maiúscula
+    const capitalizarNome = nome =>
+        nome.split(" ").map(parte => parte.charAt(0).toUpperCase() + parte.slice(1).toLowerCase()).join(" ");
+
+    // Encontra os nomes sem sobrenome
+    const nomesIncompletos = nomesTratados.filter(nome => nome.split(" ").length === 1);
+
+    if (nomesIncompletos.length > 0) {
+        // Lista quais nomes estão incompletos
+        alert(`Por favor, informe o nome completo dos seguintes alunos: ${nomesIncompletos.join(", ")}`);
+        return []; // Retorna uma lista vazia se houver algum problema com os nomes
+    }
+
+    // Capitaliza e retorna os nomes válidos
+    const nomesValidos = nomesTratados.map(capitalizarNome);
+    return nomesValidos;
+}
+
+
+// Função para adição de alunos
+FormPopUpAddAluno.addEventListener("submit", (e) => {
+    e.preventDefault(); // Impede o comportamento padrão de envio do formulário
+
+    // Obtém o valor do campo de texto do formulário de cadastro de novos alunos
+    const nomesAlunos = document.getElementById("inputNomesTurma").value;
+
+    // Trata os dados dos alunos
+    const nomesTratados = TratamentoDeDados(nomesAlunos);
+
+    // Adiciona os alunos à lista
+    for (let i = 0; i < nomesTratados.length; i++) {
+        const aluno = new Estudante(nomesTratados[i]);
+        ListaDeAlunos.push(aluno);
+    }
+
+    // Classifica o conjunto de nomes em ordem alfabética
+    ListaDeAlunos.sort((a, b) => a.Nome.localeCompare(b.Nome)); // Assumindo que a classe Estudante tem um atributo 'nome'
+
+    // Limpa o campo de texto após a submissão do formulário
+    document.getElementById("inputNomesTurma").value = "";
+
+    // Atualiza a tabela de alunos
+    gerarTabelaAlunos();
+
+    fecharPopup(popupTurma);
+});
+
+function ativarEdicaoNota() { // Função de adição e edição de notas na célula
+    const tabela = document.querySelector('table');
+
+    tabela.addEventListener('click', (event) => {
+        const celula = event.target;
+        const linha = celula.closest('tr');
+
+        // Verifica se a célula clicada está na linha abaixo do cabeçalho
+        if (linha && linha.rowIndex > 0 && celula.cellIndex > 0) {
+            const nomeAluno = linha.cells[0].textContent.trim();
+            const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
+
+            // Verifica se a média foi definida
+            if (MediaDefinida === null || MediaDefinida === undefined) {
+                alert("Defina a média antes de adicionar notas!");
+                return; // Bloqueia a edição se a média não estiver definida
+            }
+
+            // Verifica se a célula está na coluna de recuperação
+            if (celula.cellIndex === aluno.Avaliacoes.length + 1) { // Coluna Recuperação (última coluna)
+                if (aluno.Media >= MediaDefinida) {
+                    alert(`A recuperação não está disponível para o aluno ${nomeAluno}, pois ele foi aprovado.`);
+                    return;
+                }
+
+                // Impede acesso à recuperação se nenhuma avaliação foi pontuada
+                if (aluno.Avaliacoes.some(av => av === null || av === "" || av === undefined)) {
+                    alert(`A recuperação não pode ser acessada para o aluno ${nomeAluno}, pois algumas avaliações não foram pontuadas.`);
+                    return;
+                }
+            }
+
+            // Lógica para liberar edições de avaliações progressivamente
+            for (let i = 0; i < aluno.Avaliacoes.length; i++) {
+                if (celula.cellIndex === i + 1) { // Avaliações 1, 2, 3, ..., N
+                    const todosAvaliaram = ListaDeAlunos.every(a => a.Avaliacoes[i] !== null && a.Avaliacoes[i] !== "" && a.Avaliacoes[i] !== undefined);
+                    if (!todosAvaliaram) {
+                        alert(`Todos os alunos precisam ter a nota da Avaliação ${i + 1} preenchida antes de editar a Avaliação ${i + 2}!`);
+                        return; // Bloqueia a edição se a avaliação anterior não foi preenchida
+                    }
+                }
+            }
+
+            const valorAtual = celula.textContent.trim();
+
+            // Cria um campo de entrada dentro da célula
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = valorAtual;
+            input.style.width = '100%';
+
+            // Substitui o conteúdo da célula pelo campo de entrada
+            celula.textContent = '';
+            celula.appendChild(input);
+
+            // Seleciona o texto atual para facilitar a edição
+            input.select();
+
+            // Manipula o término da edição
+            input.addEventListener('blur', () => {
+                let novoValor = input.value.trim();
+
+                // Substitui a vírgula por ponto, para permitir a entrada de notas com vírgula
+                novoValor = novoValor.replace(',', '.');
+
+                // Valida a entrada de notas (para todas as avaliações e recuperação)
+                if (!isNaN(novoValor) && novoValor !== '' && novoValor >= 0 && novoValor <= 10) {
+                    // Atualiza a célula com a nova nota
+                    celula.textContent = novoValor;
+
+                    // Atualiza a propriedade do aluno com a nova nota
+                    if (celula.cellIndex <= aluno.Avaliacoes.length) {
+                        aluno.Avaliacoes[celula.cellIndex - 1] = parseFloat(novoValor);
+                    } else if (celula.cellIndex === aluno.Avaliacoes.length + 1) { // Para a coluna de Recuperação
+                        aluno.Recuperacao = parseFloat(novoValor);
+                    }
+
+                    // Recalcula a média e atualiza a situação do aluno
+                    aluno.Media = aluno.Avaliacoes.filter(av => av !== null && av !== "").reduce((sum, av) => sum + av, 0) / aluno.Avaliacoes.length;
+                    aluno.Situacao = aluno.Media >= MediaDefinida ? "Aprovado" : "Reprovado";
+
+                    // Atualiza a tabela com a nova média e situação
+                    gerarTabelaAlunos();
+                } else {
+                    celula.textContent = valorAtual; // Retorna o valor anterior se inválido
+                    alert('Por favor, insira uma nota válida.');
+                }
+            });
+
+            // Confirma a edição ao pressionar Enter
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    input.blur();
+                }
+            });
+        }
+    });
+}
+
+PopUpPontuar.addEventListener('click', () => {
+    if (MediaDefinida === null || MediaDefinida === 0) {
+        alert("É necessário definir uma média!");
+    } else {
+        abrirPopup(popupPontuar);
+    }
+});
+
+// Função para verificar se há alunos na tabela e ativar/desativar botões
+function verificarAlunosNaTabela() {
+    const tabela = document.querySelector('table');
+    const numeroDeAlunos = ListaDeAlunos.length; // Utiliza ListaDeAlunos para verificar o número de alunos
+
+    // Seleciona os botões do menu que precisam ser restritos
+    const botoesRestritos = [
+        document.getElementById('PopUpDefMedia'),
+        document.getElementById('PopUpPontuar'),
+        document.getElementById('PopUpNotaRecu'),
+        document.getElementById('PopUpDownloadTabela')
+    ];
+
+    // Habilita ou desabilita os botões conforme o número de alunos
+    botoesRestritos.forEach(botao => {
+        if (numeroDeAlunos > 0) {
+            botao.disabled = false;
+            botao.classList.remove('btn-desativado'); // Remove o estilo de desativado
+        } else {
+            botao.disabled = true;
+            botao.classList.add('btn-desativado'); // Adiciona o estilo de desativado
+        }
+    });
+
+    // Verifica se há avaliações configuradas para os alunos e habilita/desabilita o botão de pontuação
+    const botaoPontuar = document.getElementById('PopUpPontuar');
+    const todasAvaliacoesDefinidas = ListaDeAlunos.every(aluno => aluno.Avaliacoes.length > 0); // Verifica se todos os alunos possuem avaliações
+
+    if (todasAvaliacoesDefinidas) {
+        botaoPontuar.disabled = false;
+        botaoPontuar.classList.remove('btn-desativado');
+    } else {
+        botaoPontuar.disabled = true;
+        botaoPontuar.classList.add('btn-desativado');
+    }
+
+    // Verifica se as colunas de recuperação precisam ser habilitadas
+    const botaoRecuperacao = document.getElementById('PopUpNotaRecu');
+    const algumaRecuperacaoDisponivel = ListaDeAlunos.some(aluno => aluno.Media < MediaDefinida && aluno.Avaliacoes.every(av => av !== null && av !== "" && av !== undefined)); // Verifica se algum aluno precisa de recuperação
+
+    if (algumaRecuperacaoDisponivel) {
+        botaoRecuperacao.disabled = false;
+        botaoRecuperacao.classList.remove('btn-desativado');
+    } else {
+        botaoRecuperacao.disabled = true;
+        botaoRecuperacao.classList.add('btn-desativado');
+    }
+}
+
+// Executa a função ao carregar a página para desativar os botões inicialmente
+window.addEventListener('load', verificarAlunosNaTabela);
+
+// Atualiza a verificação toda vez que um aluno é adicionado
+document.getElementById('CadastrarAlunos').addEventListener('submit', function(event) {
+    event.preventDefault(); // Previne o comportamento padrão de envio de formulário
+
+    // Código para adicionar o aluno na tabela aqui...
+
+    // Verifica novamente se há alunos na tabela
+    verificarAlunosNaTabela();
+});
