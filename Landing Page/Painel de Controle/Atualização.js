@@ -243,7 +243,7 @@ function gerarTabelaAlunos() {
 
     // Cabeçalhos das avaliações dinâmicos com base no número de avaliações
     for (let i = 0; i < QuantidadeAvaliacoes; i++) {
-        cabecalho.innerHTML += `<th>Avaliação ${i + 1}</th>`;
+        cabecalho.innerHTML += `<th class="selecao editavel">Avaliação ${i + 1}</th>`;
     }
 
     // Cabeçalho fixo para Média, Recuperação e Situação
@@ -296,6 +296,7 @@ function gerarTabelaAlunos() {
         });
     });
 }
+
 
 
 function TratamentoDeDados(nomes) { // Função para tratar os dados dos alunos
@@ -418,9 +419,54 @@ function ativarEdicaoNota() {
         const celula = event.target;
         const linha = celula.closest('tr');
 
-        // Verifica se a célula clicada está na linha abaixo do cabeçalho
+        // Editar os títulos das atividades no cabeçalho
+        if (linha && linha.rowIndex === 0 && celula.cellIndex >= 1 && celula.cellIndex <= QuantidadeAvaliacoes) {
+            // Evita múltiplas edições simultâneas
+            if (celula.querySelector('input')) return;
+
+            const tituloAtual = celula.textContent.trim();
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = tituloAtual;
+            input.style.width = '100%';
+
+            // Substitui o conteúdo da célula pelo campo de entrada
+            celula.textContent = '';
+            celula.appendChild(input);
+
+            // Seleciona o texto atual para facilitar a edição
+            input.select();
+
+            // Manipula o término da edição
+            input.addEventListener('blur', () => {
+                const novoTitulo = input.value.trim();
+
+                if (novoTitulo !== '') {
+                    celula.textContent = novoTitulo;
+
+                    // Você pode armazenar os títulos das colunas em um array ou objeto, se necessário.
+                    // Por exemplo:
+                    TituloAvaliacoes[celula.cellIndex - 1] = novoTitulo;
+                } else {
+                    celula.textContent = tituloAtual; // Restaura o valor anterior se o título for vazio
+                    alert('Por favor, insira um título válido.');
+                }
+            });
+
+            // Confirma a edição ao pressionar Enter
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    input.blur();
+                }
+            });
+
+            return; // Interrompe aqui para evitar outras ações
+        }
+
+        // Editar nome de aluno ou nota (restante do código)
         if (linha && linha.rowIndex > 0) {
-            // Se a célula clicada for a do nome (primeira coluna), permite editar o nome do aluno
+            // Editar nome do aluno
             if (celula.cellIndex === 0) {
                 const nomeAluno = linha.cells[0].textContent.trim();
                 const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
@@ -433,41 +479,34 @@ function ativarEdicaoNota() {
                 input.value = nomeAluno;
                 input.style.width = '100%';
 
-                // Substitui o conteúdo da célula pelo campo de entrada
                 celula.textContent = '';
                 celula.appendChild(input);
-
-                // Seleciona o texto atual para facilitar a edição
                 input.select();
 
-                // Manipula o término da edição
                 input.addEventListener('blur', () => {
-                    let novoNome = input.value.trim();
+                    const novoNome = input.value.trim();
 
-                    // Atualiza o nome do aluno
                     if (novoNome !== '') {
                         celula.textContent = novoNome;
                         aluno.Nome = novoNome;
-
-                        // Atualiza a tabela de alunos
                         gerarTabelaAlunos();
                     } else {
-                        celula.textContent = nomeAluno; // Restaura o valor anterior se o nome for vazio
+                        celula.textContent = nomeAluno;
                         alert('Por favor, insira um nome válido.');
                     }
                 });
 
-                // Confirma a edição ao pressionar Enter
                 input.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') {
                         input.blur();
                     }
                 });
+
+                return;
             }
 
-            // Se a célula clicada for de nota, permite editar a nota
+            // Editar notas
             if (celula.cellIndex >= 1 && celula.cellIndex <= QuantidadeAvaliacoes) { 
-                // Verifica se a média foi definida
                 if (MediaDefinida === null || MediaDefinida === undefined) {
                     alert("Configure as pré-definições antes de adicionar notas!");
                     return;
@@ -476,8 +515,7 @@ function ativarEdicaoNota() {
                 const nomeAluno = linha.cells[0].textContent.trim();
                 const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
 
-                // Lógica de liberação gradual das avaliações
-                if (celula.cellIndex > 1) { // Avaliações a partir da segunda
+                if (celula.cellIndex > 1) { 
                     for (let i = 1; i < celula.cellIndex; i++) {
                         const avaliacaoAnteriorPreenchida = aluno.Avaliacoes[i - 1];
                         if (!avaliacaoAnteriorPreenchida && avaliacaoAnteriorPreenchida !== 0) {
@@ -489,52 +527,34 @@ function ativarEdicaoNota() {
 
                 const valorAtual = celula.textContent.trim();
 
-                // Evita múltiplas edições simultâneas
                 if (celula.querySelector('input')) return;
 
-                // Cria um campo de entrada dentro da célula
                 const input = document.createElement('input');
                 input.type = 'text';
                 input.value = valorAtual;
                 input.style.width = '100%';
 
-                // Substitui o conteúdo da célula pelo campo de entrada
                 celula.textContent = '';
                 celula.appendChild(input);
-
-                // Seleciona o texto atual para facilitar a edição
                 input.select();
 
-                // Manipula o término da edição
                 input.addEventListener('blur', () => {
                     let novoValor = input.value.trim();
 
-                    // Substitui a vírgula por ponto para notas com vírgula
                     novoValor = novoValor.replace(',', '.');
 
-                    // Valida a entrada de notas
                     if (!isNaN(novoValor) && novoValor !== '' && novoValor >= 0 && novoValor <= 10) {
-                        // Atualiza a célula com a nova nota
                         celula.textContent = novoValor;
-
-                        // Atualiza a propriedade do aluno com a nova nota
-                        aluno.Avaliacoes[celula.cellIndex - 1] = parseFloat(novoValor); // Índice ajustado para array
-
-                        // Recalcula a média do aluno
+                        aluno.Avaliacoes[celula.cellIndex - 1] = parseFloat(novoValor);
                         aluno.Media = calcularMedia(aluno.Avaliacoes);
-
-                        // Atualiza a situação do aluno
                         aluno.Situacao = aluno.Media >= MediaDefinida ? "Aprovado" : "Reprovado";
-
-                        // Atualiza a tabela inteira para refletir as mudanças
                         gerarTabelaAlunos();
                     } else {
-                        celula.textContent = valorAtual; // Restaura o valor anterior em caso de entrada inválida
+                        celula.textContent = valorAtual;
                         alert('Por favor, insira uma nota válida entre 0 e 10.');
                     }
                 });
 
-                // Confirma a edição ao pressionar Enter
                 input.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') {
                         input.blur();
