@@ -184,7 +184,6 @@ btnDownloadCSV.addEventListener('click', () => {
     baixarTabelaCSV();
 });
 
-// Função de definição de média e quantidade de avaliações
 FormPopUpDefMedia.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -203,22 +202,32 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
     // Atualiza a média definida
     MediaDefinida = novaMediaDefinida;
 
-    // Atualiza o número de avaliações
-    QuantidadeAvaliacoes = numeroDeAvaliacoes;
+    // Ajusta o array de avaliações para cada aluno com base no novo número de avaliações
+    ListaDeAlunos.forEach(aluno => {
+        if (numeroDeAvaliacoes > aluno.Avaliacoes.length) {
+            // Adiciona novas avaliações em branco se o número de avaliações aumentou
+            for (let i = aluno.Avaliacoes.length; i < numeroDeAvaliacoes; i++) {
+                aluno.Avaliacoes.push(""); // Valor padrão para novas avaliações
+            }
+        } else if (numeroDeAvaliacoes < aluno.Avaliacoes.length) {
+            // Trunca o array se o número de avaliações diminuiu
+            aluno.Avaliacoes = aluno.Avaliacoes.slice(0, numeroDeAvaliacoes);
+        }
 
-    // Atualiza a situação de todos os alunos
-    for (let aluno of ListaDeAlunos) {
-        // Calcula a média das avaliações de forma dinâmica
-        const mediaCalculada = aluno.Avaliacoes.filter(nota => nota !== "").reduce((acc, val) => acc + parseFloat(val), 0) / aluno.Avaliacoes.length;
-        
-        aluno.Media = mediaCalculada.toFixed(2);
+        // Recalcula a média das avaliações existentes
+        const notasValidas = aluno.Avaliacoes.filter(nota => nota !== "");
+        const mediaCalculada = notasValidas.reduce((acc, val) => acc + parseFloat(val), 0) / notasValidas.length;
+
+        aluno.Media = mediaCalculada ? mediaCalculada.toFixed(2) : "0.00";
 
         // Atualiza a situação do aluno
         aluno.Situacao = mediaCalculada >= MediaDefinida ? "Aprovado" : "Reprovado";
-    }
+    });
 
-    alert(`A média foi definida com sucesso: ${MediaDefinida}.`);
-    document.getElementById('inputMedia').value = MediaDefinida;
+    // Atualiza o número de avaliações globalmente
+    QuantidadeAvaliacoes = numeroDeAvaliacoes;
+
+    alert(`Configurações atualizadas com sucesso: Média definida em ${MediaDefinida}, com ${QuantidadeAvaliacoes} avaliações.`);
 
     // Gera a tabela novamente com as novas configurações
     gerarTabelaAlunos();
@@ -226,6 +235,7 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
     // Fecha o pop-up
     fecharPopup(popupMedia);
 });
+
 
 function gerarTabelaAlunos() {
     const tabela = document.querySelector("table");
