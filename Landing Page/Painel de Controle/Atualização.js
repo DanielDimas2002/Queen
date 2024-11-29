@@ -189,8 +189,6 @@ btnDownloadCSV.addEventListener('click', () => {
 
 //Funções gerais
 
-
-
 FormPopUpDefMedia.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -221,6 +219,9 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
 
     QuantidadeAvaliacoes = numeroDeAvaliacoes;
 
+    // Adiciona o alerta para o número de avaliações
+    alert(`O número de avaliações foi definido como ${QuantidadeAvaliacoes}.`);
+
     // Atualiza a situação de todos os alunos
     for (let aluno of ListaDeAlunos) {
         // Ajusta o array de avaliações do aluno com base no novo número de avaliações
@@ -249,6 +250,7 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
     // Fecha o pop-up
     fecharPopup(popupMedia);
 });
+
 
 function gerarTabelaAlunos() {
     const tabela = document.querySelector("table");
@@ -409,7 +411,7 @@ formNotaRecu.addEventListener('submit', (e) => {
 // Função para verificar se há alunos na tabela e ativar/desativar botões
 function verificarAlunosNaTabela() {
     const tabela = document.querySelector('table');
-    const numeroDeAlunos = ListaDeAlunos.length; // Utiliza ListaDeAlunos para verificar o número de alunos
+    const numeroDeAlunos = ListaDeAlunos.length; // Usa ListaDeAlunos para contar o número de alunos
 
     // Seleciona os botões do menu que precisam ser restritos
     const botoesRestritos = [
@@ -430,9 +432,9 @@ function verificarAlunosNaTabela() {
         }
     });
 
-    // Verifica se há avaliações configuradas para os alunos e habilita/desabilita o botão de pontuação
+    // Verifica se todos os alunos possuem o número correto de avaliações
     const botaoPontuar = document.getElementById('PopUpPontuar');
-    const todasAvaliacoesDefinidas = ListaDeAlunos.every(aluno => aluno.Avaliacoes.length > 0); // Verifica se todos os alunos possuem avaliações
+    const todasAvaliacoesDefinidas = ListaDeAlunos.every(aluno => aluno.Avaliacoes.length === QuantidadeAvaliacoes); // Verifica se todos os alunos têm o número correto de avaliações
 
     if (todasAvaliacoesDefinidas) {
         botaoPontuar.disabled = false;
@@ -442,7 +444,7 @@ function verificarAlunosNaTabela() {
         botaoPontuar.classList.add('btn-desativado');
     }
 
-    // Verifica se as colunas de recuperação precisam ser habilitadas
+    // Verifica se algum aluno precisa de recuperação (se a média dele é menor que a média definida)
     const botaoRecuperacao = document.getElementById('PopUpNotaRecu');
     const algumaRecuperacaoDisponivel = ListaDeAlunos.some(aluno => aluno.Media < MediaDefinida && aluno.Avaliacoes.every(av => av !== null && av !== "" && av !== undefined)); // Verifica se algum aluno precisa de recuperação
 
@@ -454,6 +456,8 @@ function verificarAlunosNaTabela() {
         botaoRecuperacao.classList.add('btn-desativado');
     }
 }
+
+
 
 function ativarEdicaoNota() { 
     const tabela = document.querySelector('table');
@@ -487,8 +491,7 @@ function ativarEdicaoNota() {
 
                 if (novoTitulo !== '') {
                     celula.textContent = novoTitulo;
-
-                    TitulosAvaliacoes[celula.cellIndex - 1] = novoTitulo;
+                    TitulosAvaliacoes[celula.cellIndex - 1] = novoTitulo; // Atualiza a lista de títulos
                 } else {
                     celula.textContent = tituloAtual; // Restaura o valor anterior se o título for vazio
                     alert('Por favor, insira um título válido.');
@@ -586,10 +589,10 @@ function ativarEdicaoNota() {
 
                     if (!isNaN(novoValor) && novoValor !== '' && novoValor >= 0 && novoValor <= 10) {
                         celula.textContent = novoValor;
-                        aluno.Avaliacoes[celula.cellIndex - 1] = parseFloat(novoValor);
-                        aluno.Media = calcularMedia(aluno.Avaliacoes);
-                        aluno.Situacao = aluno.Media >= MediaDefinida ? "Aprovado" : "Reprovado";
-                        gerarTabelaAlunos();
+                        aluno.Avaliacoes[celula.cellIndex - 1] = parseFloat(novoValor); // Atualiza a nota na lista de avaliações
+                        aluno.Media = calcularMedia(aluno.Avaliacoes); // Recalcula a média
+                        aluno.Situacao = aluno.Media >= MediaDefinida ? "Aprovado" : "Reprovado"; // Atualiza a situação
+                        gerarTabelaAlunos(); // Atualiza a tabela com as novas informações
                     } else {
                         celula.textContent = valorAtual;
                         alert('Por favor, insira uma nota válida entre 0 e 10.');
@@ -605,7 +608,6 @@ function ativarEdicaoNota() {
         }
     });
 }
-
 
 // Função auxiliar para calcular a média de um aluno
 function calcularMedia(avaliacoes) {
