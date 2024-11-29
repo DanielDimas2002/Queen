@@ -185,6 +185,12 @@ btnDownloadCSV.addEventListener('click', () => {
     baixarTabelaCSV();
 });
 
+//Fim do Funcionamento do PopUp
+
+//Funções gerais
+
+
+
 FormPopUpDefMedia.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -317,6 +323,15 @@ function gerarTabelaAlunos() {
     });
 }
 
+// Função para excluir aluno da lista
+function excluirAluno(index) {
+    const aluno = ListaDeAlunos[index];
+    if (confirm(`Tem certeza que deseja excluir o aluno ${aluno.Nome}?`)) {
+        ListaDeAlunos.splice(index, 1); // Remove o aluno da lista
+        gerarTabelaAlunos(); // Atualiza a tabela após a exclusão
+        alert(`Aluno ${aluno.Nome} excluído com sucesso.`);
+    }
+}
 
 function TratamentoDeDados(nomes) { // Função para tratar os dados dos alunos
     if (!nomes) {
@@ -380,6 +395,15 @@ PopUpPontuar.addEventListener('click', () => {
     } else {
         abrirPopup(popupPontuar);
     }
+});
+
+formNotaRecu.addEventListener('submit', (e) => {
+    e.preventDefault(); // Impede o envio padrão do formulário
+
+    NotaRecuperacaoDefinida = parseFloat(document.getElementById('inputRecuperacao').value); // Salva a nota na variável global
+    alert("Nota de recuperação definida: " + NotaRecuperacaoDefinida);
+    popupRecuperacaoNota.style.display = 'none'; // Fecha o pop-up
+    document.querySelector('.popup-overlay').style.display = 'none';
 });
 
 // Função para verificar se há alunos na tabela e ativar/desativar botões
