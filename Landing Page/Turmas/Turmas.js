@@ -33,10 +33,11 @@ function formatDate(date) {
 }
 
 // Função para criar um card de turma com link
-function addClassCard(disciplina, turma, turno, dataInicial, dataFinal) {
+function addClassCard(disciplina, turma, turno, dataInicial, dataFinal, turmaId) {
     // Criar o link que envolverá o card
     const cardLink = document.createElement("a");
-    cardLink.href = "../Painel de Controle/Painel.html"; // Caminho relativo para o arquivo Painel.html
+    cardLink.href = `../Painel de Controle/Painel.html?id=${turmaId}`;
+ // Inclui o ID da turma na URL
     cardLink.classList.add("card-link");
     cardLink.style.textDecoration = "none"; // Remover a decoração padrão de links
 
@@ -79,6 +80,7 @@ function addClassCard(disciplina, turma, turno, dataInicial, dataFinal) {
     // Adicionar o card linkado no container
     cardContainer.appendChild(cardLink);
 }
+
 
 
 // Função para reabrir o pop-up com as informações da turma para edição
@@ -159,32 +161,31 @@ document.addEventListener('DOMContentLoaded', fectchAndDisplayTurmas);
 async function fectchAndDisplayTurmas() {
     const token = localStorage.getItem('token');
 
-    try{
+    try {
         const response = await fetch('http://localhost:3000/turmas', {
             method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
+            headers: { 'Authorization': `Bearer ${token}` }
         });
 
-        if(response.ok){
+        if (response.ok) {
             const turmas = await response.json();
             turmas.forEach(turma => {
-                addClassCard(turma.disciplina, turma.turma, turma.turno, turma.dataInicial, turma.dataFinal);
-
+                if (!turma.id) {
+                    console.error('Turma sem ID:', turma); // Log de erro
+                    return; // Pula essa turma
+                }
+                addClassCard(turma.disciplina, turma.turma, turma.turno, turma.dataInicial, turma.dataFinal, turma.id);
             });
-        }else{
+        } else {
             const errorData = await response.json();
             alert('Erro ao carregar turmas: ' + errorData.message);
         }
-
-    }catch (error){
+    } catch (error) {
         console.error('Erro ao buscar turmas!', error);
         alert('Erro ao carregar turmas, tente novamente mais tarde.');
     }
-
-
 }
+
 
 // Função para acessar dados protegidos
 const fetchProtectedData = async () => {

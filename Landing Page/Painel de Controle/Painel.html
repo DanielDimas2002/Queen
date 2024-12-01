@@ -166,6 +166,26 @@
         menuToggle.addEventListener('click', () => {
             menu.classList.toggle('menu-ativo'); // Alterna entre mostrar e esconder o menu
         });
+
+
+        // Função para capturar o parâmetro 'id' da URL
+        function getTurmaIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id'); // Retorna o valor do parâmetro 'id'
+        }
+
+        // Recuperar o ID da turma
+        const turmaId = getTurmaIdFromUrl();
+
+        if (!turmaId) {
+            alert('ID da turma não encontrado!');
+            // Redirecione ou tome uma ação apropriada
+        } else {
+            console.log('ID da turma:', turmaId);
+            // Aqui você pode usar o ID para buscar mais dados
+        }
+
+
     </script>
 
     <!--<script src="versao17.js"></script>Inclui o arquivo JavaScript -->

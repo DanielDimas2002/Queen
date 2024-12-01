@@ -167,8 +167,20 @@ app.get('/turmas', async (req, res) => {
     }
 });
 
+app.get('/turmas/:id', async (req, res) => {
+    const { id } = req.params;
 
-    
+    try {
+        const turma = await db.query('SELECT * FROM turmas WHERE id = ?', [id]);
+        if (turma.length === 0) {
+            return res.status(404).json({ message: 'Turma não encontrada.' });
+        }
+        res.json(turma[0]);
+    } catch (error) {
+        console.error('Erro ao buscar turma:', error);
+        res.status(500).json({ message: 'Erro ao buscar turma.' });
+    }
+});
 
 
     app.listen(3000, () => console.log('Servidor rodando na porta 3000'));
