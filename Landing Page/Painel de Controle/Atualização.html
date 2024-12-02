@@ -94,23 +94,25 @@
         </div>
     </div>
 
-    <!-- Modal Definir Média e Quantidade de Avaliações -->
-<div id="popupMedia" class="popup">
-    <div class="popup-content">
-        <span class="fechar">&times;</span>
-        <h2>Definir Média e Número de Avaliações</h2>
-        <form id="formMedia">
-            <label for="inputMedia">Informe a média necessária para aprovação:</label>
-            <input type="number" id="inputMedia" required class="camposEntrada">
-            
-            <label for="inputNumAvaliacoes">Informe o número de avaliações:</label>
-            <input type="number" id="inputNumAvaliacoes" min="1" required class="camposEntrada">
-            
-            <button type="submit" class="btnEnvio">Salvar</button>
-        </form>
+    <!-- Modal Definir Média, Quantidade de Avaliações e Nota de Recuperação -->
+    <div id="popupMedia" class="popup">
+        <div class="popup-content">
+            <h2>Definir Predefinições</h2>
+            <form id="formMedia">
+                <label for="media">Definir Média:</label>
+                <input type="number" id="inputMedia" name="media" step="0.01" placeholder="Ex: 7.0" required />
+    
+                <label for="qtdAtividades">Quantidade de Atividades:</label>
+                <input type="number" id="inputNumAvaliacoes" name="qtdAtividades" min="1" placeholder="Ex: 3" required />
+    
+                <label for="notaRecuperacao">Nota para Recuperação:</label>
+                <input type="number" id="notaRecuperacao" name="notaRecuperacao" step="0.01" placeholder="Ex: 5.0" required />
+    
+                <button type="submit">Salvar</button>
+            </form>
+            <button id="closeMedia" class="close">Fechar</button>
+        </div>
     </div>
-</div>
-
 
     <!-- Modal Pontuar Atividades -->
     <div id="popupPontuar" class="popup">

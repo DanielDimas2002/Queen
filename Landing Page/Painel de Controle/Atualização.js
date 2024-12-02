@@ -23,7 +23,7 @@ class Estudante {
     }
 }
 
-    //Definições iniciais
+    //Definições iniciais(Variáveis globais)
     let MediaDefinida = null;
     let QuantidadeAvaliacoes = 3;
     let ListaDeAlunos = [];
@@ -102,8 +102,6 @@ const btnDownloadTabela = document.getElementById('PopUpDownloadTabela');
 const popupTurma = document.getElementById('popupTurma');
 const popupMedia = document.getElementById('popupMedia');
 const popupPontuar = document.getElementById('popupPontuar');
-const popupRecuperacaoNota = document.getElementById('popupRecuperacaoNota');
-const btnCloseDownload = document.getElementById('closeDownload');
 
 // Selecionando os formulários de dentro dos PopUp
 const FormPopUpAddAluno = document.getElementById("CadastrarAlunos");
@@ -158,10 +156,7 @@ window.addEventListener('click', (e) => { // Fecha o pop-up se clicar fora do co
     }
 });
 
-// Função para fechar o pop-up de download
-btnCloseDownload.addEventListener('click', () => {
-    fecharPopup(popupDownload);
-});
+
 
 // Função para baixar a tabela em PDF
 btnDownloadPDF.addEventListener('click', () => {
@@ -187,7 +182,9 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
 
     const novaMediaDefinida = parseFloat(document.getElementById('inputMedia').value);
     const numeroDeAvaliacoes = parseInt(document.getElementById('inputNumAvaliacoes').value);
+    const novaNotaRecuperacao = parseFloat(document.getElementById('notaRecuperacao').value);
 
+    // Confirmação para alterar a média
     if (MediaDefinida !== null && novaMediaDefinida !== MediaDefinida) {
         const confirmacao = confirm(`A média atual é ${MediaDefinida}. Deseja alterar para ${novaMediaDefinida}?`);
         if (!confirmacao) {
@@ -196,8 +193,20 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
         }
     }
 
+    // Confirmação para alterar a nota de recuperação
+    if (NotaRecuperacaoDefinida !== undefined && novaNotaRecuperacao !== NotaRecuperacaoDefinida) {
+        const confirmacaoRecu = confirm(`A nota de recuperação atual é ${NotaRecuperacaoDefinida}. Deseja alterar para ${novaNotaRecuperacao}?`);
+        if (!confirmacaoRecu) {
+            document.getElementById('notaRecuperacao').value = NotaRecuperacaoDefinida;
+            return;
+        }
+    }
+
     // Atualiza a média definida
     MediaDefinida = novaMediaDefinida;
+
+    // Atualiza a nota de recuperação
+    NotaRecuperacaoDefinida = novaNotaRecuperacao;
 
     // Atualiza os títulos preservando os existentes
     if (numeroDeAvaliacoes > TitulosAvaliacoes.length) {
@@ -212,7 +221,7 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
 
     QuantidadeAvaliacoes = numeroDeAvaliacoes;
 
-    // Adiciona o alerta para o número de avaliações
+    // Alerta para o número de avaliações
     alert(`O número de avaliações foi definido como ${QuantidadeAvaliacoes}.`);
 
     // Atualiza a situação de todos os alunos
@@ -227,7 +236,9 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
         }
 
         // Recalcula a média do aluno
-        const mediaCalculada = aluno.Avaliacoes.filter(nota => nota !== "").reduce((acc, val) => acc + parseFloat(val), 0) / aluno.Avaliacoes.length;
+        const mediaCalculada = aluno.Avaliacoes
+            .filter(nota => nota !== "")
+            .reduce((acc, val) => acc + parseFloat(val), 0) / aluno.Avaliacoes.length;
         aluno.Media = mediaCalculada.toFixed(2);
 
         // Atualiza a situação do aluno
@@ -235,7 +246,9 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
     }
 
     alert(`A média foi definida com sucesso: ${MediaDefinida}.`);
+    alert(`A nota de recuperação foi definida com sucesso: ${NotaRecuperacaoDefinida}.`);
     document.getElementById('inputMedia').value = MediaDefinida;
+    document.getElementById('notaRecuperacao').value = NotaRecuperacaoDefinida;
 
     // Gera a tabela novamente com as novas configurações
     gerarTabelaAlunos();
@@ -243,6 +256,7 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
     // Fecha o pop-up
     fecharPopup(popupMedia);
 });
+
 
 
 function gerarTabelaAlunos() {
@@ -428,8 +442,6 @@ function verificarAlunosNaTabela() {
         botaoPontuar.classList.add('btn-desativado');
     }
 }
-
-
 
 function ativarEdicaoNota() { 
     const tabela = document.querySelector('table');
