@@ -96,7 +96,6 @@ const defMedia = document.querySelector("#Predefinição")
 const PopUpAddAluno = document.getElementById('PopUpAddAluno');
 const PopUpDefMedia = document.getElementById('PopUpDefMedia');
 const PopUpPontuar = document.getElementById('PopUpPontuar');
-const PopUpNotaRecu = document.getElementById('PopUpNotaRecu');
 const btnDownloadTabela = document.getElementById('PopUpDownloadTabela');
 
 // Selecionando os próprios modais
@@ -110,7 +109,6 @@ const btnCloseDownload = document.getElementById('closeDownload');
 const FormPopUpAddAluno = document.getElementById("CadastrarAlunos");
 const FormPopUpDefMedia = document.getElementById("formMedia");
 const FormPopUpPontuar = document.getElementById("formPontuar");
-const FormPopUpNotaRecu = document.getElementById("formNotaRecu")
 const btnDownloadPDF = document.getElementById('downloadPDF');
 const btnDownloadExcel = document.getElementById('downloadExcel');
 const btnDownloadCSV = document.getElementById('downloadCSV');
@@ -138,11 +136,6 @@ PopUpPontuar.addEventListener('click', () => {
     } else {
         abrirPopup(popupPontuar);
     }
-});
-
-PopUpNotaRecu.addEventListener('click', () => abrirPopup(popupRecuperacaoNota));
-btnDownloadTabela.addEventListener('click', () => {
-    popupDownload.style.display = 'block';
 });
 
 function fecharPopup(popup) { // Função para fechar o pop-up
@@ -399,14 +392,6 @@ PopUpPontuar.addEventListener('click', () => {
     }
 });
 
-formNotaRecu.addEventListener('submit', (e) => {
-    e.preventDefault(); // Impede o envio padrão do formulário
-
-    NotaRecuperacaoDefinida = parseFloat(document.getElementById('inputRecuperacao').value); // Salva a nota na variável global
-    alert("Nota de recuperação definida: " + NotaRecuperacaoDefinida);
-    popupRecuperacaoNota.style.display = 'none'; // Fecha o pop-up
-    document.querySelector('.popup-overlay').style.display = 'none';
-});
 
 // Função para verificar se há alunos na tabela e ativar/desativar botões
 function verificarAlunosNaTabela() {
@@ -417,7 +402,6 @@ function verificarAlunosNaTabela() {
     const botoesRestritos = [
         document.getElementById('PopUpDefMedia'),
         document.getElementById('PopUpPontuar'),
-        document.getElementById('PopUpNotaRecu'),
         document.getElementById('PopUpDownloadTabela')
     ];
 
@@ -442,18 +426,6 @@ function verificarAlunosNaTabela() {
     } else {
         botaoPontuar.disabled = true;
         botaoPontuar.classList.add('btn-desativado');
-    }
-
-    // Verifica se algum aluno precisa de recuperação (se a média dele é menor que a média definida)
-    const botaoRecuperacao = document.getElementById('PopUpNotaRecu');
-    const algumaRecuperacaoDisponivel = ListaDeAlunos.some(aluno => aluno.Media < MediaDefinida && aluno.Avaliacoes.every(av => av !== null && av !== "" && av !== undefined)); // Verifica se algum aluno precisa de recuperação
-
-    if (algumaRecuperacaoDisponivel) {
-        botaoRecuperacao.disabled = false;
-        botaoRecuperacao.classList.remove('btn-desativado');
-    } else {
-        botaoRecuperacao.disabled = true;
-        botaoRecuperacao.classList.add('btn-desativado');
     }
 }
 
