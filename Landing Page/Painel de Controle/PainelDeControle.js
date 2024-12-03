@@ -655,11 +655,40 @@ function verificarAlunosNaTabela() {
 window.addEventListener('load', verificarAlunosNaTabela);
 
 // Atualiza a verificação toda vez que um aluno é adicionado
-document.getElementById('CadastrarAlunos').addEventListener('submit', function(event) {
-    event.preventDefault(); // Previne o comportamento padrão de envio de formulário
+document.getElementById('CadastrarAlunos').addEventListener('submit', async (e) => {
+    e.preventDefault(); // Impede o recarregamento da página
 
-    // Código para adicionar o aluno na tabela aqui...
+    const nome = document.getElementById('NomeAluno').value;
 
-    // Verifica novamente se há alunos na tabela
-    verificarAlunosNaTabela();
+    // Obtendo o ID da turma da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const turmaId = urlParams.get('id'); // Captura o ID da turma
+
+    if (!turmaId) {
+        alert('ID da turma não encontrado na URL.');
+        return;
+    }
+
+    console.log({nome, turmaId});
+
+    try {
+        const response = await fetch('http://localhost:3000/alunos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ nome, turmaId }), // Envia o nome do aluno e o ID da turma
+        });
+
+        if (response.ok) {
+            alert('Aluno cadastrado com sucesso!');
+            document.getElementById('CadastrarAlunos').reset(); // Limpa o formulário
+        } else {
+            const error = await response.json();
+            alert('Erro ao cadastrar aluno: ' + error.message);
+        }
+    } catch (error) {
+        console.error('Erro ao cadastrar aluno:', error);
+        alert('Erro ao salvar aluno, tente novamente mais tarde.');
+    }
 });
