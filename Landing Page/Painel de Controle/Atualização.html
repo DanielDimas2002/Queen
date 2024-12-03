@@ -114,27 +114,24 @@
         </div>
     </div>
 
-    <!-- Modal Pontuar Atividades -->
-    <div id="popupPontuar" class="popup">
-        <div class="popup-content">
-            <span class="close" id="closePontuar">&times;</span>
-            <h2>Pontuar Atividades</h2>
-            <form id="formPontuar">
-                <p>Nome dos Alunos: <input type="text" id="NomesAlunos" class="camposEntrada"></p>
-                <p>Nota dos Alunos: <input type="text" id="NotaAluno" class="camposEntrada"></p>
-                <p>Defina a avaliação:</p>
-                <p>
-                    <input type="radio" value="Avaliação1" id="Av1" name="LocalAv" required>
-                    <label for="Av1">Avaliação 1</label>
-                    <input type="radio" value="Avaliação2" id="Av2" name="LocalAv" required>
-                    <label for="Av2">Avaliação 2</label>
-                    <input type="radio" value="Avaliação3" id="Av3" name="LocalAv" required>
-                    <label for="Av3">Avaliação 3</label>
-                </p>
-                <input type="submit" value="Pontuar" class="btnEnvio">
-            </form>
-        </div>
+<!-- Modal Pontuar Atividades -->
+<div id="popupPontuar" class="popup">
+    <div class="popup-content">
+        <span class="close" id="closePontuar">&times;</span>
+        <h2>Pontuar Atividades</h2>
+        <form id="formPontuar">
+            <p>Nome dos Alunos: <input type="text" id="NomesAlunos" class="camposEntrada" placeholder="Digite o nome" required></p>
+            <p>Nota dos Alunos: <input type="number" id="NotaAluno" class="camposEntrada" placeholder="Digite a nota" required></p>
+            <p>Defina a avaliação:</p>
+            <p>
+                <select id="avaliacoesDropdown" class="camposEntrada" required>
+                    <!-- As opções serão preenchidas dinamicamente -->
+                </select>
+            </p>
+            <input type="submit" value="Pontuar" class="btnEnvio">
+        </form>
     </div>
+</div>
 
     <!-- Modal Download -->
     <div id="popupDownload" class="popup">

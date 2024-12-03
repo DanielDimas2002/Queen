@@ -88,7 +88,7 @@ function baixarTabelaCSV() {
 // Seleciona os elementos do formulário e inicializa a lista de alunos
 const FormGroup = document.getElementById("FormGrupo");
 const FormRecuperacao = document.getElementById("FormRecuperacao");
-const defMedia = document.querySelector("#Predefinição")
+const defMedia = document.querySelector("#Predefinição");
 
 // Selecionando os botões de ativação do PopUp
 const PopUpAddAluno = document.getElementById('PopUpAddAluno');
@@ -129,6 +129,7 @@ PopUpPontuar.addEventListener('click', () => {
     if (MediaDefinida === null || MediaDefinida === 0) {
         alert("É necessário definir uma média!");
     } else {
+        atualizarDropdownAvaliacoes(); // Atualiza o dropdown antes de abrir o pop-up
         abrirPopup(popupPontuar);
     }
 });
@@ -168,9 +169,11 @@ btnDownloadCSV.addEventListener('click', () => {
     baixarTabelaCSV();
 });
 
-//Fim do Funcionamento do PopUp
+// Fim do Funcionamento do PopUp
+
 
 //Funções gerais
+
 
 FormPopUpDefMedia.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -378,6 +381,114 @@ PopUpPontuar.addEventListener('click', () => {
     } else {
         abrirPopup(popupPontuar);
     }
+});
+
+
+function atualizarDropdownAvaliacoes () {
+    const dropdown = document.getElementById('avaliacoesDropdown');
+    dropdown.innerHTML = ''; // Limpa o conteúdo atual
+
+    TitulosAvaliacoes.forEach((titulo, index) => {
+        const option = document.createElement('option');
+        option.value = index; // Índice da avaliação
+        option.textContent = titulo; // Nome da avaliação
+        dropdown.appendChild(option);
+    });
+};
+
+
+// Função para pontuação de alunos em grupo
+FormPopUpPontuar.addEventListener("submit", (e) => {
+    e.preventDefault(); // Evita o comportamento padrão de envio do formulário
+
+    // Captura os valores do pop-up
+    const nomesAlunos = document.getElementById('NomesAlunos').value.trim(); // Campo de nomes
+    let nota = document.getElementById('NotaAluno').value.trim(); // Campo de nota (ainda como string)
+    const avaliacaoSelecionadaIndex = document.getElementById('avaliacoesDropdown').value; // Valor do índice selecionado no drop-down
+
+    // Substitui a vírgula por ponto para garantir a consistência
+    nota = nota.replace(',', '.');
+
+    // Validação dos campos
+    if (!nomesAlunos) {
+        alert("Por favor, insira pelo menos um nome.");
+        return;
+    }
+
+    if (!nota || isNaN(nota) || parseFloat(nota) < 0 || parseFloat(nota) > 10) {
+        alert("Por favor, insira uma nota válida entre 0 e 10.");
+        return;
+    }
+
+    if (avaliacaoSelecionadaIndex === "") {
+        alert("Por favor, selecione uma avaliação.");
+        return;
+    }
+
+    // Trata os dados dos alunos
+    const nomesTratados = TratamentoDeDados(nomesAlunos);
+
+    if (nomesTratados.length === 0) {
+        alert("Por favor, informe pelo menos um nome de aluno.");
+        return;
+    }
+
+    let alteracaoConfirmada = true; // Variável para controle de sobrescrição de notas
+
+    // Verifica se todos os alunos têm a nota pontuada para a avaliação anterior
+    if (avaliacaoSelecionadaIndex > 0) { // Se não for a primeira avaliação
+        const indexAnterior = avaliacaoSelecionadaIndex - 1; // Índice da avaliação anterior
+        const alunosSemNotaAnterior = ListaDeAlunos.filter(a => 
+            a.Avaliacoes[indexAnterior] === "" || 
+            a.Avaliacoes[indexAnterior] === null || 
+            a.Avaliacoes[indexAnterior] === undefined
+        );
+
+        if (alunosSemNotaAnterior.length > 0) {
+            alert(`A avaliação ${TitulosAvaliacoes[avaliacaoSelecionadaIndex]} só pode ser pontuada depois que todos os alunos tiverem uma nota em ${TitulosAvaliacoes[indexAnterior]}.`);
+            return;
+        }
+    }
+
+    // Atualiza as notas dos alunos
+    nomesTratados.forEach(nomeAluno => {
+        const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
+
+        if (!aluno) {
+            alert(`Aluno ${nomeAluno} não encontrado.`);
+            return;
+        }
+
+        // Verifica se a nota já foi lançada e pede confirmação
+        const notaExistente = aluno.Avaliacoes[avaliacaoSelecionadaIndex];
+
+        // Modificação: Verifica se a nota existente é uma string vazia, null ou undefined
+        if (notaExistente !== "" && notaExistente !== null && notaExistente !== undefined) {
+            alteracaoConfirmada = confirm(`O aluno ${nomeAluno} já possui uma nota para ${TitulosAvaliacoes[avaliacaoSelecionadaIndex]} (${notaExistente}). Deseja sobrescrevê-la?`);
+        }
+
+        if (!alteracaoConfirmada) return; // Caso o professor cancele a confirmação, interrompe o processo
+
+        // Atribui a nota à avaliação correspondente
+        aluno.Avaliacoes[avaliacaoSelecionadaIndex] = parseFloat(nota);
+
+        // Calcula a média do aluno
+        const totalNotas = aluno.Avaliacoes.reduce((acc, val) => acc + (val || 0), 0);
+        const quantidadeNotas = aluno.Avaliacoes.filter(n => n !== undefined && n !== null).length;
+        aluno.Media = (totalNotas / quantidadeNotas).toFixed(2);
+
+        // Atualiza a situação do aluno com base na média definida
+        aluno.Situacao = aluno.Media >= MediaDefinida ? "Aprovado" : "Reprovado";
+    });
+
+    // Atualiza a tabela de alunos
+    gerarTabelaAlunos();
+
+    // Exibe o alerta de sucesso
+    alert("As notas foram distribuídas com sucesso!");
+
+    // Fecha o pop-up após o sucesso
+    fecharPopup(popupPontuar);
 });
 
 
