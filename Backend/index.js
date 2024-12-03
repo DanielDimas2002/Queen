@@ -183,6 +183,33 @@ app.get('/turmas/:id', async (req, res) => {
 });
 
 
+app.post('/alunos', async (req, res) => {
+    const { nome, turmaId } = req.body;
+
+    // Validações básicas
+    if (!nome || !turmaId) {
+        return res.status(400).json({ message: 'Nome e ID da turma são obrigatórios!' });
+    }
+
+    try {
+        // Verifica se a turma existe
+        const turma = await Turma.findByPk(turmaId);
+        if (!turma) {
+            return res.status(404).json({ message: 'Turma não encontrada!' });
+        }
+
+        // Cria o aluno e associa à turma
+        const aluno = await Aluno.create({ nome });
+        await turma.addAluno(aluno); // Associa o aluno à turma
+
+        res.status(201).json({ message: 'Aluno cadastrado com sucesso!', aluno });
+    } catch (error) {
+        console.error('Erro ao cadastrar aluno:', error);
+        res.status(500).json({ message: 'Erro interno ao salvar aluno.' });
+    }
+});
+
+
     app.listen(3000, () => console.log('Servidor rodando na porta 3000'));
 
 })();
