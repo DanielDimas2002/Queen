@@ -255,24 +255,29 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
     fecharPopup(popupMedia);
 });
 
-function gerarTabelaAlunos() { // Gerar a tabela HTML 
+function gerarTabelaAlunos() { 
     const tabela = document.querySelector("table");
 
     // Limpa o conteúdo atual da tabela
     tabela.innerHTML = "";
 
-    // Cria o cabeçalho da tabela
+    // Cria o cabeçalho da tabela dinamicamente
     const cabecalho = document.createElement("tr");
-    cabecalho.innerHTML = `
-        <th>Nome do Aluno</th>
-        <th>Avaliação 1</th>
-        <th>Avaliação 2</th>
-        <th>Avaliação 3</th>
+    let cabecalhoHTML = `<th>Nome do Aluno</th>`;
+
+    // Adiciona os títulos das avaliações ao cabeçalho
+    for (let i = 0; i < QuantidadeAvaliacoes; i++) {
+        cabecalhoHTML += `<th>${TitulosAvaliacoes[i]}</th>`;
+    }
+
+    // Adiciona os títulos fixos (Média, Recuperação, Situação, Ações)
+    cabecalhoHTML += `
         <th>Média</th>
         <th>Recuperação</th>
         <th>Situação</th>
         <th>Ações</th>
     `;
+    cabecalho.innerHTML = cabecalhoHTML;
     tabela.appendChild(cabecalho);
 
     // Ordena a lista de alunos em ordem alfabética pelo nome
@@ -281,10 +286,20 @@ function gerarTabelaAlunos() { // Gerar a tabela HTML
     // Adiciona cada aluno na tabela
     ListaDeAlunos.forEach((aluno, index) => {
         const linha = document.createElement("tr");
-        linha.innerHTML = `<td class="selecao"><span class="material-symbols-outlined"></span> <span class="nome-aluno">${aluno.Nome}</span></td>
-            <td class="selecao" contenteditable="true" data-avaliacao="1"><span class="material-symbols-outlined"></span> ${aluno.Avaliacao1 || ''}</td>
-            <td class="selecao" contenteditable="true" data-avaliacao="2"><span class="material-symbols-outlined"></span> ${aluno.Avaliacao2 || ''}</td>
-            <td class="selecao" contenteditable="true" data-avaliacao="3"><span class="material-symbols-outlined"></span> ${aluno.Avaliacao3 || ''}</td>
+        let linhaHTML = `<td class="selecao">
+            <span class="material-symbols-outlined"></span>
+            <span class="nome-aluno">${aluno.Nome}</span>
+        </td>`;
+
+        // Adiciona as avaliações do aluno dinamicamente
+        for (let i = 0; i < QuantidadeAvaliacoes; i++) {
+            linhaHTML += `<td class="selecao" contenteditable="true" data-avaliacao="${i + 1}">
+                <span class="material-symbols-outlined"></span> ${aluno.Avaliacoes[i] || ''}
+            </td>`;
+        }
+
+        // Adiciona os campos fixos (Média, Recuperação, Situação, Ações)
+        linhaHTML += `
             <td>${aluno.Media}</td>
             <td class="selecao" contenteditable="true" data-recuperacao="true">
                 <span class="material-symbols-outlined"></span> ${aluno.Recuperacao || ''}
@@ -294,7 +309,9 @@ function gerarTabelaAlunos() { // Gerar a tabela HTML
                 <button class="btn-excluir" data-index="${index}" title="Excluir">
                     <i class="fas fa-trash-alt"></i>
                 </button>
-            </td>`;
+            </td>
+        `;
+        linha.innerHTML = linhaHTML;
         tabela.appendChild(linha);
     });
 
@@ -306,8 +323,6 @@ function gerarTabelaAlunos() { // Gerar a tabela HTML
         });
     });
 }
-  
-
 
 // Função para excluir aluno da lista
 function excluirAluno(index) {
