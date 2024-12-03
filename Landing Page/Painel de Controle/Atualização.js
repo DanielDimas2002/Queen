@@ -63,8 +63,6 @@ function baixarTabelaExcel() {
     XLSX.writeFile(wb, "tabela_alunos.xlsx");
 }
 
-
-
 function baixarTabelaCSV() {
     const tabela = document.querySelector('table'); // Seleciona a tabela no HTML
     const linhas = Array.from(tabela.rows); // Obtém todas as linhas da tabela
@@ -111,7 +109,6 @@ const btnDownloadPDF = document.getElementById('downloadPDF');
 const btnDownloadExcel = document.getElementById('downloadExcel');
 const btnDownloadCSV = document.getElementById('downloadCSV');
 
-
 // Funcionamento do PopUp
 
 // Seleciona o overlay
@@ -155,8 +152,6 @@ window.addEventListener('click', (e) => { // Fecha o pop-up se clicar fora do co
         fecharPopup(e.target);
     }
 });
-
-
 
 // Função para baixar a tabela em PDF
 btnDownloadPDF.addEventListener('click', () => {
@@ -257,9 +252,7 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
     fecharPopup(popupMedia);
 });
 
-
-
-function gerarTabelaAlunos() {
+function gerarTabelaAlunos() { // Gerar a tabela HTML 
     const tabela = document.querySelector("table");
 
     // Limpa o conteúdo atual da tabela
@@ -267,28 +260,16 @@ function gerarTabelaAlunos() {
 
     // Cria o cabeçalho da tabela
     const cabecalho = document.createElement("tr");
-
-    // Cabeçalho fixo
-    cabecalho.innerHTML = `<th>Nome do Aluno</th>`;
-
-    // Cabeçalhos das avaliações dinâmicos
-    for (let i = 0; i < QuantidadeAvaliacoes; i++) {
-        const titulo = TitulosAvaliacoes[i] || `Avaliação ${i + 1}`; // Usar título ou um valor padrão
-        cabecalho.innerHTML += `
-            <th class="selecao editavel" data-titulo-index="${i}">
-                ${titulo}
-            </th>
-        `;
-    }
-
-    // Cabeçalho fixo para Média, Recuperação e Situação
-    cabecalho.innerHTML += `
+    cabecalho.innerHTML = `
+        <th>Nome do Aluno</th>
+        <th>Avaliação 1</th>
+        <th>Avaliação 2</th>
+        <th>Avaliação 3</th>
         <th>Média</th>
         <th>Recuperação</th>
         <th>Situação</th>
         <th>Ações</th>
     `;
-
     tabela.appendChild(cabecalho);
 
     // Ordena a lista de alunos em ordem alfabética pelo nome
@@ -297,29 +278,20 @@ function gerarTabelaAlunos() {
     // Adiciona cada aluno na tabela
     ListaDeAlunos.forEach((aluno, index) => {
         const linha = document.createElement("tr");
-
-        // Adiciona o nome do aluno
-        linha.innerHTML = `<td class="selecao"><span class="material-symbols-outlined"></span> <span class="nome-aluno">${aluno.Nome}</span></td>`;
-
-        // Adiciona as avaliações dinâmicas, se houver avaliações suficientes
-        for (let i = 0; i < QuantidadeAvaliacoes; i++) {
-            const avaliacao = aluno.Avaliacoes[i] || ''; // Caso não haja avaliação, deixa em branco
-            // Adiciona a classe 'editavel' para as células de avaliações
-            linha.innerHTML += `<td class="selecao editavel" data-avaliacao-index="${i}"><span class="material-symbols-outlined"></span> ${avaliacao}</td>`;
-        }
-
-        // Adiciona as colunas de Média, Recuperação e Situação
-        linha.innerHTML += `
+        linha.innerHTML = `<td class="selecao"><span class="material-symbols-outlined"></span> <span class="nome-aluno">${aluno.Nome}</span></td>
+            <td class="selecao" contenteditable="true" data-avaliacao="1"><span class="material-symbols-outlined"></span> ${aluno.Avaliacao1 || ''}</td>
+            <td class="selecao" contenteditable="true" data-avaliacao="2"><span class="material-symbols-outlined"></span> ${aluno.Avaliacao2 || ''}</td>
+            <td class="selecao" contenteditable="true" data-avaliacao="3"><span class="material-symbols-outlined"></span> ${aluno.Avaliacao3 || ''}</td>
             <td>${aluno.Media}</td>
-            <td class="selecao"><span class="material-symbols-outlined"></span> ${aluno.Recuperacao}</td>
+            <td class="selecao" contenteditable="true" data-recuperacao="true">
+                <span class="material-symbols-outlined"></span> ${aluno.Recuperacao || ''}
+            </td>
             <td>${aluno.Situacao}</td>
             <td>
                 <button class="btn-excluir" data-index="${index}" title="Excluir">
                     <i class="fas fa-trash-alt"></i>
                 </button>
-            </td>
-        `;
-
+            </td>`;
         tabela.appendChild(linha);
     });
 
@@ -331,6 +303,8 @@ function gerarTabelaAlunos() {
         });
     });
 }
+  
+
 
 // Função para excluir aluno da lista
 function excluirAluno(index) {

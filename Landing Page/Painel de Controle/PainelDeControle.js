@@ -304,6 +304,9 @@ function ativarEdicaoNota() { // Função de adição e edição de notas na cé
     });
 }
 
+// Iniciar a funcionalidade de edição na célula
+ativarEdicaoNota();
+
 // Função auxiliar para atualizar a nota e recalcular média e situação
 function atualizarNotaAluno (celula, alunoIndex, novaNota) {
     const aluno = ListaDeAlunos[alunoIndex];
@@ -325,9 +328,6 @@ function atualizarNotaAluno (celula, alunoIndex, novaNota) {
     aluno.Situacao = aluno.Media >= MediaDefinida ? "Aprovado" : "Reprovado";
     gerarTabelaAlunos(); // Atualiza a tabela para refletir mudanças
 };
-
-// Iniciar a funcionalidade de edição na célula
-ativarEdicaoNota();
 
 function gerarTabelaAlunos() { // Gerar a tabela HTML 
     const tabela = document.querySelector("table");
