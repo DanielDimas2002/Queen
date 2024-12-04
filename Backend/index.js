@@ -186,7 +186,6 @@ app.get('/turmas/:id', async (req, res) => {
 app.post('/alunos', async (req, res) => {
     const { nome, turmaId } = req.body;
 
-    // Validações básicas
     if (!nome || !turmaId) {
         return res.status(400).json({ message: 'Nome e ID da turma são obrigatórios!' });
     }
@@ -198,16 +197,53 @@ app.post('/alunos', async (req, res) => {
             return res.status(404).json({ message: 'Turma não encontrada!' });
         }
 
-        // Cria o aluno e associa à turma
-        const aluno = await Aluno.create({ nome });
-        await turma.addAluno(aluno); // Associa o aluno à turma
+        // Cria o aluno já associado à turma
+        const aluno = await Aluno.create({ nome, turma_id: turmaId });
 
-        res.status(201).json({ message: 'Aluno cadastrado com sucesso!', aluno });
+        // Cria um boletim associado ao aluno
+        const boletim = await Boletim.create({
+            nota1: 0, // Valores iniciais podem ser definidos aqui
+            nota2: 0,
+            nota3: 0,
+            media: 0,
+            situacao: 'Pendente', // Status inicial
+            aluno_id: aluno.id, // Associa o boletim ao aluno recém-criado
+        });
+
+        res.status(201).json({
+            message: 'Aluno cadastrado com sucesso e boletim criado!',
+            aluno,
+            boletim,
+        });
     } catch (error) {
-        console.error('Erro ao cadastrar aluno:', error);
-        res.status(500).json({ message: 'Erro interno ao salvar aluno.' });
+        console.error('Erro ao cadastrar aluno e criar boletim:', error);
+        res.status(500).json({ message: 'Erro interno ao salvar aluno e boletim.' });
     }
 });
+
+app.get('/turmas/:turmaId/alunos', async (req, res) => {
+    const { turmaId } = req.params;
+
+    try {
+        // Busca os alunos da turma com seus boletins associados
+        const alunos = await Aluno.findAll({
+            where: { turma_id: turmaId },
+            include: {
+                model: Boletim, // Inclui os boletins associados
+                attributes: ['nota1', 'nota2', 'nota3', 'media', 'situacao'],
+            },
+        });
+
+        res.status(200).json(alunos);
+    } catch (error) {
+        console.error('Erro ao buscar alunos:', error);
+        res.status(500).json({ message: 'Erro interno ao buscar alunos.' });
+    }
+});
+
+
+
+
 
 
     app.listen(3000, () => console.log('Servidor rodando na porta 3000'));

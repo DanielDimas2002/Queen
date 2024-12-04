@@ -692,3 +692,47 @@ document.getElementById('CadastrarAlunos').addEventListener('submit', async (e) 
         alert('Erro ao salvar aluno, tente novamente mais tarde.');
     }
 });
+
+async function carregarAlunos() {
+    // Obtendo o ID da turma da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const turmaId = urlParams.get('id');
+
+    if (!turmaId) {
+        alert('ID da turma não encontrado na URL.');
+        return;
+    }
+
+    try {
+        const response = await fetch(`http://localhost:3000/turmas/${turmaId}/alunos`);
+        if (!response.ok) {
+            throw new Error('Erro ao buscar alunos.');
+        }
+
+        const alunos = await response.json();
+        const tabela = document.getElementById('TabelaAlunos');
+        const tbody = tabela.querySelector('tbody');
+        tbody.innerHTML = ''; // Limpa a tabela
+
+        // Renderiza os alunos e seus boletins
+        alunos.forEach(aluno => {
+            const boletim = aluno.boletim || {}; // Pode ser vazio caso o aluno não tenha boletim
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${aluno.nome}</td>
+                <td>${boletim.nota1 || '-'}</td>
+                <td>${boletim.nota2 || '-'}</td>
+                <td>${boletim.nota3 || '-'}</td>
+                <td>${boletim.media || '-'}</td>
+                <td>${boletim.situacao || '-'}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch (error) {
+        console.error('Erro ao carregar alunos:', error);
+        alert('Erro ao carregar alunos. Tente novamente mais tarde.');
+    }
+}
+
+// Chama a função quando a página é carregada
+window.onload = carregarAlunos;

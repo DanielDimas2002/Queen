@@ -8,8 +8,8 @@ const Aluno = database.define('aluno', {
         allowNull: false,
     },
 });
-Aluno.belongsToMany(Turma, { through: 'AlunoTurma', foreignKey: 'aluno_id'});
-Turma.belongsToMany(Aluno, { through: 'AlunoTurma', foreignKey: 'turma_id'})
 
+Aluno.belongsTo(Turma, { foreignKey: 'turma_id', onDelete: 'CASCADE' }); // Associa o aluno a uma turma
+Turma.hasMany(Aluno, { foreignKey: 'turma_id' }); // Uma turma pode ter vários alunos
 
 module.exports = Aluno;
