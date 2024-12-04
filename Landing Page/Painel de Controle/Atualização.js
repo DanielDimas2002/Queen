@@ -678,8 +678,16 @@ function ativarEdicaoNota() {
                     if (!isNaN(novoValor) && novoValor !== '' && novoValor >= 0 && novoValor <= 10) {
                         celula.textContent = novoValor;
                         aluno.Recuperacao = parseFloat(novoValor); // Atualiza a nota de recuperação
-                        aluno.Media = calcularMedia(aluno.Avaliacoes, aluno.Recuperacao); // Recalcula a média incluindo recuperação
-                        aluno.Situacao = aluno.Media >= MediaDefinida ? "Aprovado" : "Reprovado"; // Atualiza a situação
+                        aluno.Media = calcularMedia(aluno.Avaliacoes.concat(aluno.Recuperacao)); // Recalcula a média incluindo recuperação
+                        
+                        // Aprovado se a recuperação for suficiente
+                        if (aluno.Recuperacao >= NotaRecuperacaoDefinida) {
+                            aluno.Situacao = "Aprovado";
+                        // Permanece reprovado se a nota de recuperação for insuficiente
+                        } else {
+                            aluno.Situacao = "Reprovado"; 
+                        }
+
                         gerarTabelaAlunos(); // Atualiza a tabela com as novas informações
                     } else {
                         celula.textContent = valorAtual;
@@ -697,13 +705,14 @@ function ativarEdicaoNota() {
             }
         }
     });
-}
+} 
 
 // Função auxiliar para calcular a média de um aluno
 function calcularMedia(avaliacoes) {
     const notasValidas = avaliacoes.filter(nota => !isNaN(nota));
     return (notasValidas.reduce((acc, val) => acc + val, 0) / notasValidas.length).toFixed(2);
 }
+
 
 ativarEdicaoNota();
 
