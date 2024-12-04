@@ -111,6 +111,26 @@ const btnDownloadCSV = document.getElementById('downloadCSV');
 
 // Funcionamento do PopUp
 
+function abrirPopupLimparNotas(index) {
+    const aluno = ListaDeAlunos[index];
+
+    // Mostra o pop-up
+    const popup = document.getElementById("popupLimparNotas");
+    popup.style.display = "block";
+
+    // Adiciona os eventos de limpar notas
+    document.getElementById("limparNotasAluno").onclick = () => {
+        limparNotasAluno(aluno); // Passa o aluno selecionado
+        fecharPopup(popup);
+    };
+
+    document.getElementById("limparTodasNotas").onclick = () => {
+        limparTodasNotas();
+        fecharPopup(popup);
+    };
+}
+
+
 // Seleciona o overlay
 const overlay = document.createElement('div');
 overlay.classList.add('popup-overlay');
@@ -171,10 +191,31 @@ btnDownloadCSV.addEventListener('click', () => {
 
 // Fim do Funcionamento do PopUp
 
-
 //Funções gerais
 
+// Limpar as notas do aluno atual
+function limparNotasAluno(aluno) {
+    aluno.Avaliacoes = Array(QuantidadeAvaliacoes).fill(''); // Zera as notas
+    aluno.Media = '';
+    aluno.Situacao = 'Reprovado';
 
+    gerarTabelaAlunos(); // Atualiza a tabela
+    verificarAlunosNaTabela(); // Verifica se há alunos na tabela
+}
+
+// Limpar as notas de todos os alunos
+function limparTodasNotas() {
+    ListaDeAlunos.forEach(aluno => {
+        aluno.Avaliacoes = Array(QuantidadeAvaliacoes).fill('');
+        aluno.Media = '';
+        aluno.Situacao = 'Reprovado';
+    });
+
+    gerarTabelaAlunos(); // Atualiza a tabela
+    verificarAlunosNaTabela(); // Verifica se há alunos na tabela
+}
+
+// Recebe as pré-definições
 FormPopUpDefMedia.addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -255,6 +296,7 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
     fecharPopup(popupMedia);
 });
 
+//Gera a tabela dinamicamente
 function gerarTabelaAlunos() { 
     const tabela = document.querySelector("table");
 
@@ -309,6 +351,9 @@ function gerarTabelaAlunos() {
                 <button class="btn-excluir" data-index="${index}" title="Excluir">
                     <i class="fas fa-trash-alt"></i>
                 </button>
+                <button class="btn-limpar" data-index="${index}" title="Limpar Notas">
+                    <i class="fas fa-broom"></i>
+                </button>
             </td>
         `;
         linha.innerHTML = linhaHTML;
@@ -322,7 +367,16 @@ function gerarTabelaAlunos() {
             excluirAluno(index);
         });
     });
+
+    // Adiciona evento de clique para abrir o pop-up de limpeza de notas
+    document.querySelectorAll('.btn-limpar').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const index = e.target.closest('button').getAttribute('data-index');
+            abrirPopupLimparNotas(index);
+        });
+    });
 }
+
 
 // Função para excluir aluno da lista
 function excluirAluno(index) {
@@ -398,7 +452,7 @@ PopUpPontuar.addEventListener('click', () => {
     }
 });
 
-
+// Controla as avaliações que aparecem na lista de pontuação em grupo
 function atualizarDropdownAvaliacoes () {
     const dropdown = document.getElementById('avaliacoesDropdown');
     dropdown.innerHTML = ''; // Limpa o conteúdo atual

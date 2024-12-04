@@ -101,37 +101,41 @@
             <form id="formMedia">
                 <label for="media">Definir Média:</label>
                 <input type="number" id="inputMedia" name="media" step="0.01" placeholder="Ex: 7.0" required />
-    
+
                 <label for="qtdAtividades">Quantidade de Atividades:</label>
-                <input type="number" id="inputNumAvaliacoes" name="qtdAtividades" min="1" placeholder="Ex: 3" required />
-    
+                <input type="number" id="inputNumAvaliacoes" name="qtdAtividades" min="1" placeholder="Ex: 3"
+                    required />
+
                 <label for="notaRecuperacao">Nota para Recuperação:</label>
-                <input type="number" id="notaRecuperacao" name="notaRecuperacao" step="0.01" placeholder="Ex: 5.0" required />
-    
+                <input type="number" id="notaRecuperacao" name="notaRecuperacao" step="0.01" placeholder="Ex: 5.0"
+                    required />
+
                 <button type="submit">Salvar</button>
             </form>
             <button id="closeMedia" class="close">Fechar</button>
         </div>
     </div>
 
-<!-- Modal Pontuar Atividades -->
-<div id="popupPontuar" class="popup">
-    <div class="popup-content">
-        <span class="close" id="closePontuar">&times;</span>
-        <h2>Pontuar Atividades</h2>
-        <form id="formPontuar">
-            <p>Nome dos Alunos: <input type="text" id="NomesAlunos" class="camposEntrada" placeholder="Digite o nome" required></p>
-            <p>Nota dos Alunos: <input type="number" id="NotaAluno" class="camposEntrada" placeholder="Digite a nota" required></p>
-            <p>Defina a avaliação:</p>
-            <p>
-                <select id="avaliacoesDropdown" class="camposEntrada" required>
-                    <!-- As opções serão preenchidas dinamicamente -->
-                </select>
-            </p>
-            <input type="submit" value="Pontuar" class="btnEnvio">
-        </form>
+    <!-- Modal Pontuar Atividades -->
+    <div id="popupPontuar" class="popup">
+        <div class="popup-content">
+            <span class="close" id="closePontuar">&times;</span>
+            <h2>Pontuar Atividades</h2>
+            <form id="formPontuar">
+                <p>Nome dos Alunos: <input type="text" id="NomesAlunos" class="camposEntrada"
+                        placeholder="Digite o nome" required></p>
+                <p>Nota dos Alunos: <input type="number" id="NotaAluno" class="camposEntrada"
+                        placeholder="Digite a nota" required></p>
+                <p>Defina a avaliação:</p>
+                <p>
+                    <select id="avaliacoesDropdown" class="camposEntrada" required>
+                        <!-- As opções serão preenchidas dinamicamente -->
+                    </select>
+                </p>
+                <input type="submit" value="Pontuar" class="btnEnvio">
+            </form>
+        </div>
     </div>
-</div>
 
     <!-- Modal Download -->
     <div id="popupDownload" class="popup">
@@ -141,6 +145,17 @@
             <button id="downloadPDF" class="btnEnvio">Baixar em PDF</button>
             <button id="downloadExcel" class="btnEnvio">Baixar em Excel</button>
             <button id="downloadCSV" class="btnEnvio">Baixar em CSV</button> <!-- Novo botão -->
+        </div>
+    </div>
+
+    <!--Modal Limpar notas-->
+    <div id="popupLimparNotas" class="popup" style="display: none;">
+        <div class="popup-content">
+            <h2>Limpar Notas</h2>
+            <p>Escolha a ação desejada:</p>
+            <button id="limparNotasAluno">Limpar Notas do Aluno</button>
+            <button id="limparTodasNotas">Limpar Notas de Todos os Alunos</button>
+            <button onclick="fecharPopup(popupLimparNotas)">Fechar</button>
         </div>
     </div>
 
@@ -158,10 +173,11 @@
 
     <!--Inclui o arquivo JavaScript-->
     <script src="Atualização.js"></script>
-    
+
     <!--Extenções para baixar os formatos da tabela-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script><!--PDF-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.16/jspdf.plugin.autotable.min.js"></script><!--CSV-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.16/jspdf.plugin.autotable.min.js"></script>
+    <!--CSV-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script><!--XLSX-->
 
     <!-- Bootstrap JavaScript (necessário para o dropdown) -->
