@@ -675,28 +675,30 @@ function ativarEdicaoNota() {
 
                 input.addEventListener('blur', () => {
                     let novoValor = input.value.trim();
-
                     novoValor = novoValor.replace(',', '.');
-
+                
                     if (!isNaN(novoValor) && novoValor !== '' && novoValor >= 0 && novoValor <= 10) {
                         celula.textContent = novoValor;
                         aluno.Recuperacao = parseFloat(novoValor); // Atualiza a nota de recuperação
                         aluno.Media = calcularMedia(aluno.Avaliacoes.concat(aluno.Recuperacao)); // Recalcula a média incluindo recuperação
-                        
-                        // Aprovado se a recuperação for suficiente
+                
+                        // Atualiza a situação com base na recuperação
                         if (aluno.Recuperacao >= NotaRecuperacaoDefinida) {
                             aluno.Situacao = "Aprovado";
-                        // Permanece reprovado se a nota de recuperação for insuficiente
                         } else {
-                            aluno.Situacao = "Reprovado"; 
+                            aluno.Situacao = "Reprovado";
                         }
-
-                        gerarTabelaAlunos(); // Atualiza a tabela com as novas informações
+                
+                        // Atualiza apenas as colunas necessárias na linha do aluno
+                        const linha = celula.closest('tr');
+                        linha.cells[QuantidadeAvaliacoes + 1].textContent = aluno.Media; // Atualiza a célula da média
+                        linha.cells[QuantidadeAvaliacoes + 3].textContent = aluno.Situacao; // Atualiza a célula da situação
                     } else {
-                        celula.textContent = valorAtual;
+                        celula.textContent = valorAtual; // Restaura o valor anterior em caso de entrada inválida
                         alert('Por favor, insira uma nota válida entre 0 e 10.');
                     }
                 });
+                
 
                 input.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') {
