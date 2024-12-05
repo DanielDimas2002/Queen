@@ -631,20 +631,23 @@ function ativarEdicaoNota() {
 
                 input.addEventListener('blur', () => {
                     let novoValor = input.value.trim();
-
                     novoValor = novoValor.replace(',', '.');
-
+                
                     if (!isNaN(novoValor) && novoValor !== '' && novoValor >= 0 && novoValor <= 10) {
                         celula.textContent = novoValor;
-                        aluno.Avaliacoes[celula.cellIndex - 1] = parseFloat(novoValor); // Atualiza a nota na lista de avaliações
-                        aluno.Media = calcularMedia(aluno.Avaliacoes); // Recalcula a média
-                        aluno.Situacao = aluno.Media >= MediaDefinida ? "Aprovado" : "Reprovado"; // Atualiza a situação
-                        gerarTabelaAlunos(); // Atualiza a tabela com as novas informações
+                        aluno.Avaliacoes[celula.cellIndex - 1] = parseFloat(novoValor);
+                        aluno.calcularMedia(); // Método da classe Estudante
+                        aluno.atualizarSituacao(MediaDefinida); // Atualiza a situação com a média definida globalmente
+                        // Atualiza apenas as colunas relacionadas (Média, Situação)
+                        const linha = celula.closest('tr');
+                        linha.cells[QuantidadeAvaliacoes + 1].textContent = aluno.Media; // Atualiza Média
+                        linha.cells[QuantidadeAvaliacoes + 3].textContent = aluno.Situacao; // Atualiza Situação
                     } else {
                         celula.textContent = valorAtual;
                         alert('Por favor, insira uma nota válida entre 0 e 10.');
                     }
                 });
+                
 
                 input.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') {
