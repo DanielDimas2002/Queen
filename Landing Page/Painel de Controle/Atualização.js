@@ -612,113 +612,181 @@ function ativarEdicaoNota() {
         const celula = event.target;
         const linha = celula.closest('tr');
 
-        // Editar nome de aluno ou nota
-        if (linha && linha.rowIndex > 0) {
+        // Editar nome de aluno
+        if (linha && linha.rowIndex > 0 && celula.cellIndex === 0) {
             const nomeAluno = linha.cells[0].textContent.trim();
             const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
 
-            // Editar notas
-            if (celula.cellIndex >= 1 && celula.cellIndex <= QuantidadeAvaliacoes) {
-                if (MediaDefinida === null || MediaDefinida === undefined) {
-                    alert("Configure as pré-definições antes de adicionar notas!");
-                    return;
+            if (celula.querySelector('input')) return;
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = nomeAluno;
+            input.style.width = '100%';
+
+            celula.textContent = '';
+            celula.appendChild(input);
+            input.select();
+
+            input.addEventListener('blur', () => {
+                let novoNome = input.value.trim();
+                if (novoNome !== '') {
+                    celula.textContent = novoNome;
+                    aluno.Nome = novoNome; // Atualiza o nome do aluno na lista
+                } else {
+                    celula.textContent = nomeAluno; // Restaura o nome original caso o campo esteja vazio
+                    alert('O nome não pode ser vazio.');
                 }
+            });
 
-                const valorAtual = celula.textContent.trim();
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    input.blur();
+                }
+            });
 
-                if (celula.querySelector('input')) return;
+            return;
+        }
 
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.value = valorAtual;
-                input.style.width = '100%';
+        // Editar títulos das avaliações
+        if (linha && linha.rowIndex === 0 && celula.cellIndex >= 1 && celula.cellIndex <= QuantidadeAvaliacoes) {
+            const tituloAtual = celula.textContent.trim();
 
-                celula.textContent = '';
-                celula.appendChild(input);
-                input.select();
+            if (celula.querySelector('input')) return;
 
-                input.addEventListener('blur', () => {
-                    let novoValor = input.value.trim();
-                    novoValor = novoValor.replace(',', '.');
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = tituloAtual;
+            input.style.width = '100%';
 
-                    if (!isNaN(novoValor) && novoValor !== '' && novoValor >= 0 && novoValor <= 10) {
-                        celula.textContent = novoValor;
-                        aluno.Avaliacoes[celula.cellIndex - 1] = parseFloat(novoValor);
-                        aluno.calcularMedia(); // Método da classe Estudante
-                        aluno.atualizarSituacao(MediaDefinida); // Atualiza a situação com a média definida globalmente
-                        // Atualiza apenas as colunas relacionadas (Média, Situação)
-                        const linha = celula.closest('tr');
-                        linha.cells[QuantidadeAvaliacoes + 1].textContent = aluno.Media; // Atualiza Média
-                        linha.cells[QuantidadeAvaliacoes + 3].textContent = aluno.Situacao; // Atualiza Situação
-                    } else {
-                        celula.textContent = valorAtual;
-                        alert('Por favor, insira uma nota válida entre 0 e 10.');
-                    }
-                });
+            celula.textContent = '';
+            celula.appendChild(input);
+            input.select();
 
+            input.addEventListener('blur', () => {
+                let novoTitulo = input.value.trim();
+                if (novoTitulo !== '') {
+                    celula.textContent = novoTitulo;
+                    TitulosAvaliacoes[celula.cellIndex - 1] = novoTitulo; // Atualiza o título da avaliação
+                } else {
+                    celula.textContent = tituloAtual; // Restaura o título original caso o campo esteja vazio
+                    alert('O título não pode ser vazio.');
+                }
+            });
 
-                input.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') {
-                        input.blur();
-                    }
-                });
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    input.blur();
+                }
+            });
 
+            return;
+        }
+
+        // Editar notas
+        if (linha && linha.rowIndex > 0 && celula.cellIndex >= 1 && celula.cellIndex <= QuantidadeAvaliacoes) {
+            if (MediaDefinida === null || MediaDefinida === undefined) {
+                alert("Configure as pré-definições antes de adicionar notas!");
                 return;
             }
 
-            // Editar recuperação
-            if (celula.cellIndex === QuantidadeAvaliacoes + 2) { // Supondo que a coluna de recuperação seja a última antes de Situação
-                const valorAtual = celula.textContent.trim();
+            const nomeAluno = linha.cells[0].textContent.trim();
+            const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
+            const valorAtual = celula.textContent.trim();
 
-                if (celula.querySelector('input')) return;
+            if (celula.querySelector('input')) return;
 
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.value = valorAtual;
-                input.style.width = '100%';
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = valorAtual;
+            input.style.width = '100%';
 
-                celula.textContent = '';
-                celula.appendChild(input);
-                input.select();
+            celula.textContent = '';
+            celula.appendChild(input);
+            input.select();
 
-                input.addEventListener('blur', () => {
-                    let novoValor = input.value.trim();
-                    novoValor = novoValor.replace(',', '.');
+            input.addEventListener('blur', () => {
+                let novoValor = input.value.trim();
+                novoValor = novoValor.replace(',', '.');
 
-                    if (!isNaN(novoValor) && novoValor !== '' && novoValor >= 0 && novoValor <= 10) {
-                        celula.textContent = novoValor;
-                        aluno.Recuperacao = parseFloat(novoValor); // Atualiza a nota de recuperação
-                        aluno.Media = calcularMedia(aluno.Avaliacoes.concat(aluno.Recuperacao)); // Recalcula a média incluindo recuperação
+                if (!isNaN(novoValor) && novoValor !== '' && novoValor >= 0 && novoValor <= 10) {
+                    celula.textContent = novoValor;
+                    aluno.Avaliacoes[celula.cellIndex - 1] = parseFloat(novoValor);
+                    aluno.calcularMedia(); // Método da classe Estudante
+                    aluno.atualizarSituacao(MediaDefinida); // Atualiza a situação com a média definida globalmente
+                    // Atualiza apenas as colunas relacionadas (Média, Situação)
+                    const linha = celula.closest('tr');
+                    linha.cells[QuantidadeAvaliacoes + 1].textContent = aluno.Media; // Atualiza Média
+                    linha.cells[QuantidadeAvaliacoes + 3].textContent = aluno.Situacao; // Atualiza Situação
+                } else {
+                    celula.textContent = valorAtual;
+                    alert('Por favor, insira uma nota válida entre 0 e 10.');
+                }
+            });
 
-                        // Atualiza a situação com base na recuperação
-                        if (aluno.Recuperacao >= NotaRecuperacaoDefinida) {
-                            aluno.Situacao = "Aprovado";
-                        } else {
-                            aluno.Situacao = "Reprovado";
-                        }
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    input.blur();
+                }
+            });
 
-                        // Atualiza apenas as colunas necessárias na linha do aluno
-                        const linha = celula.closest('tr');
-                        linha.cells[QuantidadeAvaliacoes + 1].textContent = aluno.Media; // Atualiza a célula da média
-                        linha.cells[QuantidadeAvaliacoes + 3].textContent = aluno.Situacao; // Atualiza a célula da situação
+            return;
+        }
+
+        // Editar recuperação
+        if (linha && linha.rowIndex > 0 && celula.cellIndex === QuantidadeAvaliacoes + 2) {
+            const nomeAluno = linha.cells[0].textContent.trim();
+            const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
+            const valorAtual = celula.textContent.trim();
+
+            if (celula.querySelector('input')) return;
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = valorAtual;
+            input.style.width = '100%';
+
+            celula.textContent = '';
+            celula.appendChild(input);
+            input.select();
+
+            input.addEventListener('blur', () => {
+                let novoValor = input.value.trim();
+                novoValor = novoValor.replace(',', '.');
+
+                if (!isNaN(novoValor) && novoValor !== '' && novoValor >= 0 && novoValor <= 10) {
+                    celula.textContent = novoValor;
+                    aluno.Recuperacao = parseFloat(novoValor); // Atualiza a nota de recuperação
+                    aluno.Media = calcularMedia(aluno.Avaliacoes.concat(aluno.Recuperacao)); // Recalcula a média incluindo recuperação
+
+                    // Atualiza a situação com base na recuperação
+                    if (aluno.Recuperacao >= NotaRecuperacaoDefinida) {
+                        aluno.Situacao = "Aprovado";
                     } else {
-                        celula.textContent = valorAtual; // Restaura o valor anterior em caso de entrada inválida
-                        alert('Por favor, insira uma nota válida entre 0 e 10.');
+                        aluno.Situacao = "Reprovado";
                     }
-                });
 
+                    // Atualiza apenas as colunas necessárias na linha do aluno
+                    const linha = celula.closest('tr');
+                    linha.cells[QuantidadeAvaliacoes + 1].textContent = aluno.Media; // Atualiza a célula da média
+                    linha.cells[QuantidadeAvaliacoes + 3].textContent = aluno.Situacao; // Atualiza a célula da situação
+                } else {
+                    celula.textContent = valorAtual; // Restaura o valor anterior em caso de entrada inválida
+                    alert('Por favor, insira uma nota válida entre 0 e 10.');
+                }
+            });
 
-                input.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') {
-                        input.blur();
-                    }
-                });
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    input.blur();
+                }
+            });
 
-                return;
-            }
+            return;
         }
     });
 }
+
 
 // Função auxiliar para calcular a média de um aluno
 function calcularMedia(avaliacoes) {
