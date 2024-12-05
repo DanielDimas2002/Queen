@@ -296,6 +296,7 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
     fecharPopup(popupMedia);
 });
 
+
 //Gera a tabela dinamicamente
 function gerarTabelaAlunos() { 
     const tabela = document.querySelector("table");
@@ -335,16 +336,18 @@ function gerarTabelaAlunos() {
 
         // Adiciona as avaliações do aluno dinamicamente
         for (let i = 0; i < QuantidadeAvaliacoes; i++) {
+            const nota = aluno.Avaliacoes[i] !== undefined && aluno.Avaliacoes[i] !== "" ? aluno.Avaliacoes[i] : '';
             linhaHTML += `<td class="selecao" contenteditable="true" data-avaliacao="${i + 1}">
-                <span class="material-symbols-outlined"></span> ${aluno.Avaliacoes[i] || ''}
+                <span class="material-symbols-outlined"></span> ${nota}
             </td>`;
         }
 
         // Adiciona os campos fixos (Média, Recuperação, Situação, Ações)
+        const recuperacao = aluno.Recuperacao !== undefined && aluno.Recuperacao !== "" ? aluno.Recuperacao : '';
         linhaHTML += `
             <td>${aluno.Media}</td>
             <td class="selecao" contenteditable="true" data-recuperacao="true">
-                <span class="material-symbols-outlined"></span> ${aluno.Recuperacao || ''}
+                <span class="material-symbols-outlined"></span> ${recuperacao}
             </td>
             <td>${aluno.Situacao}</td>
             <td>
