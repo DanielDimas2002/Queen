@@ -613,7 +613,7 @@ function ativarEdicaoNota() {
         const linha = celula.closest('tr');
 
         // Editar nome de aluno
-        if (linha && linha.rowIndex > 0 && celula.cellIndex === 0) {
+      /*  if (linha && linha.rowIndex > 0 && celula.cellIndex === 0) {
             const nomeAluno = linha.cells[0].textContent.trim();
             const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
 
@@ -646,7 +646,7 @@ function ativarEdicaoNota() {
             });
 
             return;
-        }
+        }*/
 
         // Editar títulos das avaliações
         if (linha && linha.rowIndex === 0 && celula.cellIndex >= 1 && celula.cellIndex <= QuantidadeAvaliacoes) {
