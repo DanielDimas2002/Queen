@@ -2,9 +2,9 @@ class Estudante {
     constructor(nomeAluno, numAvaliacoes = 3) {
         this.Nome = nomeAluno;
         this.Avaliacoes = Array(numAvaliacoes).fill(""); // Inicia com avaliações vazias
-        this.Media = ""; 
-        this.Recuperacao = ""; 
-        this.Situacao = "Reprovado"; 
+        this.Media = "";
+        this.Recuperacao = "";
+        this.Situacao = "Reprovado";
     }
 
     calcularMedia() {
@@ -23,12 +23,12 @@ class Estudante {
     }
 }
 
-    //Definições iniciais(Variáveis globais)
-    let MediaDefinida = null;
-    let QuantidadeAvaliacoes = 3;
-    let ListaDeAlunos = [];
-    let NotaRecuperacaoDefinida = null;
-    let TitulosAvaliacoes = Array(QuantidadeAvaliacoes).fill('').map((_, i) => `Avaliação ${i + 1}`);
+//Definições iniciais(Variáveis globais)
+let MediaDefinida = null;
+let QuantidadeAvaliacoes = 3;
+let ListaDeAlunos = [];
+let NotaRecuperacaoDefinida = null;
+let TitulosAvaliacoes = Array(QuantidadeAvaliacoes).fill('').map((_, i) => `Avaliação ${i + 1}`);
 
 // Funções para gerar e baixar a tabela em PDF e Excel
 function baixarTabelaPDF() {
@@ -50,7 +50,7 @@ function baixarTabelaExcel() {
     const linhas = Array.from(tabela.rows); // Obtém as linhas da tabela
 
     // Cria um array de arrays com os dados da tabela
-    const dados = linhas.map(linha => 
+    const dados = linhas.map(linha =>
         Array.from(linha.cells).map(celula => celula.textContent)
     );
 
@@ -298,7 +298,7 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
 
 
 //Gera a tabela dinamicamente
-function gerarTabelaAlunos() { 
+function gerarTabelaAlunos() {
     const tabela = document.querySelector("table");
 
     // Limpa o conteúdo atual da tabela
@@ -418,7 +418,6 @@ function TratamentoDeDados(nomes) { // Função para tratar os dados dos alunos
     return nomesValidos;
 }
 
-
 // Função para adição de alunos
 FormPopUpAddAluno.addEventListener("submit", (e) => {
     e.preventDefault(); // Impede o comportamento padrão de envio do formulário
@@ -436,16 +435,28 @@ FormPopUpAddAluno.addEventListener("submit", (e) => {
     }
 
     // Classifica o conjunto de nomes em ordem alfabética
-    ListaDeAlunos.sort((a, b) => a.Nome.localeCompare(b.Nome)); // Assumindo que a classe Estudante tem um atributo 'nome'
+    ListaDeAlunos.sort((a, b) => a.Nome.localeCompare(b.Nome)); // Assumindo que a classe Estudante tem um atributo 'Nome'
 
     // Limpa o campo de texto após a submissão do formulário
     document.getElementById("inputNomesTurma").value = "";
 
+    // Preencher o dropdown de alunos ao adicionar novos alunos
+    const alunosDropdown = document.getElementById('alunosDropdown');
+    alunosDropdown.innerHTML = ''; // Limpar as opções existentes antes de adicionar novamente
+    ListaDeAlunos.forEach(aluno => {
+        const option = document.createElement('option');
+        option.value = aluno.Nome;
+        option.textContent = aluno.Nome;
+        alunosDropdown.appendChild(option);
+    });
+
     // Atualiza a tabela de alunos
     gerarTabelaAlunos();
 
+    // Fecha o pop-up após a adição dos alunos
     fecharPopup(popupTurma);
 });
+
 
 PopUpPontuar.addEventListener('click', () => {
     if (MediaDefinida === null || MediaDefinida === 0) {
@@ -456,7 +467,7 @@ PopUpPontuar.addEventListener('click', () => {
 });
 
 // Controla as avaliações que aparecem na lista de pontuação em grupo
-function atualizarDropdownAvaliacoes () {
+function atualizarDropdownAvaliacoes() {
     const dropdown = document.getElementById('avaliacoesDropdown');
     dropdown.innerHTML = ''; // Limpa o conteúdo atual
 
@@ -468,13 +479,30 @@ function atualizarDropdownAvaliacoes () {
     });
 };
 
+// Função para preencher o dropdown de alunos
+function preencherDropdownAlunos() {
+    const alunosDropdown = document.getElementById('alunosDropdown');
+    alunosDropdown.innerHTML = ''; // Limpa as opções existentes
 
-// Função para pontuação de alunos em grupo
+    // Adiciona a lista de alunos no dropdown
+    ListaDeAlunos.forEach(aluno => {
+        const option = document.createElement('option');
+        option.value = aluno.Nome;
+        option.textContent = aluno.Nome;
+        alunosDropdown.appendChild(option);
+    });
+}
+
+// Chama a função para preencher o dropdown ao abrir o pop-up
+preencherDropdownAlunos();
+
+
+// Função de pontuação de alunos em grupo
 FormPopUpPontuar.addEventListener("submit", (e) => {
     e.preventDefault(); // Evita o comportamento padrão de envio do formulário
 
     // Captura os valores do pop-up
-    const nomesAlunos = document.getElementById('NomesAlunos').value.trim(); // Campo de nomes
+    const alunosSelecionados = Array.from(document.getElementById('alunosDropdown').selectedOptions).map(option => option.value); // Captura todos os alunos selecionados
     let nota = document.getElementById('NotaAluno').value.trim(); // Campo de nota (ainda como string)
     const avaliacaoSelecionadaIndex = document.getElementById('avaliacoesDropdown').value; // Valor do índice selecionado no drop-down
 
@@ -482,8 +510,8 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
     nota = nota.replace(',', '.');
 
     // Validação dos campos
-    if (!nomesAlunos) {
-        alert("Por favor, insira pelo menos um nome.");
+    if (alunosSelecionados.length === 0) {
+        alert("Por favor, selecione pelo menos um aluno.");
         return;
     }
 
@@ -498,32 +526,7 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
     }
 
     // Trata os dados dos alunos
-    const nomesTratados = TratamentoDeDados(nomesAlunos);
-
-    if (nomesTratados.length === 0) {
-        alert("Por favor, informe pelo menos um nome de aluno.");
-        return;
-    }
-
-    let alteracaoConfirmada = true; // Variável para controle de sobrescrição de notas
-
-    // Verifica se todos os alunos têm a nota pontuada para a avaliação anterior
-    if (avaliacaoSelecionadaIndex > 0) { // Se não for a primeira avaliação
-        const indexAnterior = avaliacaoSelecionadaIndex - 1; // Índice da avaliação anterior
-        const alunosSemNotaAnterior = ListaDeAlunos.filter(a => 
-            a.Avaliacoes[indexAnterior] === "" || 
-            a.Avaliacoes[indexAnterior] === null || 
-            a.Avaliacoes[indexAnterior] === undefined
-        );
-
-        if (alunosSemNotaAnterior.length > 0) {
-            alert(`A avaliação ${TitulosAvaliacoes[avaliacaoSelecionadaIndex]} só pode ser pontuada depois que todos os alunos tiverem uma nota em ${TitulosAvaliacoes[indexAnterior]}.`);
-            return;
-        }
-    }
-
-    // Atualiza as notas dos alunos
-    nomesTratados.forEach(nomeAluno => {
+    alunosSelecionados.forEach(nomeAluno => {
         const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
 
         if (!aluno) {
@@ -535,6 +538,7 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
         const notaExistente = aluno.Avaliacoes[avaliacaoSelecionadaIndex];
 
         // Modificação: Verifica se a nota existente é uma string vazia, null ou undefined
+        let alteracaoConfirmada = true; // Variável para controle de sobrescrição de notas
         if (notaExistente !== "" && notaExistente !== null && notaExistente !== undefined) {
             alteracaoConfirmada = confirm(`O aluno ${nomeAluno} já possui uma nota para ${TitulosAvaliacoes[avaliacaoSelecionadaIndex]} (${notaExistente}). Deseja sobrescrevê-la?`);
         }
@@ -562,6 +566,7 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
     // Fecha o pop-up após o sucesso
     fecharPopup(popupPontuar);
 });
+
 
 
 // Função para verificar se há alunos na tabela e ativar/desativar botões
@@ -600,7 +605,7 @@ function verificarAlunosNaTabela() {
     }
 }
 
-function ativarEdicaoNota() { 
+function ativarEdicaoNota() {
     const tabela = document.querySelector('table');
 
     tabela.addEventListener('click', (event) => {
@@ -613,7 +618,7 @@ function ativarEdicaoNota() {
             const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
 
             // Editar notas
-            if (celula.cellIndex >= 1 && celula.cellIndex <= QuantidadeAvaliacoes) { 
+            if (celula.cellIndex >= 1 && celula.cellIndex <= QuantidadeAvaliacoes) {
                 if (MediaDefinida === null || MediaDefinida === undefined) {
                     alert("Configure as pré-definições antes de adicionar notas!");
                     return;
@@ -635,7 +640,7 @@ function ativarEdicaoNota() {
                 input.addEventListener('blur', () => {
                     let novoValor = input.value.trim();
                     novoValor = novoValor.replace(',', '.');
-                
+
                     if (!isNaN(novoValor) && novoValor !== '' && novoValor >= 0 && novoValor <= 10) {
                         celula.textContent = novoValor;
                         aluno.Avaliacoes[celula.cellIndex - 1] = parseFloat(novoValor);
@@ -650,7 +655,7 @@ function ativarEdicaoNota() {
                         alert('Por favor, insira uma nota válida entre 0 e 10.');
                     }
                 });
-                
+
 
                 input.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') {
@@ -679,19 +684,19 @@ function ativarEdicaoNota() {
                 input.addEventListener('blur', () => {
                     let novoValor = input.value.trim();
                     novoValor = novoValor.replace(',', '.');
-                
+
                     if (!isNaN(novoValor) && novoValor !== '' && novoValor >= 0 && novoValor <= 10) {
                         celula.textContent = novoValor;
                         aluno.Recuperacao = parseFloat(novoValor); // Atualiza a nota de recuperação
                         aluno.Media = calcularMedia(aluno.Avaliacoes.concat(aluno.Recuperacao)); // Recalcula a média incluindo recuperação
-                
+
                         // Atualiza a situação com base na recuperação
                         if (aluno.Recuperacao >= NotaRecuperacaoDefinida) {
                             aluno.Situacao = "Aprovado";
                         } else {
                             aluno.Situacao = "Reprovado";
                         }
-                
+
                         // Atualiza apenas as colunas necessárias na linha do aluno
                         const linha = celula.closest('tr');
                         linha.cells[QuantidadeAvaliacoes + 1].textContent = aluno.Media; // Atualiza a célula da média
@@ -701,7 +706,7 @@ function ativarEdicaoNota() {
                         alert('Por favor, insira uma nota válida entre 0 e 10.');
                     }
                 });
-                
+
 
                 input.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') {
@@ -713,7 +718,7 @@ function ativarEdicaoNota() {
             }
         }
     });
-} 
+}
 
 // Função auxiliar para calcular a média de um aluno
 function calcularMedia(avaliacoes) {
@@ -729,7 +734,7 @@ ativarEdicaoNota();
 window.addEventListener('load', verificarAlunosNaTabela);
 
 // Atualiza a verificação toda vez que um aluno é adicionado
-document.getElementById('CadastrarAlunos').addEventListener('submit', function(event) {
+document.getElementById('CadastrarAlunos').addEventListener('submit', function (event) {
     event.preventDefault(); // Previne o comportamento padrão de envio de formulário
 
     // Verifica novamente se há alunos na tabela

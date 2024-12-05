@@ -122,8 +122,12 @@
             <span class="close" id="closePontuar">&times;</span>
             <h2>Pontuar Atividades</h2>
             <form id="formPontuar">
-                <p>Nome dos Alunos: <input type="text" id="NomesAlunos" class="camposEntrada"
-                        placeholder="Digite o nome" required></p>
+                <p>Selecione os alunos pressionando Ctrl + Click:</p>
+                <p>
+                    <select id="alunosDropdown" class="camposEntrada" multiple required>
+                        <!-- As opções serão preenchidas dinamicamente -->
+                    </select>
+                </p>
                 <p>Nota dos Alunos: <input type="number" id="NotaAluno" class="camposEntrada"
                         placeholder="Digite a nota" required></p>
                 <p>Defina a avaliação:</p>
@@ -136,6 +140,7 @@
             </form>
         </div>
     </div>
+
 
     <!-- Modal Download -->
     <div id="popupDownload" class="popup">
