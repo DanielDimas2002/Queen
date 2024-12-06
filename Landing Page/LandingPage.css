@@ -434,12 +434,9 @@ section{
 
 
 
-
-
-
 /* Responsividade */
 
-@media screen and (max-width: 1020px) {
+@media screen and (max-width: 768px) {
 
     /* Ajustes gerais */
     .conteudo-principal {
