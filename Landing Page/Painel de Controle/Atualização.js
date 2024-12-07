@@ -639,6 +639,7 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
     }
 }*/
 
+//Função da edição nas células
 function ativarEdicaoNota() {
     const tabela = document.querySelector('table');
 
@@ -777,6 +778,13 @@ function ativarEdicaoNota() {
 
             const nomeAluno = linha.cells[0].textContent.trim();
             const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
+
+            // Só permite editar se o aluno estiver em recuperação (situação "Reprovado")
+            if (aluno.Situacao !== "Reprovado") {
+                alert("A edição da recuperação só é permitida para alunos em recuperação.");
+                return;
+            }
+
             const valorAtual = celula.textContent.trim();
 
             if (celula.querySelector('input')) return;
@@ -824,6 +832,7 @@ function ativarEdicaoNota() {
 
             return;
         }
+
 
     });
 }
