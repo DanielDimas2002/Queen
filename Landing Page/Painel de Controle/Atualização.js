@@ -30,19 +30,21 @@ let ListaDeAlunos = [];
 let NotaRecuperacaoDefinida = null;
 let TitulosAvaliacoes = Array(QuantidadeAvaliacoes).fill('').map((_, i) => `Avaliação ${i + 1}`);
 
-// Funções para gerar e baixar a tabela em PDF e Excel
+//Funções para baixar tabela
+
 function baixarTabelaPDF() {
     const { jsPDF } = window.jspdf; // Acesse jsPDF
     const doc = new jsPDF();
     doc.text("Tabela de Alunos", 10, 10);
 
     // Obtém a tabela HTML
-    const tabela = ('table');
+    const tabela = document.querySelector('table');
     // Converte a tabela HTML para PDF
     doc.autoTable({ html: tabela }); // Gera o PDF com base na tabela
 
     doc.save('Tabela_de_Alunos.pdf'); // Salva o PDF
-    popupDownload.style.display = 'none'; // Fecha o pop-up de download
+    fecharPopup(popupDownload); // Fecha o pop-up de download
+    removerOverlay(); // Remove o overlay após o download
 }
 
 function baixarTabelaExcel() {
@@ -61,6 +63,8 @@ function baixarTabelaExcel() {
 
     // Gera e baixa o arquivo XLSX
     XLSX.writeFile(wb, "tabela_alunos.xlsx");
+    fecharPopup(popupDownload); // Fecha o pop-up de download
+    removerOverlay(); // Remove o overlay após o download
 }
 
 function baixarTabelaCSV() {
@@ -82,6 +86,8 @@ function baixarTabelaCSV() {
 
     link.click(); // Aciona o download
     document.body.removeChild(link); // Remove o link após o download
+    fecharPopup(popupDownload); // Fecha o pop-up de download
+    removerOverlay(); // Remove o overlay após o download
 }
 
 
@@ -111,11 +117,12 @@ const btnDownloadCSV = document.getElementById('downloadCSV');
 
 // Funcionamento do PopUp
 
+// Função para abrir o pop-up de download
 btnDownloadTabela.addEventListener('click', () => {
     abrirPopup(popupDownload); // Abre o pop-up de download
 });
 
-
+// Função para abrir o pop-up de limpar notas
 function abrirPopupLimparNotas(index) {
     const aluno = ListaDeAlunos[index];
 
@@ -135,18 +142,33 @@ function abrirPopupLimparNotas(index) {
     };
 }
 
+// Funções para criar e remover o overlay
+let overlay;
 
-// Seleciona o overlay
-const overlay = document.createElement('div');
-overlay.classList.add('popup-overlay');
-document.body.appendChild(overlay);
+function criarOverlay() {
+    overlay = document.createElement('div');
+    overlay.classList.add('popup-overlay');
+    document.body.appendChild(overlay);
+}
 
-function abrirPopup(popup) { // Função para abrir o pop-up
+function removerOverlay() {
+    if (overlay) {
+        overlay.remove();
+        overlay = null; // Zera a referência do overlay
+    }
+}
+
+// Função para abrir o pop-up
+function abrirPopup(popup) {
+    // Cria o overlay se ele não existir
+    if (!overlay) {
+        criarOverlay();
+    }
     popup.style.display = 'block';
     overlay.style.display = 'block'; // Exibe o overlay com o desfoque
 }
 
-// Evento de clique para abrir os pop-ups
+// Eventos de clique para abrir os pop-ups
 PopUpAddAluno.addEventListener('click', () => abrirPopup(popupTurma));
 PopUpDefMedia.addEventListener('click', () => abrirPopup(popupMedia));
 
@@ -159,37 +181,42 @@ PopUpPontuar.addEventListener('click', () => {
     }
 });
 
-function fecharPopup(popup) { // Função para fechar o pop-up
+// Função para fechar o pop-up
+function fecharPopup(popup) {
     popup.style.display = 'none';
-    overlay.style.display = 'none'; // Esconde o overlay
+    if (overlay) {
+        overlay.style.display = 'none'; // Esconde o overlay
+        removerOverlay(); // Remove o overlay da tela
+    }
 }
 
-const FecharPopUp = document.querySelectorAll('.close, .fechar'); // Botões de fechar dentro dos pop-ups (selecionando pelo botão "X")
+// Botões de fechar dentro dos pop-ups (selecionando pelo botão "X")
+const FecharPopUp = document.querySelectorAll('.close, .fechar');
 
-FecharPopUp.forEach(btn => { // Adicionando evento de clique em cada botão de fechar
+FecharPopUp.forEach(btn => {
+    // Adicionando evento de clique em cada botão de fechar
     btn.addEventListener('click', () => {
         const popup = btn.closest('.popup');
         fecharPopup(popup);
     });
 });
 
-window.addEventListener('click', (e) => { // Fecha o pop-up se clicar fora do conteúdo
+// Fecha o pop-up se clicar fora do conteúdo
+window.addEventListener('click', (e) => {
     if (e.target.classList.contains('popup')) {
         fecharPopup(e.target);
     }
 });
 
-// Função para baixar a tabela em PDF
+// Funções para baixar a tabela em diferentes formatos
 btnDownloadPDF.addEventListener('click', () => {
     baixarTabelaPDF();
 });
 
-// Função para baixar a tabela em Excel
 btnDownloadExcel.addEventListener('click', () => {
     baixarTabelaExcel();
 });
 
-// Função para baixar a tabela em CSV
 btnDownloadCSV.addEventListener('click', () => {
     baixarTabelaCSV();
 });
@@ -618,40 +645,40 @@ function ativarEdicaoNota() {
         const linha = celula.closest('tr');
 
         // Editar nome de aluno
-      /*  if (linha && linha.rowIndex > 0 && celula.cellIndex === 0) {
-            const nomeAluno = linha.cells[0].textContent.trim();
-            const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
-
-            if (celula.querySelector('input')) return;
-
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.value = nomeAluno;
-            input.style.width = '100%';
-
-            celula.textContent = '';
-            celula.appendChild(input);
-            input.select();
-
-            input.addEventListener('blur', () => {
-                let novoNome = input.value.trim();
-                if (novoNome !== '') {
-                    celula.textContent = novoNome;
-                    aluno.Nome = novoNome; // Atualiza o nome do aluno na lista
-                } else {
-                    celula.textContent = nomeAluno; // Restaura o nome original caso o campo esteja vazio
-                    alert('O nome não pode ser vazio.');
-                }
-            });
-
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    input.blur();
-                }
-            });
-
-            return;
-        }*/
+        /*  if (linha && linha.rowIndex > 0 && celula.cellIndex === 0) {
+              const nomeAluno = linha.cells[0].textContent.trim();
+              const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
+  
+              if (celula.querySelector('input')) return;
+  
+              const input = document.createElement('input');
+              input.type = 'text';
+              input.value = nomeAluno;
+              input.style.width = '100%';
+  
+              celula.textContent = '';
+              celula.appendChild(input);
+              input.select();
+  
+              input.addEventListener('blur', () => {
+                  let novoNome = input.value.trim();
+                  if (novoNome !== '') {
+                      celula.textContent = novoNome;
+                      aluno.Nome = novoNome; // Atualiza o nome do aluno na lista
+                  } else {
+                      celula.textContent = nomeAluno; // Restaura o nome original caso o campo esteja vazio
+                      alert('O nome não pode ser vazio.');
+                  }
+              });
+  
+              input.addEventListener('keydown', (e) => {
+                  if (e.key === 'Enter') {
+                      input.blur();
+                  }
+              });
+  
+              return;
+          }*/
 
         // Editar títulos das avaliações
         if (linha && linha.rowIndex === 0 && celula.cellIndex >= 1 && celula.cellIndex <= QuantidadeAvaliacoes) {
