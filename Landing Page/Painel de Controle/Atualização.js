@@ -250,7 +250,7 @@ function limparTodasNotas() {
 
 
 // Recebe as pré-definições
-FormPopUpDefMedia.addEventListener('submit', (e) => {
+/*FormPopUpDefMedia.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const novaMediaDefinida = parseFloat(document.getElementById('inputMedia').value);
@@ -337,7 +337,66 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
 
     // Fecha o pop-up
     fecharPopup(popupMedia);
+}); */
+
+FormPopUpDefMedia.addEventListener('submit', async (e) => {
+    console.log("Formulário enviado");
+    e.preventDefault();
+
+    const novaMediaDefinida = parseFloat(document.getElementById('inputMedia').value);
+    const numeroDeAvaliacoes = parseInt(document.getElementById('inputNumAvaliacoes').value);
+    const novaNotaRecuperacao = parseFloat(document.getElementById('notaRecuperacao').value);
+
+
+    // Envia as atualizações para o backend
+    const urlParams = new URLSearchParams(window.location.search);
+    const turmaId = urlParams.get('id');
+
+    if (!turmaId) {
+        console.error('ID da turma não encontrado!');
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:3000/definirMedia', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                turmaId,
+                novaMedia: novaMediaDefinida,
+                numeroDeAvaliacoes: numeroDeAvaliacoes,
+                notaRecuperacao: novaNotaRecuperacao,
+            }),
+        });
+         // Logando os dados antes de enviar
+    console.log('Enviando dados para o backend:', {
+        turmaId,
+        novaMedia: MediaDefinida,
+        numeroDeAvaliacoes: QuantidadeAvaliacoes,
+        notaRecuperacao: NotaRecuperacaoDefinida,
+    });
+
+        // Logando a resposta do backend
+        const responseData = await response.json();
+        console.log('Resposta do backend:', responseData);
+
+        if (!response.ok) {
+            alert('Erro ao salvar pré-definições: ' + responseData.message);
+        } else {
+            alert('Pré-definições salvas com sucesso.');
+        }
+    } catch (error) {
+        console.error('Erro ao enviar dados!', error);
+        alert('Erro ao salvar pré-definições, tente novamente mais tarde.');
+    }
+
+    // Fecha o pop-up
+    fecharPopup(popupMedia);
 });
+
+
 
 
 

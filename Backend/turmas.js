@@ -15,6 +15,19 @@ const Turma = database.define('turma', {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      qtd_avaliacoes: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: 3,
+      },
+      media: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      recuperacao: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       data_inicial: {
         type: DataTypes.DATE,
         allowNull: false,

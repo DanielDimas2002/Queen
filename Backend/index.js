@@ -251,9 +251,38 @@ app.get('/turmas/:turmaId/alunos', async (req, res) => {
     }
 });
 
+app.put('/definirMedia', async (req, res) => {
+    const { turmaId, novaMedia, numeroDeAvaliacoes, notaRecuperacao } = req.body;
 
+    console.log('Dados recebidos no backend:', { turmaId, novaMedia, numeroDeAvaliacoes, notaRecuperacao });
 
+    try {
+        // Verifica se os dados necessários foram enviados
+        if (!turmaId || novaMedia === undefined || numeroDeAvaliacoes === undefined || notaRecuperacao === undefined) {
+            return res.status(400).json({ message: 'Faltam dados necessários para atualizar a turma.' });
+        }
 
+        // Busca a turma no banco de dados usando o ID
+        const turma = await Turma.findByPk(turmaId);
+        if (!turma) {
+            return res.status(404).json({ message: 'Turma não encontrada.' });
+        }
+
+        // Atualiza os valores na turma
+        turma.media = novaMedia;
+        turma.qtd_avaliacoes = numeroDeAvaliacoes;
+        turma.recuperacao = notaRecuperacao;
+
+        // Salva as alterações no banco de dados
+        await turma.save();
+
+        // Retorna sucesso
+        res.status(200).json({ message: 'Pré-definições salvas com sucesso.' });
+    } catch (error) {
+        console.error('Erro ao salvar pré-definições:', error);
+        res.status(500).json({ message: 'Erro ao salvar pré-definições.' });
+    }
+});
 
 
     app.listen(3000, () => console.log('Servidor rodando na porta 3000'));
