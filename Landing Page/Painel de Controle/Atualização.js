@@ -266,20 +266,20 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
         }
     }
 
-    // Confirmação para alterar a nota de recuperação
-    if (NotaRecuperacaoDefinida !== undefined && novaNotaRecuperacao !== NotaRecuperacaoDefinida) {
+    // Confirmação para alterar a nota de recuperação (Evita confirmação se for a primeira vez)
+    if (NotaRecuperacaoDefinida !== null && novaNotaRecuperacao !== NotaRecuperacaoDefinida) {
         const confirmacaoRecu = confirm(`A nota de recuperação atual é ${NotaRecuperacaoDefinida}. Deseja alterar para ${novaNotaRecuperacao}?`);
         if (!confirmacaoRecu) {
             document.getElementById('notaRecuperacao').value = NotaRecuperacaoDefinida;
             return;
         }
+    } else if (NotaRecuperacaoDefinida === null) {
+        // Se a nota de recuperação ainda não foi definida, não pede confirmação
+        NotaRecuperacaoDefinida = novaNotaRecuperacao;
     }
 
     // Atualiza a média definida
     MediaDefinida = novaMediaDefinida;
-
-    // Atualiza a nota de recuperação
-    NotaRecuperacaoDefinida = novaNotaRecuperacao;
 
     // Atualiza os títulos preservando os existentes
     if (numeroDeAvaliacoes > TitulosAvaliacoes.length) {
