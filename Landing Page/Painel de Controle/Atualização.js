@@ -278,6 +278,15 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
         NotaRecuperacaoDefinida = novaNotaRecuperacao;
     }
 
+    // Confirmação para redução do número de avaliações
+    if (numeroDeAvaliacoes < QuantidadeAvaliacoes) {
+        const confirmacaoReducao = confirm(`Você está reduzindo o número de avaliações de ${QuantidadeAvaliacoes} para ${numeroDeAvaliacoes}. Deseja continuar?`);
+        if (!confirmacaoReducao) {
+            document.getElementById('inputNumAvaliacoes').value = QuantidadeAvaliacoes;
+            return;
+        }
+    }
+
     // Atualiza a média definida
     MediaDefinida = novaMediaDefinida;
 
@@ -329,6 +338,7 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
     // Fecha o pop-up
     fecharPopup(popupMedia);
 });
+
 
 
 //Gera a tabela dinamicamente
