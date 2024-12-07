@@ -30,6 +30,30 @@ let ListaDeAlunos = [];
 let NotaRecuperacaoDefinida = null;
 let TitulosAvaliacoes = Array(QuantidadeAvaliacoes).fill('').map((_, i) => `Avaliação ${i + 1}`);
 
+// Seleciona os elementos do formulário e inicializa a lista de alunos
+const FormGroup = document.getElementById("FormGrupo");
+const FormRecuperacao = document.getElementById("FormRecuperacao");
+const defMedia = document.querySelector("#Predefinição");
+
+// Selecionando os botões de ativação do PopUp
+const PopUpAddAluno = document.getElementById('PopUpAddAluno');
+const PopUpDefMedia = document.getElementById('PopUpDefMedia');
+const PopUpPontuar = document.getElementById('PopUpPontuar');
+const btnDownloadTabela = document.getElementById('PopUpDownloadTabela');
+
+// Selecionando os próprios modais
+const popupTurma = document.getElementById('popupTurma');
+const popupMedia = document.getElementById('popupMedia');
+const popupPontuar = document.getElementById('popupPontuar');
+
+// Selecionando os formulários de dentro dos PopUp
+const FormPopUpAddAluno = document.getElementById("CadastrarAlunos");
+const FormPopUpDefMedia = document.getElementById("formMedia");
+const FormPopUpPontuar = document.getElementById("formPontuar");
+const btnDownloadPDF = document.getElementById('downloadPDF');
+const btnDownloadExcel = document.getElementById('downloadExcel');
+const btnDownloadCSV = document.getElementById('downloadCSV');
+
 //Funções para baixar tabela
 
 function baixarTabelaPDF() {
@@ -89,31 +113,6 @@ function baixarTabelaCSV() {
     fecharPopup(popupDownload); // Fecha o pop-up de download
     removerOverlay(); // Remove o overlay após o download
 }
-
-
-// Seleciona os elementos do formulário e inicializa a lista de alunos
-const FormGroup = document.getElementById("FormGrupo");
-const FormRecuperacao = document.getElementById("FormRecuperacao");
-const defMedia = document.querySelector("#Predefinição");
-
-// Selecionando os botões de ativação do PopUp
-const PopUpAddAluno = document.getElementById('PopUpAddAluno');
-const PopUpDefMedia = document.getElementById('PopUpDefMedia');
-const PopUpPontuar = document.getElementById('PopUpPontuar');
-const btnDownloadTabela = document.getElementById('PopUpDownloadTabela');
-
-// Selecionando os próprios modais
-const popupTurma = document.getElementById('popupTurma');
-const popupMedia = document.getElementById('popupMedia');
-const popupPontuar = document.getElementById('popupPontuar');
-
-// Selecionando os formulários de dentro dos PopUp
-const FormPopUpAddAluno = document.getElementById("CadastrarAlunos");
-const FormPopUpDefMedia = document.getElementById("formMedia");
-const FormPopUpPontuar = document.getElementById("formPontuar");
-const btnDownloadPDF = document.getElementById('downloadPDF');
-const btnDownloadExcel = document.getElementById('downloadExcel');
-const btnDownloadCSV = document.getElementById('downloadCSV');
 
 // Funcionamento do PopUp
 
@@ -227,7 +226,8 @@ btnDownloadCSV.addEventListener('click', () => {
 
 // Limpar as notas do aluno atual
 function limparNotasAluno(aluno) {
-    aluno.Avaliacoes = Array(QuantidadeAvaliacoes).fill(''); // Zera as notas
+    aluno.Avaliacoes = Array(QuantidadeAvaliacoes).fill(''); // Zera as notas das avaliações
+    aluno.Recuperacao = ''; // Zera a nota de recuperação
     aluno.Media = '';
     aluno.Situacao = 'Reprovado';
 
@@ -238,7 +238,8 @@ function limparNotasAluno(aluno) {
 // Limpar as notas de todos os alunos
 function limparTodasNotas() {
     ListaDeAlunos.forEach(aluno => {
-        aluno.Avaliacoes = Array(QuantidadeAvaliacoes).fill('');
+        aluno.Avaliacoes = Array(QuantidadeAvaliacoes).fill(''); // Zera as notas das avaliações
+        aluno.Recuperacao = ''; // Zera a nota de recuperação
         aluno.Media = '';
         aluno.Situacao = 'Reprovado';
     });
@@ -246,6 +247,7 @@ function limparTodasNotas() {
     gerarTabelaAlunos(); // Atualiza a tabela
     //verificarAlunosNaTabela(); // Verifica se há alunos na tabela
 }
+
 
 // Recebe as pré-definições
 FormPopUpDefMedia.addEventListener('submit', (e) => {
