@@ -769,6 +769,12 @@ function ativarEdicaoNota() {
 
         // Editar recuperação
         if (linha && linha.rowIndex > 0 && celula.cellIndex === QuantidadeAvaliacoes + 2) {
+            // Verifica se as predefinições estão configuradas antes de permitir a edição
+            if (NotaRecuperacaoDefinida === null || NotaRecuperacaoDefinida === undefined) {
+                alert("Configure as pré-definições antes de adicionar a nota de recuperação!");
+                return;
+            }
+
             const nomeAluno = linha.cells[0].textContent.trim();
             const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
             const valorAtual = celula.textContent.trim();
@@ -818,6 +824,7 @@ function ativarEdicaoNota() {
 
             return;
         }
+
     });
 }
 
