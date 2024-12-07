@@ -341,8 +341,41 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
 
 
 
-//Gera a tabela dinamicamente
-function gerarTabelaAlunos() {
+// Função para buscar os alunos da turma no backend e gerar a tabela
+async function buscarAlunosDaTurma() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const turmaId = urlParams.get("id"); // Captura o ID da turma da URL
+
+    if (!turmaId) {
+        alert("ID da turma não encontrado na URL.");
+        return;
+    }
+
+    try {
+        // Realiza a requisição GET para buscar os alunos da turma
+        const response = await fetch(`http://localhost:3000/turmas/${turmaId}/alunos`);
+
+        if (response.ok) {
+            const alunos = await response.json();
+
+            // Verifica se há alunos retornados
+            if (alunos.length > 0) {
+                gerarTabelaAlunos(alunos); // Chama a função de geração da tabela com os alunos retornados
+            } else {
+                alert('Nenhum aluno encontrado para essa turma.');
+            }
+        } else {
+            const error = await response.json();
+            alert("Erro ao buscar alunos: " + error.message);
+        }
+    } catch (error) {
+        console.error('Erro ao buscar alunos:', error);
+        alert('Erro ao buscar alunos, tente novamente mais tarde.');
+    }
+}
+
+// Função para gerar a tabela com os dados dos alunos
+function gerarTabelaAlunos(alunos) {
     const tabela = document.querySelector("table");
 
     // Limpa o conteúdo atual da tabela
@@ -367,20 +400,26 @@ function gerarTabelaAlunos() {
     cabecalho.innerHTML = cabecalhoHTML;
     tabela.appendChild(cabecalho);
 
-    // Ordena a lista de alunos em ordem alfabética pelo nome
-    ListaDeAlunos.sort((a, b) => a.Nome.localeCompare(b.Nome));
+    // Verifique se a propriedade 'nome' existe antes de ordenar
+    if (alunos.every(aluno => aluno.nome)) {
+        alunos.sort((a, b) => a.nome.localeCompare(b.nome));
+    } else {
+        console.error('Alguns alunos não têm a propriedade "nome":', alunos);
+        alert('Erro: alguns alunos não têm nome.');
+        return;
+    }
 
     // Adiciona cada aluno na tabela
-    ListaDeAlunos.forEach((aluno, index) => {
+    alunos.forEach((aluno, index) => {
         const linha = document.createElement("tr");
         let linhaHTML = `<td class="selecao">
             <span class="material-symbols-outlined"></span>
-            <span class="nome-aluno">${aluno.Nome}</span>
+            <span class="nome-aluno">${aluno.nome}</span>
         </td>`;
 
         // Adiciona as avaliações do aluno dinamicamente
         for (let i = 0; i < QuantidadeAvaliacoes; i++) {
-            const nota = aluno.Avaliacoes[i] !== undefined && aluno.Avaliacoes[i] !== "" ? aluno.Avaliacoes[i] : '';
+            const nota = aluno.boletim[`nota${i + 1}`] !== undefined ? aluno.boletim[`nota${i + 1}`] : '';
             linhaHTML += `<td class="selecao" contenteditable="true" data-avaliacao="${i + 1}">
                 <span class="material-symbols-outlined"></span> ${nota}
             </td>`;
@@ -406,6 +445,12 @@ function gerarTabelaAlunos() {
         linha.innerHTML = linhaHTML;
         tabela.appendChild(linha);
     });
+}
+
+
+// Chama a função de buscar alunos ao carregar a página
+window.onload = buscarAlunosDaTurma;
+
 
     // Adiciona evento de clique para excluir o aluno
     document.querySelectorAll('.btn-excluir').forEach(button => {
@@ -422,7 +467,7 @@ function gerarTabelaAlunos() {
             abrirPopupLimparNotas(index);
         });
     });
-}
+
 
 
 // Função para excluir aluno da lista
@@ -462,8 +507,20 @@ function TratamentoDeDados(nomes) { // Função para tratar os dados dos alunos
     return nomesValidos;
 }
 
+function atualizarTabelaAlunos(alunos) {
+    if (!Array.isArray(alunos)) {
+        console.error('Dados inesperados recebidos do backend:', alunos);
+        alert('Erro ao atualizar a tabela. Dados inválidos.');
+        return;
+    }
+
+    ListaDeAlunos = alunos.map((aluno) => new Estudante(aluno.nome)); // Atualiza a lista local
+    ListaDeAlunos.sort((a, b) => a.Nome.localeCompare(b.Nome)); // Ordena por nome
+    gerarTabelaAlunos(); // Chama a função para renderizar
+}
+
 // Função para adição de alunos
-FormPopUpAddAluno.addEventListener("submit", (e) => {
+FormPopUpAddAluno.addEventListener("submit", async (e) => {
     e.preventDefault(); // Impede o comportamento padrão de envio do formulário
 
     // Obtém o valor do campo de texto do formulário de cadastro de novos alunos
@@ -472,34 +529,59 @@ FormPopUpAddAluno.addEventListener("submit", (e) => {
     // Trata os dados dos alunos
     const nomesTratados = TratamentoDeDados(nomesAlunos);
 
-    // Adiciona os alunos à lista
-    for (let i = 0; i < nomesTratados.length; i++) {
-        const aluno = new Estudante(nomesTratados[i]);
-        ListaDeAlunos.push(aluno);
+    if (nomesTratados.length === 0) {
+        alert("Nenhum nome válido foi encontrado!");
+        return;
     }
 
-    // Classifica o conjunto de nomes em ordem alfabética
-    ListaDeAlunos.sort((a, b) => a.Nome.localeCompare(b.Nome)); // Assumindo que a classe Estudante tem um atributo 'Nome'
+    try {
+        // Obtém o ID da turma da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const turmaId = urlParams.get("id");
 
-    // Limpa o campo de texto após a submissão do formulário
-    document.getElementById("inputNomesTurma").value = "";
+        if (!turmaId) {
+            alert("ID da turma não encontrado na URL.");
+            return;
+        }
 
-    // Preencher o dropdown de alunos ao adicionar novos alunos
-    const alunosDropdown = document.getElementById('alunosDropdown');
-    alunosDropdown.innerHTML = ''; // Limpar as opções existentes antes de adicionar novamente
-    ListaDeAlunos.forEach(aluno => {
-        const option = document.createElement('option');
-        option.value = aluno.Nome;
-        option.textContent = aluno.Nome;
-        alunosDropdown.appendChild(option);
-    });
+        console.log("Enviando dados para o backend:", { nomes: nomesTratados, turmaId });
 
-    // Atualiza a tabela de alunos
-    gerarTabelaAlunos();
+        // Envia os dados ao backend
+        const response = await fetch("http://localhost:3000/alunos", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ nomes: nomesTratados, turmaId }),
+        });
 
-    // Fecha o pop-up após a adição dos alunos
-    fecharPopup(popupTurma);
+        if (response.ok) {
+            // Atualiza os dados recebidos do backend
+            const alunosAtualizados = await response.json();
+            console.log("Resposta do backend:", alunosAtualizados);
+
+            // Fecha o pop-up
+            const popup = document.getElementById("popupTurma");
+            if (popup) {
+                fecharPopup(popup);
+            } else {
+                console.error("Pop-up não encontrado para fechamento.");
+            }
+
+            // Recarrega a página imediatamente
+            window.location.reload();
+
+            alert("Alunos cadastrados com sucesso!");
+        } else {
+            const error = await response.json();
+            alert("Erro ao cadastrar alunos: " + error.message);
+        }
+    } catch (error) {
+        console.error("Erro ao cadastrar alunos:", error);
+        alert("Erro ao salvar alunos, tente novamente mais tarde.");
+    }
 });
+
 
 
 PopUpPontuar.addEventListener('click', () => {

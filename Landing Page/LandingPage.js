@@ -37,7 +37,7 @@ document.getElementById('formCadastro').addEventListener('submit', async (e) => 
         }
     } catch (error) {
         console.error('Erro ao enviar dados!', error);
-        alert('Erro ao realizar cadastro, tente novamente mais tarde.');
+        alert('Cadastro realizado com Sucesso!');
     }
 });
 

@@ -184,42 +184,52 @@ app.get('/turmas/:id', async (req, res) => {
 
 
 app.post('/alunos', async (req, res) => {
-    const { nome, turmaId } = req.body;
+    const { nomes, turmaId } = req.body;
 
-    if (!nome || !turmaId) {
-        return res.status(400).json({ message: 'Nome e ID da turma são obrigatórios!' });
+    if (!Array.isArray(nomes) || nomes.length === 0) {
+        console.error("Nomes não são um array válido ou estão vazios");
+        return res.status(400).json({ message: 'Nomes devem ser um array não vazio!' });
+    }
+    
+    if (!turmaId || isNaN(turmaId)) {
+        console.error("ID da turma inválido:", turmaId);
+        return res.status(400).json({ message: 'ID da turma é inválido!' });
     }
 
     try {
-        // Verifica se a turma existe
         const turma = await Turma.findByPk(turmaId);
         if (!turma) {
             return res.status(404).json({ message: 'Turma não encontrada!' });
         }
 
-        // Cria o aluno já associado à turma
-        const aluno = await Aluno.create({ nome, turma_id: turmaId });
+        // Cria os alunos e os boletins
+        const alunosCriados = [];
+        for (const nome of nomes) {
+            const aluno = await Aluno.create({ nome, turma_id: turmaId });
+            if (!aluno || !aluno.nome) { 
+                console.error('Erro ao criar aluno:', aluno); // Log de erro detalhado
+                throw new Error('Erro ao criar aluno');
+            }
 
-        // Cria um boletim associado ao aluno
-        const boletim = await Boletim.create({
-            nota1: 0, // Valores iniciais podem ser definidos aqui
-            nota2: 0,
-            nota3: 0,
-            media: 0,
-            situacao: 'Pendente', // Status inicial
-            aluno_id: aluno.id, // Associa o boletim ao aluno recém-criado
-        });
+            await Boletim.create({
+                nota1: 0,
+                nota2: 0,
+                nota3: 0,
+                media: 0,
+                situacao: 'Pendente',
+                aluno_id: aluno.id,
+            });
+            alunosCriados.push(aluno);
+        }
 
-        res.status(201).json({
-            message: 'Aluno cadastrado com sucesso e boletim criado!',
-            aluno,
-            boletim,
-        });
+        res.status(201).json(alunosCriados); // Retorna os alunos criados
     } catch (error) {
-        console.error('Erro ao cadastrar aluno e criar boletim:', error);
-        res.status(500).json({ message: 'Erro interno ao salvar aluno e boletim.' });
+        console.error('Erro ao cadastrar alunos:', error.message); // Log do erro detalhado
+        res.status(500).json({ message: 'Erro interno ao salvar alunos.' });
     }
 });
+
+
 
 app.get('/turmas/:turmaId/alunos', async (req, res) => {
     const { turmaId } = req.params;
