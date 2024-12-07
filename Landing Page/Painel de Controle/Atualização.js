@@ -570,7 +570,7 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
 
 
 // Função para verificar se há alunos na tabela e ativar/desativar botões
-function verificarAlunosNaTabela() {
+/*function verificarAlunosNaTabela() {
     const tabela = document.querySelector('table');
     const numeroDeAlunos = ListaDeAlunos.length; // Usa ListaDeAlunos para contar o número de alunos
 
@@ -603,7 +603,7 @@ function verificarAlunosNaTabela() {
         botaoPontuar.disabled = true;
         botaoPontuar.classList.add('btn-desativado');
     }
-}
+}*/
 
 function ativarEdicaoNota() {
     const tabela = document.querySelector('table');
