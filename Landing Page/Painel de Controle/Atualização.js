@@ -111,6 +111,11 @@ const btnDownloadCSV = document.getElementById('downloadCSV');
 
 // Funcionamento do PopUp
 
+btnDownloadTabela.addEventListener('click', () => {
+    abrirPopup(popupDownload); // Abre o pop-up de download
+});
+
+
 function abrirPopupLimparNotas(index) {
     const aluno = ListaDeAlunos[index];
 
@@ -200,7 +205,7 @@ function limparNotasAluno(aluno) {
     aluno.Situacao = 'Reprovado';
 
     gerarTabelaAlunos(); // Atualiza a tabela
-    verificarAlunosNaTabela(); // Verifica se há alunos na tabela
+    //verificarAlunosNaTabela(); // Verifica se há alunos na tabela
 }
 
 // Limpar as notas de todos os alunos
@@ -212,7 +217,7 @@ function limparTodasNotas() {
     });
 
     gerarTabelaAlunos(); // Atualiza a tabela
-    verificarAlunosNaTabela(); // Verifica se há alunos na tabela
+    //verificarAlunosNaTabela(); // Verifica se há alunos na tabela
 }
 
 // Recebe as pré-definições
@@ -799,12 +804,12 @@ ativarEdicaoNota();
 
 
 // Executa a função ao carregar a página para desativar os botões inicialmente
-window.addEventListener('load', verificarAlunosNaTabela);
+//window.addEventListener('load', verificarAlunosNaTabela);
 
 // Atualiza a verificação toda vez que um aluno é adicionado
 document.getElementById('CadastrarAlunos').addEventListener('submit', function (event) {
     event.preventDefault(); // Previne o comportamento padrão de envio de formulário
 
     // Verifica novamente se há alunos na tabela
-    verificarAlunosNaTabela();
+    //verificarAlunosNaTabela();
 });
