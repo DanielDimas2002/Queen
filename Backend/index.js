@@ -6,6 +6,8 @@
     const Turma = require('./turmas');
     const Aluno = require('./alunos');
     const Boletim = require('./boletim');
+    const Nota = require('./nota')
+    
     const cors = require('cors')
     await sequelize.sync(); //cria as tabelas dos models
 
@@ -190,7 +192,7 @@ app.post('/alunos', async (req, res) => {
         console.error("Nomes não são um array válido ou estão vazios");
         return res.status(400).json({ message: 'Nomes devem ser um array não vazio!' });
     }
-    
+
     if (!turmaId || isNaN(turmaId)) {
         console.error("ID da turma inválido:", turmaId);
         return res.status(400).json({ message: 'ID da turma é inválido!' });
@@ -199,35 +201,48 @@ app.post('/alunos', async (req, res) => {
     try {
         const turma = await Turma.findByPk(turmaId);
         if (!turma) {
+            console.error("Turma não encontrada para o ID:", turmaId);
             return res.status(404).json({ message: 'Turma não encontrada!' });
         }
 
-        // Cria os alunos e os boletins
+        const qtdAvaliacoes = turma.qtd_avaliacoes;
+        if (!qtdAvaliacoes || qtdAvaliacoes <= 0) {
+            console.error("Quantidade de avaliações inválida:", qtdAvaliacoes);
+            return res.status(400).json({ message: 'Quantidade de avaliações inválida!' });
+        }
+
         const alunosCriados = [];
         for (const nome of nomes) {
             const aluno = await Aluno.create({ nome, turma_id: turmaId });
-            if (!aluno || !aluno.nome) { 
-                console.error('Erro ao criar aluno:', aluno); // Log de erro detalhado
-                throw new Error('Erro ao criar aluno');
-            }
+            console.log("Aluno criado:", aluno);
 
-            await Boletim.create({
-                nota1: 0,
-                nota2: 0,
-                nota3: 0,
+            const boletim = await Boletim.create({
                 media: 0,
                 situacao: 'Pendente',
                 aluno_id: aluno.id,
             });
+            console.log("Boletim criado para aluno:", boletim);
+
+            for (let i = 1; i <= qtdAvaliacoes; i++) {
+                const nota = await Nota.create({
+                    valor: 0,
+                    tipo: `Avaliacao ${i}`,
+                    boletim_id: boletim.id,
+                });
+                console.log("Nota criada:", nota);
+            }
+
             alunosCriados.push(aluno);
         }
 
-        res.status(201).json(alunosCriados); // Retorna os alunos criados
+        res.status(201).json(alunosCriados);
     } catch (error) {
-        console.error('Erro ao cadastrar alunos:', error.message); // Log do erro detalhado
+        console.error("Erro ao cadastrar alunos:", error);
         res.status(500).json({ message: 'Erro interno ao salvar alunos.' });
     }
 });
+
+
 
 
 
@@ -282,7 +297,7 @@ app.put('/definirMedia', async (req, res) => {
         console.error('Erro ao salvar pré-definições:', error);
         res.status(500).json({ message: 'Erro ao salvar pré-definições.' });
     }
-});
+})
 
 
     app.listen(3000, () => console.log('Servidor rodando na porta 3000'));
