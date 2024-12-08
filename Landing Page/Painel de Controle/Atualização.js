@@ -343,21 +343,56 @@ FormPopUpDefMedia.addEventListener('submit', async (e) => {
     console.log("Formulário enviado");
     e.preventDefault();
 
-    const novaMediaDefinida = parseFloat(document.getElementById('inputMedia').value);
-    const numeroDeAvaliacoes = parseInt(document.getElementById('inputNumAvaliacoes').value);
-    const novaNotaRecuperacao = parseFloat(document.getElementById('notaRecuperacao').value);
+    // Captura os valores do formulário
+    const inputMedia = document.getElementById('inputMedia').value;
+    const inputNumAvaliacoes = document.getElementById('inputNumAvaliacoes').value;
+    const inputNotaRecuperacao = document.getElementById('notaRecuperacao').value;
 
+    // Validação dos campos
+    if (!inputMedia || isNaN(parseFloat(inputMedia)) || parseFloat(inputMedia) < 0) {
+        alert("Por favor, insira uma média válida e maior ou igual a 0.");
+        return;
+    }
 
-    // Envia as atualizações para o backend
+    if (!inputNumAvaliacoes || isNaN(parseInt(inputNumAvaliacoes)) || parseInt(inputNumAvaliacoes) < 0) {
+        alert("Por favor, insira um número válido de avaliações e maior ou igual a 0.");
+        return;
+    }
+
+    if (!inputNotaRecuperacao || isNaN(parseFloat(inputNotaRecuperacao)) || parseFloat(inputNotaRecuperacao) < 0) {
+        alert("Por favor, insira uma nota válida para recuperação e maior ou igual a 0.");
+        return;
+    }
+
+    const novaMediaDefinida = parseFloat(inputMedia);
+    const numeroDeAvaliacoes = parseInt(inputNumAvaliacoes);
+    const novaNotaRecuperacao = parseFloat(inputNotaRecuperacao);
+
+    // Verifica o ID da turma
     const urlParams = new URLSearchParams(window.location.search);
     const turmaId = urlParams.get('id');
 
     if (!turmaId) {
         console.error('ID da turma não encontrado!');
+        alert("Erro: ID da turma não encontrado.");
         return;
     }
 
     try {
+        // Confirmar antes de enviar
+        const confirmacao = confirm(
+            `Você está prestes a salvar as seguintes configurações:\n\n` +
+            `Média: ${novaMediaDefinida}\n` +
+            `Número de Avaliações: ${numeroDeAvaliacoes}\n` +
+            `Nota de Recuperação: ${novaNotaRecuperacao}\n\n` +
+            `Deseja continuar?`
+        );
+
+        if (!confirmacao) {
+            alert("Alterações canceladas pelo usuário.");
+            return;
+        }
+
         const response = await fetch('http://localhost:3000/definirMedia', {
             method: 'PUT',
             headers: {
@@ -370,15 +405,15 @@ FormPopUpDefMedia.addEventListener('submit', async (e) => {
                 notaRecuperacao: novaNotaRecuperacao,
             }),
         });
-         // Logando os dados antes de enviar
-    console.log('Enviando dados para o backend:', {
-        turmaId,
-        novaMedia: MediaDefinida,
-        numeroDeAvaliacoes: QuantidadeAvaliacoes,
-        notaRecuperacao: NotaRecuperacaoDefinida,
-    });
 
-        // Logando a resposta do backend
+        // Logando os dados antes de enviar
+        console.log('Enviando dados para o backend:', {
+            turmaId,
+            novaMedia: novaMediaDefinida,
+            numeroDeAvaliacoes: numeroDeAvaliacoes,
+            notaRecuperacao: novaNotaRecuperacao,
+        });
+
         const responseData = await response.json();
         console.log('Resposta do backend:', responseData);
 
@@ -395,6 +430,7 @@ FormPopUpDefMedia.addEventListener('submit', async (e) => {
     // Fecha o pop-up
     fecharPopup(popupMedia);
 });
+
 
 
 
