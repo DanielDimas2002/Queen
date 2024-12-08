@@ -272,7 +272,6 @@ app.put('/definirMedia', async (req, res) => {
     console.log('Dados recebidos no backend:', { turmaId, novaMedia, numeroDeAvaliacoes, notaRecuperacao });
 
     try {
-        // Verifica se os dados necessários foram enviados
         if (!turmaId || novaMedia === undefined || numeroDeAvaliacoes === undefined || notaRecuperacao === undefined) {
             return res.status(400).json({ message: 'Faltam dados necessários para atualizar a turma.' });
         }
@@ -288,16 +287,77 @@ app.put('/definirMedia', async (req, res) => {
         turma.qtd_avaliacoes = numeroDeAvaliacoes;
         turma.recuperacao = notaRecuperacao;
 
-        // Salva as alterações no banco de dados
+        // Lógica para atualizar os boletins de todos os alunos dessa turma
+        const alunosDaTurma = await Aluno.findAll({ where: { turma_id: turmaId } });
+
+        for (const aluno of alunosDaTurma) {
+            const boletim = await Boletim.findOne({ where: { aluno_id: aluno.id } });
+
+            if (boletim) {
+                // Obtemos a quantidade atual de avaliações
+                const qtdAvaliacoesAtual = await Nota.count({ where: { boletim_id: boletim.id } });
+
+                if (qtdAvaliacoesAtual < numeroDeAvaliacoes) {
+                    // Se o número de avaliações foi aumentado, adicionamos novas avaliações
+                    for (let i = qtdAvaliacoesAtual + 1; i <= numeroDeAvaliacoes; i++) {
+                        const nota = await Nota.create({
+                            valor: 0, // Ou valor inicial desejado
+                            tipo: `Avaliacao ${i}`,
+                            boletim_id: boletim.id,
+                        });
+                        console.log("Nota criada:", nota);
+                    }
+                } else if (qtdAvaliacoesAtual > numeroDeAvaliacoes) {
+                    // Se o número de avaliações foi diminuído, removemos as avaliações extras
+                    const notasExtras = await Nota.findAll({ where: { boletim_id: boletim.id }, order: [['createdAt', 'DESC']], limit: qtdAvaliacoesAtual - numeroDeAvaliacoes });
+
+                    for (const nota of notasExtras) {
+                        await nota.destroy();
+                    }
+                }
+
+                // Atualiza o boletim
+                const notasAtualizadas = await Nota.findAll({ where: { boletim_id: boletim.id } });
+                boletim.notas = notasAtualizadas.map(nota => nota.valor); // Atualiza as notas com os valores corretos
+
+                // Atualiza a média e a situação do aluno
+                boletim.media = novaMedia;
+                boletim.situacao = novaMedia >= notaRecuperacao ? 'Aprovado' : 'Reprovado';
+
+                try {
+                    await boletim.save(); // Salva o boletim
+                    console.log(`Boletim do aluno ${aluno.id} atualizado com sucesso.`);
+                } catch (err) {
+                    console.error('Erro ao salvar o boletim:', err);
+                    return res.status(500).json({ message: 'Erro ao salvar o boletim.' });
+                }
+            } else {
+                // Caso o boletim não exista, cria um boletim novo para o aluno
+                await Boletim.create({
+                    aluno_id: aluno.id,
+                    notas: Array(numeroDeAvaliacoes).fill(null), // Cria um boletim com o número correto de notas vazias
+                    media: novaMedia,
+                    situacao: novaMedia >= notaRecuperacao ? 'Aprovado' : 'Reprovado',
+                });
+                console.log(`Boletim do aluno ${aluno.id} criado com sucesso.`);
+            }
+        }
+
+        // Salva as alterações na turma
         await turma.save();
 
-        // Retorna sucesso
-        res.status(200).json({ message: 'Pré-definições salvas com sucesso.' });
+        res.status(200).json({ message: 'Pré-definições e boletins salvos com sucesso.' });
     } catch (error) {
-        console.error('Erro ao salvar pré-definições:', error);
-        res.status(500).json({ message: 'Erro ao salvar pré-definições.' });
+        console.error('Erro ao salvar pré-definições e boletins:', error);
+        res.status(500).json({ message: 'Erro ao salvar pré-definições e boletins.' });
     }
-})
+});
+
+
+
+
+
+
 
 
     app.listen(3000, () => console.log('Servidor rodando na porta 3000'));
