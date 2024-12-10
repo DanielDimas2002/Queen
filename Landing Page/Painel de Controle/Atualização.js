@@ -447,15 +447,15 @@ async function buscarAlunosDaTurma() {
     }
 
     try {
-        // Realiza a requisição GET para buscar os alunos da turma
+        // Realiza a requisição GET para buscar os alunos da turma e o número de avaliações
         const response = await fetch(`http://localhost:3000/turmas/${turmaId}/alunos`);
 
         if (response.ok) {
-            const alunos = await response.json();
+            const { alunos, qtd_avaliacoes } = await response.json();
 
             // Verifica se há alunos retornados
             if (alunos.length > 0) {
-                gerarTabelaAlunos(alunos); // Chama a função de geração da tabela com os alunos retornados
+                gerarTabelaAlunos(alunos, qtd_avaliacoes); // Chama a função de geração da tabela
             } else {
                 alert('Nenhum aluno encontrado para essa turma.');
             }
@@ -470,7 +470,7 @@ async function buscarAlunosDaTurma() {
 }
 
 // Função para gerar a tabela com os dados dos alunos
-function gerarTabelaAlunos(alunos) {
+function gerarTabelaAlunos(alunos, qtd_avaliacoes) {
     const tabela = document.querySelector("table");
 
     // Limpa o conteúdo atual da tabela
@@ -481,8 +481,8 @@ function gerarTabelaAlunos(alunos) {
     let cabecalhoHTML = `<th>Nome do Aluno</th>`;
 
     // Adiciona os títulos das avaliações ao cabeçalho
-    for (let i = 0; i < QuantidadeAvaliacoes; i++) {
-        cabecalhoHTML += `<th>${TitulosAvaliacoes[i]}</th>`;
+    for (let i = 0; i < qtd_avaliacoes; i++) {
+        cabecalhoHTML += `<th>Avaliação ${i + 1}</th>`;
     }
 
     // Adiciona os títulos fixos (Média, Recuperação, Situação, Ações)
@@ -495,7 +495,7 @@ function gerarTabelaAlunos(alunos) {
     cabecalho.innerHTML = cabecalhoHTML;
     tabela.appendChild(cabecalho);
 
-    // Verifique se a propriedade 'nome' existe antes de ordenar
+    // Verifica se todos os alunos possuem o nome
     if (alunos.every(aluno => aluno.nome)) {
         alunos.sort((a, b) => a.nome.localeCompare(b.nome));
     } else {
@@ -508,26 +508,23 @@ function gerarTabelaAlunos(alunos) {
     alunos.forEach((aluno, index) => {
         const linha = document.createElement("tr");
         let linhaHTML = `<td class="selecao">
-            <span class="material-symbols-outlined"></span>
             <span class="nome-aluno">${aluno.nome}</span>
         </td>`;
 
         // Adiciona as avaliações do aluno dinamicamente
-        for (let i = 0; i < QuantidadeAvaliacoes; i++) {
+        for (let i = 0; i < qtd_avaliacoes; i++) {
             const nota = aluno.boletim[`nota${i + 1}`] !== undefined ? aluno.boletim[`nota${i + 1}`] : '';
             linhaHTML += `<td class="selecao" contenteditable="true" data-avaliacao="${i + 1}">
-                <span class="material-symbols-outlined"></span> ${nota}
+                ${nota}
             </td>`;
         }
 
         // Adiciona os campos fixos (Média, Recuperação, Situação, Ações)
-        const recuperacao = aluno.Recuperacao !== undefined && aluno.Recuperacao !== "" ? aluno.Recuperacao : '';
+        const recuperacao = aluno.boletim.recuperacao !== undefined && aluno.boletim.recuperacao !== "" ? aluno.boletim.recuperacao : '';
         linhaHTML += `
-            <td>${aluno.Media}</td>
-            <td class="selecao" contenteditable="true" data-recuperacao="true">
-                <span class="material-symbols-outlined"></span> ${recuperacao}
-            </td>
-            <td>${aluno.Situacao}</td>
+            <td>${aluno.boletim.media}</td>
+            <td class="selecao" contenteditable="true" data-recuperacao="true">${recuperacao}</td>
+            <td>${aluno.boletim.situacao}</td>
             <td>
                 <button class="btn-excluir" data-index="${index}" title="Excluir">
                     <i class="fas fa-trash-alt"></i>
@@ -541,6 +538,7 @@ function gerarTabelaAlunos(alunos) {
         tabela.appendChild(linha);
     });
 }
+
 
 
 // Chama a função de buscar alunos ao carregar a página

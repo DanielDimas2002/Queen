@@ -244,27 +244,39 @@ app.post('/alunos', async (req, res) => {
 
 
 
-
-
 app.get('/turmas/:turmaId/alunos', async (req, res) => {
     const { turmaId } = req.params;
 
     try {
+        // Busca a turma para obter o número de avaliações
+        const turma = await Turma.findOne({
+            where: { id: turmaId },
+            attributes: ['qtd_avaliacoes'], // Inclui apenas o campo qtd_avaliacoes
+        });
+
+        if (!turma) {
+            return res.status(404).json({ message: 'Turma não encontrada.' });
+        }
+
         // Busca os alunos da turma com seus boletins associados
         const alunos = await Aluno.findAll({
             where: { turma_id: turmaId },
             include: {
                 model: Boletim, // Inclui os boletins associados
-                attributes: ['nota1', 'nota2', 'nota3', 'media', 'situacao'],
+                attributes: ['nota1', 'nota2', 'nota3', 'media', 'situacao', 'recuperacao'],
             },
         });
 
-        res.status(200).json(alunos);
+        res.status(200).json({
+            alunos,
+            qtd_avaliacoes: turma.qtd_avaliacoes, // Retorna a quantidade de avaliações
+        });
     } catch (error) {
         console.error('Erro ao buscar alunos:', error);
         res.status(500).json({ message: 'Erro interno ao buscar alunos.' });
     }
 });
+
 
 app.put('/definirMedia', async (req, res) => {
     const { turmaId, novaMedia, numeroDeAvaliacoes, notaRecuperacao } = req.body;
@@ -321,7 +333,6 @@ app.put('/definirMedia', async (req, res) => {
                 boletim.notas = notasAtualizadas.map(nota => nota.valor); // Atualiza as notas com os valores corretos
 
                 // Atualiza a média e a situação do aluno
-                boletim.media = novaMedia;
                 boletim.situacao = novaMedia >= notaRecuperacao ? 'Aprovado' : 'Reprovado';
 
                 try {

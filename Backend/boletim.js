@@ -8,6 +8,7 @@ const Boletim = database.define('boletim', {
     nota3: DataTypes.FLOAT,
     media: DataTypes.FLOAT,
     situacao: DataTypes.STRING,
+    recuperacao: DataTypes.FLOAT,
 });
 
 Boletim.belongsTo(Aluno, { foreignKey: 'aluno_id', onDelete: 'CASCADE' }); // Associa o boletim a um aluno
