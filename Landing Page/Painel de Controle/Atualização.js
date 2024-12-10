@@ -443,25 +443,30 @@ async function buscarAlunosDaTurma() {
 
     if (!turmaId) {
         alert("ID da turma não encontrado na URL.");
+        console.error("ID da turma não encontrado.");
         return;
     }
 
     try {
+        console.log(`Buscando alunos da turma com ID: ${turmaId}`);
         // Realiza a requisição GET para buscar os alunos da turma e o número de avaliações
         const response = await fetch(`http://localhost:3000/turmas/${turmaId}/alunos`);
 
         if (response.ok) {
             const { alunos, qtd_avaliacoes } = await response.json();
+            console.log("Dados recebidos:", alunos, qtd_avaliacoes);
 
             // Verifica se há alunos retornados
             if (alunos.length > 0) {
                 gerarTabelaAlunos(alunos, qtd_avaliacoes); // Chama a função de geração da tabela
             } else {
                 alert('Nenhum aluno encontrado para essa turma.');
+                console.warn('Nenhum aluno encontrado.');
             }
         } else {
             const error = await response.json();
             alert("Erro ao buscar alunos: " + error.message);
+            console.error("Erro ao buscar alunos:", error.message);
         }
     } catch (error) {
         console.error('Erro ao buscar alunos:', error);
@@ -495,14 +500,8 @@ function gerarTabelaAlunos(alunos, qtd_avaliacoes) {
     cabecalho.innerHTML = cabecalhoHTML;
     tabela.appendChild(cabecalho);
 
-    // Verifica se todos os alunos possuem o nome
-    if (alunos.every(aluno => aluno.nome)) {
-        alunos.sort((a, b) => a.nome.localeCompare(b.nome));
-    } else {
-        console.error('Alguns alunos não têm a propriedade "nome":', alunos);
-        alert('Erro: alguns alunos não têm nome.');
-        return;
-    }
+    // Ordena os alunos por nome
+    alunos.sort((a, b) => a.nome.localeCompare(b.nome));
 
     // Adiciona cada aluno na tabela
     alunos.forEach((aluno, index) => {
@@ -513,7 +512,7 @@ function gerarTabelaAlunos(alunos, qtd_avaliacoes) {
 
         // Adiciona as avaliações do aluno dinamicamente
         for (let i = 0; i < qtd_avaliacoes; i++) {
-            const nota = aluno.boletim[`nota${i + 1}`] !== undefined ? aluno.boletim[`nota${i + 1}`] : '';
+            const nota = aluno.boletim.nota && aluno.boletim.nota[i] ? aluno.boletim.nota[i].valor : '';
             linhaHTML += `<td class="selecao" contenteditable="true" data-avaliacao="${i + 1}">
                 ${nota}
             </td>`;
@@ -538,6 +537,7 @@ function gerarTabelaAlunos(alunos, qtd_avaliacoes) {
         tabela.appendChild(linha);
     });
 }
+
 
 
 

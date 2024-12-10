@@ -248,6 +248,7 @@ app.get('/turmas/:turmaId/alunos', async (req, res) => {
     const { turmaId } = req.params;
 
     try {
+        console.log(`Buscando dados para a turma com ID: ${turmaId}`);
         // Busca a turma para obter o número de avaliações
         const turma = await Turma.findOne({
             where: { id: turmaId },
@@ -255,20 +256,53 @@ app.get('/turmas/:turmaId/alunos', async (req, res) => {
         });
 
         if (!turma) {
+            console.error(`Turma com ID ${turmaId} não encontrada.`);
             return res.status(404).json({ message: 'Turma não encontrada.' });
         }
 
-        // Busca os alunos da turma com seus boletins associados
+        console.log(`Turma encontrada. Quantidade de avaliações: ${turma.qtd_avaliacoes}`);
+
+        // Busca os alunos da turma com seus boletins e notas associadas
         const alunos = await Aluno.findAll({
             where: { turma_id: turmaId },
-            include: {
-                model: Boletim, // Inclui os boletins associados
-                attributes: ['nota1', 'nota2', 'nota3', 'media', 'situacao', 'recuperacao'],
-            },
+            include: [
+                {
+                    model: Boletim, // Inclui os boletins associados
+                    attributes: ['id'], // Inclui apenas o ID do boletim
+                    include: {
+                        model: Nota, // Inclui as notas associadas ao boletim
+                        attributes: ['valor', 'tipo'], // Inclui os valores e tipos das notas
+                    },
+                },
+            ],
         });
 
+        if (alunos.length === 0) {
+            console.warn('Nenhum aluno encontrado para a turma.');
+        }
+
+        // Manipula os dados para estruturar as notas dinamicamente
+        const alunosComNotas = alunos.map(aluno => {
+            const boletim = aluno.boletim;
+            
+            // Verifica se existem notas e mapeia
+            const notas = boletim && boletim.notas ? boletim.notas.reduce((acc, nota, index) => {
+                acc[`nota${index + 1}`] = nota.valor; // Adiciona as notas dinamicamente
+                return acc;
+            }, {}) : {}; // Caso não haja notas, retorna um objeto vazio
+
+            return {
+                ...aluno.toJSON(),
+                boletim: {
+                    ...boletim.toJSON(),
+                    ...notas, // Adiciona as notas no boletim do aluno
+                },
+            };
+        });
+
+        console.log(`Alunos encontrados: ${alunosComNotas.length}`);
         res.status(200).json({
-            alunos,
+            alunos: alunosComNotas,
             qtd_avaliacoes: turma.qtd_avaliacoes, // Retorna a quantidade de avaliações
         });
     } catch (error) {
@@ -276,6 +310,9 @@ app.get('/turmas/:turmaId/alunos', async (req, res) => {
         res.status(500).json({ message: 'Erro interno ao buscar alunos.' });
     }
 });
+
+
+
 
 
 app.put('/definirMedia', async (req, res) => {
