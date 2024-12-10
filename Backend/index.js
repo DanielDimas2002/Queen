@@ -401,6 +401,28 @@ app.put('/definirMedia', async (req, res) => {
     }
 });
 
+// Endpoint GET para retornar os dados da turma
+app.get('/obterMediaTurma/:turmaId', async (req, res) => {
+    const { turmaId } = req.params;
+
+    try {
+        const turma = await Turma.findByPk(turmaId);
+        if (!turma) {
+            return res.status(404).json({ message: 'Turma não encontrada.' });
+        }
+
+        // Retorna os dados da turma
+        res.status(200).json({
+            media: turma.media,
+            qtd_avaliacoes: turma.qtd_avaliacoes,
+            recuperacao: turma.recuperacao
+        });
+    } catch (error) {
+        console.error('Erro ao buscar dados da turma:', error);
+        res.status(500).json({ message: 'Erro ao buscar dados da turma.' });
+    }
+});
+
 
 
 

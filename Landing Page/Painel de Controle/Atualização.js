@@ -421,6 +421,21 @@ FormPopUpDefMedia.addEventListener('submit', async (e) => {
             alert('Erro ao salvar pré-definições: ' + responseData.message);
         } else {
             alert('Pré-definições salvas com sucesso.');
+
+            // Requisição GET para obter os dados atualizados da turma
+            const responseGet = await fetch(`http://localhost:3000/obterMediaTurma/${turmaId}`);
+            const dataGet = await responseGet.json();
+
+            if (responseGet.ok) {
+                // Atribuindo os dados recebidos às variáveis globais
+                MediaDefinida = dataGet.media;
+                QuantidadeAvaliacoes = dataGet.qtd_avaliacoes;
+                NotaRecuperacaoDefinida = dataGet.recuperacao;
+
+                console.log('Dados atualizados da turma:', dataGet);
+            } else {
+                alert('Erro ao buscar dados da turma.');
+            }
         }
     } catch (error) {
         console.error('Erro ao enviar dados!', error);
@@ -430,10 +445,6 @@ FormPopUpDefMedia.addEventListener('submit', async (e) => {
     // Fecha o pop-up
     fecharPopup(popupMedia);
 });
-
-
-
-
 
 
 // Função para buscar os alunos da turma no backend e gerar a tabela
