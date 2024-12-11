@@ -339,6 +339,50 @@ function limparTodasNotas() {
     fecharPopup(popupMedia);
 }); */
 
+async function carregarPreDefinicoesTurma() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const turmaId = urlParams.get('id'); // Captura o ID da turma da URL
+
+    if (!turmaId) {
+        alert("ID da turma não encontrado na URL.");
+        console.error("ID da turma não encontrado.");
+        return;
+    }
+
+    try {
+        console.log(`Buscando pré-definições da turma com ID: ${turmaId}`);
+        // Realiza a requisição GET para buscar as predefinições da turma
+        const response = await fetch(`http://localhost:3000/obterMediaTurma/${turmaId}`);
+        
+        if (response.ok) {
+            const data = await response.json();
+            console.log("Dados recebidos:", data);
+
+            // Atualizando as variáveis globais
+            MediaDefinida = data.media;
+            QuantidadeAvaliacoes = data.qtd_avaliacoes;
+            NotaRecuperacaoDefinida = data.recuperacao;
+
+            // Verificando se os valores foram corretamente atualizados
+            console.log("Variáveis globais atualizadas:", {
+                MediaDefinida,
+                QuantidadeAvaliacoes,
+                NotaRecuperacaoDefinida
+            });
+        } else {
+            const error = await response.json();
+            alert("Erro ao buscar dados da turma: " + error.message);
+            console.error("Erro ao buscar dados da turma:", error.message);
+        }
+    } catch (error) {
+        console.error('Erro ao carregar pré-definições:', error);
+        alert('Erro ao carregar pré-definições, tente novamente mais tarde.');
+    }
+}
+
+// Chama a função de carregar as pré-definições quando a página carregar
+document.addEventListener('DOMContentLoaded', carregarPreDefinicoesTurma);
+
 FormPopUpDefMedia.addEventListener('submit', async (e) => {
     console.log("Formulário enviado");
     e.preventDefault();
@@ -486,7 +530,7 @@ async function buscarAlunosDaTurma() {
 }
 
 // Função para gerar a tabela com os dados dos alunos
-function gerarTabelaAlunos(alunos, qtd_avaliacoes) {
+async function gerarTabelaAlunos(alunos, qtd_avaliacoes) {
     const tabela = document.querySelector("table");
 
     // Limpa o conteúdo atual da tabela
@@ -544,9 +588,11 @@ function gerarTabelaAlunos(alunos, qtd_avaliacoes) {
                 </button>
             </td>
         `;
+        
         linha.innerHTML = linhaHTML;
         tabela.appendChild(linha);
     });
+    
 }
 
 
@@ -920,49 +966,84 @@ function ativarEdicaoNota() {
                 alert("Configure as pré-definições antes de adicionar notas!");
                 return;
             }
-
+        
             const nomeAluno = linha.cells[0].textContent.trim();
             const aluno = ListaDeAlunos.find(a => a.Nome === nomeAluno);
             const valorAtual = celula.textContent.trim();
-
+        
             if (celula.querySelector('input')) return;
-
+        
             const input = document.createElement('input');
             input.type = 'text';
             input.value = valorAtual;
             input.style.width = '100%';
-
+        
             celula.textContent = '';
             celula.appendChild(input);
             input.select();
-
-            input.addEventListener('blur', () => {
+        
+            input.addEventListener('blur', async () => {
                 let novoValor = input.value.trim();
                 novoValor = novoValor.replace(',', '.');
-
+        
                 if (!isNaN(novoValor) && novoValor !== '' && novoValor >= 0 && novoValor <= 10) {
                     celula.textContent = novoValor;
-                    aluno.Avaliacoes[celula.cellIndex - 1] = parseFloat(novoValor);
-                    aluno.calcularMedia(); // Método da classe Estudante
-                    aluno.atualizarSituacao(MediaDefinida); // Atualiza a situação com a média definida globalmente
+        
                     // Atualiza apenas as colunas relacionadas (Média, Situação)
                     const linha = celula.closest('tr');
-                    linha.cells[QuantidadeAvaliacoes + 1].textContent = aluno.Media; // Atualiza Média
-                    linha.cells[QuantidadeAvaliacoes + 3].textContent = aluno.Situacao; // Atualiza Situação
+        
+                    // Encontra o nome do aluno
+                    const nomeAluno = linha.cells[0].textContent.trim();
+        
+                    // Determina o tipo da avaliação (Ex: 'Avaliacao 1', 'Avaliacao 2', etc.)
+                    const tipoAvaliacao = `Avaliacao ${celula.cellIndex}`;
+        
+                    // Adicionando console.log para verificar os dados
+                    console.log('Enviando para o backend:', {
+                        nomeAluno: nomeAluno,
+                        tipoAvaliacao: tipoAvaliacao,
+                        valor: parseFloat(novoValor),
+                    });
+        
+                    // Envia a requisição ao backend com o nome do aluno, tipo de avaliação e o valor da nota
+                    try {
+                        const response = await fetch(`http://localhost:3000/atualizarNota`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                nomeAluno: nomeAluno,
+                                tipoAvaliacao: tipoAvaliacao,
+                                valor: parseFloat(novoValor),
+                            }),
+                        });
+        
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            alert(`Erro ao salvar a nota: ${errorData.message}`);
+                            celula.textContent = valorAtual; // Restaura o valor anterior
+                        }
+                    } catch (error) {
+                        alert('Erro ao salvar a nota no servidor. Por favor, tente novamente.');
+                        celula.textContent = valorAtual; // Restaura o valor anterior
+                    }
                 } else {
                     celula.textContent = valorAtual;
                     alert('Por favor, insira uma nota válida entre 0 e 10.');
                 }
             });
-
+        
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     input.blur();
                 }
             });
-
+        
             return;
         }
+            
+        
 
         // Editar recuperação
         if (linha && linha.rowIndex > 0 && celula.cellIndex === QuantidadeAvaliacoes + 2) {

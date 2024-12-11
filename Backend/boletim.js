@@ -3,9 +3,6 @@ const database = require('./db');
 const Aluno = require('./alunos');
 
 const Boletim = database.define('boletim', {
-    nota1: DataTypes.FLOAT,
-    nota2: DataTypes.FLOAT,
-    nota3: DataTypes.FLOAT,
     media: DataTypes.FLOAT,
     situacao: DataTypes.STRING,
     recuperacao: DataTypes.FLOAT,

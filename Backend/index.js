@@ -423,6 +423,72 @@ app.get('/obterMediaTurma/:turmaId', async (req, res) => {
     }
 });
 
+app.post('/api/notas', async (req, res) => {
+    const { valor, tipo, alunoId, boletimId } = req.body;
+
+    try {
+        // Verifica se o boletim e o aluno existem
+        const boletim = await Boletim.findOne({ where: { id: boletimId, aluno_id: alunoId } });
+        if (!boletim) {
+            return res.status(404).json({ error: 'Boletim não encontrado para o aluno.' });
+        }
+
+        // Cria ou atualiza a nota
+        const nota = await Nota.create({
+            valor,
+            tipo,
+            boletim_id: boletim.id,
+        });
+
+        res.status(201).json({ message: 'Nota salva com sucesso!', nota });
+    } catch (error) {
+        console.error('Erro ao salvar a nota:', error);
+        res.status(500).json({ error: 'Erro ao salvar a nota no banco de dados.' });
+    }
+});
+
+app.put('/atualizarNota', async (req, res) => {
+    const { nomeAluno, tipoAvaliacao, valor } = req.body;
+
+    try {
+        // Passo 1: Encontrar o aluno
+        const aluno = await Aluno.findOne({
+            where: { nome: nomeAluno }
+        });
+
+        if (!aluno) {
+            return res.status(404).json({ message: "Aluno não encontrado" });
+        }
+
+        // Passo 2: Encontrar o boletim do aluno
+        const boletim = await Boletim.findOne({
+            where: { aluno_id: aluno.id }
+        });
+
+        if (!boletim) {
+            return res.status(404).json({ message: "Boletim não encontrado" });
+        }
+
+        // Passo 3: Encontrar a avaliação dentro do boletim
+        const nota = await Nota.findOne({
+            where: { boletim_id: boletim.id, tipo: tipoAvaliacao }
+        });
+
+        if (!nota) {
+            return res.status(404).json({ message: "Nota de avaliação não encontrada" });
+        }
+
+        // Passo 4: Atualizar o valor da nota
+        nota.valor = valor;
+        await nota.save();
+
+        return res.status(200).json({ message: "Nota atualizada com sucesso" });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erro interno do servidor" });
+    }
+});
 
 
 
