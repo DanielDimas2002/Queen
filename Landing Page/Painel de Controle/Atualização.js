@@ -30,6 +30,63 @@ let ListaDeAlunos = [];
 let NotaRecuperacaoDefinida = null;
 let TitulosAvaliacoes = Array(QuantidadeAvaliacoes).fill('').map((_, i) => `Avaliação ${i + 1}`);
 
+// Função para salvar os dados no Local Storage
+const salvarNoLocalStorage = () => {
+    const estadoAtual = {
+        MediaDefinida,
+        QuantidadeAvaliacoes,
+        ListaDeAlunos: ListaDeAlunos.map(aluno => ({
+            Nome: aluno.Nome,
+            Avaliacoes: aluno.Avaliacoes,
+            Media: aluno.Media,
+            Recuperacao: aluno.Recuperacao,
+            Situacao: aluno.Situacao
+        })),
+        NotaRecuperacaoDefinida,
+        TitulosAvaliacoes
+    };
+    localStorage.setItem('estadoSistema', JSON.stringify(estadoAtual));
+    console.log('Estado salvo no Local Storage:', estadoAtual); // Para fins de depuração
+};
+
+// Função para carregar os dados do Local Storage
+const carregarDoLocalStorage = () => {
+    const estadoSalvo = localStorage.getItem('estadoSistema');
+    if (estadoSalvo) {
+        const estado = JSON.parse(estadoSalvo);
+        MediaDefinida = estado.MediaDefinida;
+        QuantidadeAvaliacoes = estado.QuantidadeAvaliacoes;
+        NotaRecuperacaoDefinida = estado.NotaRecuperacaoDefinida;
+        TitulosAvaliacoes = estado.TitulosAvaliacoes;
+
+        // Reconstrói a lista de alunos como instâncias da classe Estudante
+        ListaDeAlunos = estado.ListaDeAlunos.map(aluno =>
+            new Estudante(aluno.Nome, QuantidadeAvaliacoes)
+        );
+
+        // Restaura os dados dos alunos
+        ListaDeAlunos.forEach((aluno, index) => {
+            aluno.Avaliacoes = estado.ListaDeAlunos[index].Avaliacoes;
+            aluno.Media = estado.ListaDeAlunos[index].Media;
+            aluno.Recuperacao = estado.ListaDeAlunos[index].Recuperacao;
+            aluno.Situacao = estado.ListaDeAlunos[index].Situacao;
+        });
+
+        console.log('Estado carregado do Local Storage:', estado); // Para fins de depuração
+    }
+};
+
+// Atualizar o Local Storage a cada 3 segundos
+setInterval(salvarNoLocalStorage, 3000);
+
+// Carregar os dados ao inicializar a página e gerar a tabela
+window.addEventListener('load', () => {
+    carregarDoLocalStorage(); // Carrega os dados salvos
+    gerarTabelaAlunos(); // Gera a tabela com os dados carregados
+    // Chama a função para preencher o dropdown ao abrir o pop-up
+    preencherDropdownAlunos();
+});
+
 // Seleciona os elementos do formulário e inicializa a lista de alunos
 const FormGroup = document.getElementById("FormGrupo");
 const FormRecuperacao = document.getElementById("FormRecuperacao");
@@ -339,8 +396,6 @@ FormPopUpDefMedia.addEventListener('submit', (e) => {
     fecharPopup(popupMedia);
 });
 
-
-
 //Gera a tabela dinamicamente
 function gerarTabelaAlunos() {
     const tabela = document.querySelector("table");
@@ -610,8 +665,6 @@ FormPopUpPontuar.addEventListener("submit", (e) => {
     // Fecha o pop-up após o sucesso
     fecharPopup(popupPontuar);
 });
-
-
 
 // Função para verificar se há alunos na tabela e ativar/desativar botões
 /*function verificarAlunosNaTabela() {

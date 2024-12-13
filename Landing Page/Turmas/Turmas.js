@@ -36,7 +36,7 @@ function formatDate(date) {
 function addClassCard(disciplina, turma, turno, dataInicial, dataFinal, turmaId) {
     // Criar o link que envolverá o card
     const cardLink = document.createElement("a");
-    cardLink.href = `../Painel de Controle/Painel.html?id=${turmaId}`;
+    cardLink.href = `../Painel de Controle/Atualização.html?id=${turmaId}`;
  // Inclui o ID da turma na URL
     cardLink.classList.add("card-link");
     cardLink.style.textDecoration = "none"; // Remover a decoração padrão de links
